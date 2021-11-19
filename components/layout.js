@@ -3,13 +3,14 @@ import Image from "next/image";
 import styles from "./layout.module.css";
 import utilStyles from "../styles/utils.module.css";
 import Link from "next/link";
+import { Container } from "@chakra-ui/react"
 
 const name = "trav";
 export const siteTitle = "Adventure Buddy";
 
 export default function Layout({ children, home }) {
   return (
-    <div className={styles.container}>
+    <Container>
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -68,6 +69,6 @@ export default function Layout({ children, home }) {
           </Link>
         </div>
       )}
-    </div>
+    </Container>
   );
 }

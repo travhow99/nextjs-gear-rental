@@ -1,47 +1,37 @@
 import Head from "next/head";
 import Layout, { siteTitle } from "../components/layout";
-import { getSortedPostsData } from "../lib/posts";
+// import { getSortedPostsData } from "../lib/posts";
 import Link from "next/link";
 import Date from "../components/date";
 import utilStyles from "../styles/utils.module.css";
 import itemList from "../components/products/seed";
 import Item from "../components/products/item";
+import { getTopItems } from "../lib/items";
+import { SimpleGrid } from "@chakra-ui/layout";
 
 export async function getStaticProps() {
-  const allPostsData = getSortedPostsData();
+  const topItems = getTopItems();
   return {
     props: {
-      allPostsData,
+      topItems,
     },
   };
 }
-
-export default function Home({ allPostsData }) {
+/**
+ * @todo getstaticprops items
+ */
+export default function Home({ topItems }) {
   return (
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
       </Head>
       <section className={utilStyles.headingMd}>
-        {itemList.map((item, index) => (
-          <Item item={item} key={index} />
-        ))}
-      </section>
-      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-        <h2 className={utilStyles.headingLg}>Blog</h2>
-        <ul className={utilStyles.list}>
-          {/* allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              <Link href={`/posts/${id}`}>
-                <a>{title}</a>
-              </Link>
-              <br />
-              <small className={utilStyles.lightText}>
-                <Date dateString={date} />
-              </small>
-            </li>
-          )) */}
-        </ul>
+        <SimpleGrid columns={3} spacing={10}>
+          {topItems.map((item, index) => (
+            <Item item={item} key={index} />
+          ))}
+        </SimpleGrid>
       </section>
     </Layout>
   );
