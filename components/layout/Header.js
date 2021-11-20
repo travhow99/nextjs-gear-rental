@@ -13,7 +13,7 @@ export default function Header() {
     >
       <Box w="33%" display="flex" alignItems="center">
         <Link href="/">
-          <>
+          <a>
             <Image
               display="inline"
               maxW="32px"
@@ -23,7 +23,7 @@ export default function Header() {
               alt={"Fake Icon"}
             />
             <span>adventurebuddy</span>
-          </>
+          </a>
         </Link>
       </Box>
       <Spacer />
