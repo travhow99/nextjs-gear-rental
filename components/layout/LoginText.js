@@ -3,10 +3,12 @@ import { useSession, signIn, signOut } from "next-auth/react"
 
 export default function LoginText() {
   const { data: session } = useSession()
+
+  console.log('sesh:', session)
   if (session) {
     return (
       <Box>
-        Signed in as {session.user.email} <br />
+        Signed in as {session.user.email || session.user.name} <br />
         <button onClick={() => signOut()}>Sign out</button>
       </Box>
     )

@@ -25,7 +25,7 @@ export default function Home({ topItems }) {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <HomeCallToAction />
+      <HomeCallToAction topItems={topItems} />
       {/* <Box m={4} className={utilStyles.headingMd}>
         <SimpleGrid columns={3} spacing={10}>
           {topItems.map((item, index) => (

@@ -11,7 +11,7 @@ export const siteTitle = "Adventure Buddy";
 
 export default function Layout({ children, home }) {
   return (
-    <Flex direction="column" align="center" maxW={{ xl: "1200px" }} m="0 auto">
+    <Flex direction="column" align="center" /* maxW={{ xl: "1200px" }} */ m="0 auto">
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta
