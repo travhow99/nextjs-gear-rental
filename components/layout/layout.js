@@ -1,17 +1,20 @@
-import Head from "next/head";
-import Image from "next/image";
-import styles from "./layout.module.css";
-import utilStyles from "../../styles/utils.module.css";
-import Link from "next/link";
-import { Container, Flex } from "@chakra-ui/react";
-import Header from "./Header";
+import Head from 'next/head';
+import Image from 'next/image';
+import styles from './layout.module.css';
+import utilStyles from '../../styles/utils.module.css';
+import Link from 'next/link';
+import { AppBar, Toolbar, Typography, Container } from '@material-ui/core';
+import Header from './Header';
+import useStyles from '../../utils/styles';
 
-const name = "trav";
-export const siteTitle = "Adventure Buddy";
+const name = 'trav';
+export const siteTitle = 'Adventure Buddy';
 
 export default function Layout({ children, home }) {
+  const classes = useStyles();
+
   return (
-    <Flex direction="column" align="center" /* maxW={{ xl: "1200px" }} */ m="0 auto">
+    <div>
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -28,16 +31,10 @@ export default function Layout({ children, home }) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <Header />
-      <Container>
-        <main>{children}</main>
-        {/* !home && (
-          <div className={styles.backToHome}>
-            <Link href="/">
-              <a>← Back to home</a>
-            </Link>
-          </div>
-        ) */}
-      </Container>
-    </Flex>
+      <Container className={classes.main}>{children}</Container>
+      <footer className={classes.footer}>
+        <Typography>All rights reserved. adventurebuddy.</Typography>
+      </footer>
+    </div>
   );
 }

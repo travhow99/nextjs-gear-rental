@@ -1,21 +1,19 @@
-import Head from "next/head";
+import Head from 'next/head';
 import {
-  Box,
-  Heading,
-  Container,
-  Text,
+  Grid,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+  CardActions,
   Button,
-  Stack,
-  Icon,
-  useColorModeValue,
-  createIcon,
-  SimpleGrid,
-} from "@chakra-ui/react";
-import Item from "../products/item";
-import SimpleItem from "../products/SimpleItem";
+} from '@material-ui/core';
+import SimpleItem from '../products/SimpleItem';
+import utilStyles from '../../styles/utils.module.css';
 
 export default function HomeCallToAction(props) {
-	const topItems = props.topItems;
+  const topItems = props.topItems;
   console.log(topItems);
   return (
     <>
@@ -26,65 +24,72 @@ export default function HomeCallToAction(props) {
         />
       </Head>
 
-      <Container maxW={"3xl"}>
-        <Stack
+      <h1>Products</h1>
+
+      <Grid container spacing={3}>
+        {topItems.map((product) => (
+          <Grid product md={4} key={product.id}>
+            <SimpleItem product={product} />
+          </Grid>
+        ))}
+        {/* <Stack
           as={Box}
-          textAlign={"center"}
+          textAlign={'center'}
           spacing={{ base: 8, md: 14 }}
           py={{ base: 20, md: 36 }}
         >
           <Heading
             fontWeight={600}
-            fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
-            lineHeight={"110%"}
+            fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
+            lineHeight={'110%'}
           >
             Make money from <br />
-            <Text as={"span"} color={"green.400"}>
+            <Text as={'span'} color={'green.400'}>
               your audience
             </Text>
           </Heading>
-          <Text color={"gray.500"}>
+          <Text color={'gray.500'}>
             Monetize your content by charging your most loyal readers and reward
             them loyalty points. Give back to your loyal readers by granting
             them access to your pre-releases and sneak-peaks.
           </Text>
           <Stack
-            direction={"column"}
+            direction={'column'}
             spacing={3}
-            align={"center"}
-            alignSelf={"center"}
-            position={"relative"}
+            align={'center'}
+            alignSelf={'center'}
+            position={'relative'}
           >
             <Button
-              colorScheme={"green"}
-              bg={"green.400"}
-              rounded={"full"}
+              colorScheme={'green'}
+              bg={'green.400'}
+              rounded={'full'}
               px={6}
               _hover={{
-                bg: "green.500",
+                bg: 'green.500',
               }}
             >
               Get Started
             </Button>
-            <Button variant={"link"} colorScheme={"blue"} size={"sm"}>
+            <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
               Learn more
             </Button>
             <Box>
               <Icon
                 as={Arrow}
-                color={useColorModeValue("gray.800", "gray.300")}
+                color={useColorModeValue('gray.800', 'gray.300')}
                 w={71}
-                position={"absolute"}
+                position={'absolute'}
                 right={-71}
-                top={"10px"}
+                top={'10px'}
               />
               <Text
-                fontSize={"lg"}
-                fontFamily={"Caveat"}
-                position={"absolute"}
-                right={"-125px"}
-                top={"-15px"}
-                transform={"rotate(10deg)"}
+                fontSize={'lg'}
+                fontFamily={'Caveat'}
+                position={'absolute'}
+                right={'-125px'}
+                top={'-15px'}
+                transform={'rotate(10deg)'}
               >
                 Starting at $15/mo
               </Text>
@@ -94,20 +99,20 @@ export default function HomeCallToAction(props) {
             <Box m={4}>
               <SimpleGrid columns={3} spacing={10}>
                 {topItems.map((item, index) => (
-                  <SimpleItem item={item} key={index} />
+                  <SimpleItem item={item} key={item.id} />
                 ))}
               </SimpleGrid>
             </Box>
           </Stack>
-        </Stack>
-      </Container>
+        </Stack> */}
+      </Grid>
     </>
   );
 }
 
-const Arrow = createIcon({
-  displayName: "Arrow",
-  viewBox: "0 0 72 24",
+/* const Arrow = createIcon({
+  displayName: 'Arrow',
+  viewBox: '0 0 72 24',
   path: (
     <path
       fillRule="evenodd"
@@ -116,4 +121,4 @@ const Arrow = createIcon({
       fill="currentColor"
     />
   ),
-});
+}); */

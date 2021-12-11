@@ -50,3 +50,18 @@
 .lightText {
   color: #666;
 }
+
+.navbar {
+  background-color: #203040;
+}
+
+.navbar a {
+  color: white;
+  margin-left: 10px;
+}
+
+.main {
+  min-height: 80vh;
+}
+
+.footer {}

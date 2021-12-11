@@ -1,14 +1,14 @@
-import Head from "next/head";
-import Layout, { siteTitle } from "../components/layout/layout";
+import Head from 'next/head';
+import Layout, { siteTitle } from '../components/layout/layout';
 // import { getSortedPostsData } from "../lib/posts";
-import Link from "next/link";
-import Date from "../components/date";
-import utilStyles from "../styles/utils.module.css";
-import itemList from "../components/products/seed";
-import Item from "../components/products/item";
-import { getTopItems } from "../lib/items";
-import { Box, SimpleGrid } from "@chakra-ui/layout";
-import HomeCallToAction from "../components/layout/Home";
+import Link from 'next/link';
+import Date from '../components/date';
+import utilStyles from '../styles/utils.module.css';
+import itemList from '../components/products/seed';
+import Item from '../components/products/item';
+import { getTopItems } from '../lib/items';
+import { Box, SimpleGrid } from '@chakra-ui/layout';
+import HomeCallToAction from '../components/layout/Home';
 
 export async function getStaticProps() {
   const topItems = getTopItems();
