@@ -3,15 +3,47 @@ import Image from 'next/image';
 import styles from './layout.module.css';
 import utilStyles from '../../styles/utils.module.css';
 import Link from 'next/link';
-import { AppBar, Toolbar, Typography, Container } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
+  createTheme,
+  ThemeProvider,
+} from '@material-ui/core';
 import Header from './Header';
 import useStyles from '../../utils/styles';
 
 const name = 'trav';
-export const siteTitle = 'Adventure Buddy';
 
-export default function Layout({ children, home }) {
+export default function Layout({ title, description, children, home }) {
   const classes = useStyles();
+  const baseTitle = 'Adventure Buddy';
+  const siteTitle = title ? title + ' - ' + baseTitle : baseTitle;
+
+  const theme = createTheme({
+    typography: {
+      h1: {
+        fontSize: '1.6rem',
+        fontWeight: 400,
+        margin: '1rem 0',
+      },
+      h2: {
+        fontSize: '1.4rem',
+        fontWeight: 400,
+        margin: '1rem 0',
+      },
+    },
+    palette: {
+      type: 'light',
+      primary: {
+        main: '#f0c000',
+      },
+      secondary: {
+        main: '#208080',
+      },
+    },
+  });
 
   return (
     <div>
@@ -29,12 +61,16 @@ export default function Layout({ children, home }) {
         />
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
+        <title>{siteTitle}</title>
+        {description && <meta name="description" content={description}></meta>}
       </Head>
-      <Header />
-      <Container className={classes.main}>{children}</Container>
-      <footer className={classes.footer}>
-        <Typography>All rights reserved. adventurebuddy.</Typography>
-      </footer>
+      <ThemeProvider theme={theme}>
+        <Header />
+        <Container className={classes.main}>{children}</Container>
+        <footer className={classes.footer}>
+          <Typography>All rights reserved. adventurebuddy.</Typography>
+        </footer>
+      </ThemeProvider>
     </div>
   );
 }

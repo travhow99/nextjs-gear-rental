@@ -28,7 +28,7 @@ export default function HomeCallToAction(props) {
 
       <Grid container spacing={3}>
         {topItems.map((product) => (
-          <Grid product md={4} key={product.id}>
+          <Grid item md={4} key={product.id}>
             <SimpleItem product={product} />
           </Grid>
         ))}

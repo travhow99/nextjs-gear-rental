@@ -1,6 +1,7 @@
 export default [
   {
     id: Math.random(),
+    slug: 'snowshoes',
     imageUrl: '/images/products/snowshoes.jpeg',
     imageAlt: 'Entry level snowshoes',
     category: 'snow',
@@ -15,6 +16,7 @@ export default [
   },
   {
     id: Math.random(),
+    slug: 'ski-boots-w',
     imageUrl: '/images/products/ski_boots.webp',
     imageAlt: 'Ski Boots',
     stock: '2',
@@ -31,6 +33,7 @@ export default [
   },
   {
     id: Math.random(),
+    slug: 'ski-boots-m',
     imageUrl: '/images/products/ski_boots_men.jpeg',
     imageAlt: 'Ski Boots',
     stock: '2',
@@ -47,6 +50,7 @@ export default [
   },
   {
     id: Math.random(),
+    slug: 'yeti-45',
     imageUrl: '/images/products/yeti_45.webp',
     imageAlt: 'Yeti Tundra 45',
     stock: '2',
@@ -61,6 +65,7 @@ export default [
   },
   {
     id: Math.random(),
+    slug: 'yeti-65',
     imageUrl: '/images/products/yeti_65.webp',
     imageAlt: 'Yeti Tundra 65',
     stock: '2',
@@ -75,10 +80,11 @@ export default [
   },
   {
     id: Math.random(),
+    slug: 'green-mountain-grill',
     imageUrl: '/images/products/green_mountain_grill.jpeg',
     imageAlt: 'Green Mountain Grill Pellet Smoker',
     stock: '3',
-    category: 'snow',
+    category: 'bbq',
     rental_min: '2',
     title: 'Green Mountain Grill Pellet Smoker',
     brand: 'Green Mountain Grill',

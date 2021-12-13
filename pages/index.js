@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Layout, { siteTitle } from '../components/layout/layout';
+import Layout from '../components/layout/Layout';
 // import { getSortedPostsData } from "../lib/posts";
 import Link from 'next/link';
 import Date from '../components/date';
@@ -22,9 +22,6 @@ export async function getStaticProps() {
 export default function Home({ topItems }) {
   return (
     <Layout home>
-      <Head>
-        <title>{siteTitle}</title>
-      </Head>
       <HomeCallToAction topItems={topItems} />
       {/* <Box m={4} className={utilStyles.headingMd}>
         <SimpleGrid columns={3} spacing={10}>
