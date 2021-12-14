@@ -17,13 +17,6 @@ export default function HomeCallToAction(props) {
   console.log(topItems);
   return (
     <>
-      <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-
       <h1>Products</h1>
 
       <Grid container spacing={3}>

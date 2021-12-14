@@ -10,16 +10,20 @@ import {
   Container,
   createTheme,
   ThemeProvider,
+  CssBaseline,
 } from '@material-ui/core';
 import Header from './Header';
 import useStyles from '../../utils/styles';
-
-const name = 'trav';
+import { useContext } from 'react';
+import { Store } from '../../utils/store';
 
 export default function Layout({ title, description, children, home }) {
   const classes = useStyles();
   const baseTitle = 'Adventure Buddy';
   const siteTitle = title ? title + ' - ' + baseTitle : baseTitle;
+
+  const { state, dispatch } = useContext(Store);
+  const { darkMode } = state;
 
   const theme = createTheme({
     typography: {
@@ -35,7 +39,7 @@ export default function Layout({ title, description, children, home }) {
       },
     },
     palette: {
-      type: 'light',
+      type: darkMode ? 'dark' : 'light',
       primary: {
         main: '#f0c000',
       },
@@ -65,6 +69,7 @@ export default function Layout({ title, description, children, home }) {
         {description && <meta name="description" content={description}></meta>}
       </Head>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Header />
         <Container className={classes.main}>{children}</Container>
         <footer className={classes.footer}>
