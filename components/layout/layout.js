@@ -16,6 +16,7 @@ import Header from './Header';
 import useStyles from '../../utils/styles';
 import { useContext } from 'react';
 import { Store } from '../../utils/store';
+import Cookies from 'js-cookie';
 
 export default function Layout({ title, description, children, home }) {
   const classes = useStyles();
@@ -24,6 +25,16 @@ export default function Layout({ title, description, children, home }) {
 
   const { state, dispatch } = useContext(Store);
   const { darkMode } = state;
+
+  const darkModeChangeHandler = () => {
+    dispatch({
+      type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON',
+    });
+
+    const newDarkMode = !darkMode;
+    console.log('set darkMode to ', newDarkMode);
+    Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
+  };
 
   const theme = createTheme({
     typography: {
@@ -70,7 +81,10 @@ export default function Layout({ title, description, children, home }) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Header />
+        <Header
+          darkMode={darkMode}
+          darkModeChangeHandler={darkModeChangeHandler}
+        />
         <Container className={classes.main}>{children}</Container>
         <footer className={classes.footer}>
           <Typography>All rights reserved. adventurebuddy.</Typography>

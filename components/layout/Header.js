@@ -1,9 +1,14 @@
 import NextLink from 'next/link';
-import { AppBar, Toolbar, Typography, Link } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Link, Switch } from '@material-ui/core';
 import useStyles from '../../utils/styles';
+import { useContext } from 'react';
+import Cookies from 'js-cookie';
+import { Store } from '../../utils/store';
 
-export default function Header() {
+export default function Header({ darkMode, darkModeChangeHandler }) {
   const classes = useStyles();
+
+  console.log('checked??', darkMode);
 
   const headerImg =
     'https://icons.iconarchive.com/icons/blackvariant/button-ui-system-folders-drives/1024/Generic-icon.png';
@@ -17,6 +22,7 @@ export default function Header() {
         </NextLink>
         <div className={classes.grow}></div>
         <div>
+          <Switch checked={darkMode} onChange={darkModeChangeHandler} />
           <NextLink href="/cart" passHref>
             <Link>Cart</Link>
           </NextLink>
