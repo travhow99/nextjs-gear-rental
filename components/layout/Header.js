@@ -1,11 +1,15 @@
 import NextLink from 'next/link';
-import { AppBar, Toolbar, Typography, Link, Switch } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Link,
+  Switch,
+  Badge,
+} from '@material-ui/core';
 import useStyles from '../../utils/styles';
-import { useContext } from 'react';
-import Cookies from 'js-cookie';
-import { Store } from '../../utils/store';
 
-export default function Header({ darkMode, darkModeChangeHandler }) {
+export default function Header({ darkMode, darkModeChangeHandler, cart }) {
   const classes = useStyles();
 
   console.log('checked??', darkMode);
@@ -24,7 +28,15 @@ export default function Header({ darkMode, darkModeChangeHandler }) {
         <div>
           <Switch checked={darkMode} onChange={darkModeChangeHandler} />
           <NextLink href="/cart" passHref>
-            <Link>Cart</Link>
+            <Link>
+              {cart?.cartItems.length > 0 ? (
+                <Badge color="secondary" badgeContent={cart.cartItems.length}>
+                  Cart
+                </Badge>
+              ) : (
+                'Cart'
+              )}
+            </Link>
           </NextLink>
           <NextLink href="/login" passHref>
             <Link>Login</Link>

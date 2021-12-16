@@ -3,14 +3,11 @@ import { useRouter } from 'next/router';
 import { getTopItems } from '../../lib/items';
 import Layout from '../../components/layout/Layout';
 import Item from '../../components/products/item';
+import Product from '../../models/Product';
+import db from '../../utils/db';
 
-export default function ProductPage() {
-  const topItems = getTopItems();
-  const router = useRouter();
-  const { slug } = router.query;
-  const product = topItems.find((item) => item.slug === slug);
-
-  console.log('slug page!');
+export default function ProductPage(props) {
+  const { product } = props;
 
   if (!product) {
     return <div>Product Not Found</div>;
@@ -21,4 +18,22 @@ export default function ProductPage() {
       <Item product={product} />
     </Layout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+
+  await db.connect();
+
+  const product = await Product.findOne({ slug }).lean();
+  await db.disconnect();
+
+  console.log(slug, product);
+
+  return {
+    props: {
+      product: db.convertDocToObj(product),
+    },
+  };
 }

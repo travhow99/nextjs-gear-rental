@@ -24,7 +24,7 @@ export default function Layout({ title, description, children, home }) {
   const siteTitle = title ? title + ' - ' + baseTitle : baseTitle;
 
   const { state, dispatch } = useContext(Store);
-  const { darkMode } = state;
+  const { darkMode, cart } = state;
 
   const darkModeChangeHandler = () => {
     dispatch({
@@ -84,6 +84,7 @@ export default function Layout({ title, description, children, home }) {
         <Header
           darkMode={darkMode}
           darkModeChangeHandler={darkModeChangeHandler}
+          cart={cart}
         />
         <Container className={classes.main}>{children}</Container>
         <footer className={classes.footer}>
