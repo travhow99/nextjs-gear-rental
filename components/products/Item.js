@@ -13,6 +13,7 @@ import {
 import useStyles from '../../utils/styles';
 import { Store } from '../../utils/store';
 import axios from 'axios';
+import { useRuter } from 'next/router';
 
 export default function Item(props) {
   const { dispatch } = useContext(Store);
@@ -27,6 +28,7 @@ export default function Item(props) {
       return;
     }
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1 } });
+    useRuter.push('/cart');
   };
 
   // console.log(product.rental_min, product.stock);
