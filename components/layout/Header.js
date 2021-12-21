@@ -8,6 +8,7 @@ import {
   Badge,
 } from '@material-ui/core';
 import useStyles from '../../utils/styles';
+import LoginText from './LoginText';
 
 export default function Header({ darkMode, darkModeChangeHandler, cart }) {
   const classes = useStyles();
@@ -38,9 +39,7 @@ export default function Header({ darkMode, darkModeChangeHandler, cart }) {
               )}
             </Link>
           </NextLink>
-          <NextLink href="/login" passHref>
-            <Link>Login</Link>
-          </NextLink>
+          <LoginText />
         </div>
       </Toolbar>
     </AppBar>
