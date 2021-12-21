@@ -22,6 +22,21 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+/**
+ * Methods
+ */
+
+/**
+ * Statics
+ */
+productSchema.statics.determinePrice = function determinePrice(
+  item,
+  quantity,
+  cb
+) {
+  return this.where('_id', item._id).exec(cb);
+};
+
 const Product =
   mongoose.models['Product'] || mongoose.model('Product', productSchema);
 export default Product;

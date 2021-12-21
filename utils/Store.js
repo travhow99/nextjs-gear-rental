@@ -17,12 +17,14 @@ function reducer(state, action) {
       return { ...state, darkMode: true };
     case 'DARK_MODE_OFF':
       return { ...state, darkMode: false };
-    case 'CART_ADD_ITEM':
+    case 'CART_ADD_ITEM': {
       const newItem = action.payload;
       console.log('recd cart_add_item', action.payload);
       const itemAlreadyExists = state.cart.cartItems.find(
         (item) => item._id === newItem._id
       );
+
+      console.log('existing item?', itemAlreadyExists);
 
       const cartItems = itemAlreadyExists
         ? state.cart.cartItems.map((item) =>
@@ -30,9 +32,21 @@ function reducer(state, action) {
           )
         : [...state.cart.cartItems, newItem];
 
+      console.log('updating cart', cartItems);
+
       Cookies.set('cartItems', JSON.stringify(cartItems));
 
-      return { ...state, CART: false };
+      return { ...state, cart: { ...state.cart, cartItems } };
+    }
+    case 'CART_REMOVE_ITEM': {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item._id !== action.payload._id
+      );
+
+      Cookies.set('cartItems', JSON.stringify(cartItems));
+
+      return { ...state, cart: { ...state.cart, cartItems } };
+    }
     default:
       return state;
   }

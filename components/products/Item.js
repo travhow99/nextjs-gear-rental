@@ -13,22 +13,27 @@ import {
 import useStyles from '../../utils/styles';
 import { Store } from '../../utils/store';
 import axios from 'axios';
-import { useRuter } from 'next/router';
+import { useRouter } from 'next/router';
 
 export default function Item(props) {
-  const { dispatch } = useContext(Store);
+  const router = useRouter();
+  const { state, dispatch } = useContext(Store);
   const classes = useStyles();
   const product = props.product;
 
   const addToCartHandler = async () => {
+    const existingItem = state.cart.cartItems.find(
+      (item) => item._id === product._id
+    );
+    const quantity = existingItem ? existingItem.quantity + 1 : 1;
+
     const { data } = await axios.get(`/api/products/${product._id}`);
-    console.log(data);
-    if (data.stock <= 0) {
+    if (data.stock < quantity) {
       alert('OUT OF STOCK');
       return;
     }
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity: 1 } });
-    useRuter.push('/cart');
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+    router.push('/cart');
   };
 
   // console.log(product.rental_min, product.stock);

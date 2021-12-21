@@ -18,16 +18,32 @@ import {
 import Image from 'next/image';
 import NextLink from 'next/link';
 import React, { useContext } from 'react';
+import dynamic from 'next/dynamic';
 import Layout from '../components/layout/Layout';
 import { Store } from '../utils/store';
+import axios from 'axios';
 
-export default function Cart() {
-  const { state } = useContext(Store);
+function Cart() {
+  const { state, dispatch } = useContext(Store);
   console.log('state?', state);
   const {
     cart: { cartItems },
   } = state;
   console.log('cart?', cartItems);
+
+  const updateCartHandler = async (product, quantity) => {
+    const { data } = await axios.get(`/api/products/${product._id}`);
+    console.log(data);
+    if (data.stock < quantity) {
+      alert('OUT OF STOCK');
+      return;
+    }
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+  };
+
+  const removeCartHandler = async (product) => {
+    dispatch({ type: 'CART_REMOVE_ITEM', payload: product });
+  };
 
   return (
     <Layout title="Cart">
@@ -36,7 +52,10 @@ export default function Cart() {
       </Typography>
       {cartItems.length === 0 ? (
         <div>
-          Cart is empty. <NextLink href="/">Keep Shopping</NextLink>
+          Cart is empty.{' '}
+          <NextLink href="/">
+            <Link>Keep Shopping</Link>
+          </NextLink>
         </div>
       ) : (
         <Grid container spacing={1}>
@@ -77,7 +96,12 @@ export default function Cart() {
                       </TableCell>
 
                       <TableCell align="right">
-                        <Select value={item.quantity}>
+                        <Select
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateCartHandler(item, e.target.value)
+                          }
+                        >
                           {[...Array(item.stock).keys()].map((x) => (
                             <MenuItem key={x + 1} value={x + 1}>
                               {x + 1}
@@ -89,7 +113,11 @@ export default function Cart() {
                       <TableCell align="right">${item.price}</TableCell>
 
                       <TableCell align="right">
-                        <Button variant="contained" color="secondary">
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={(e) => removeCartHandler(item)}
+                        >
                           x
                         </Button>
                       </TableCell>
@@ -122,3 +150,5 @@ export default function Cart() {
     </Layout>
   );
 }
+
+export default dynamic(() => Promise.resolve(Cart), { ssr: false });
