@@ -6,10 +6,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import Cookies from 'js-cookie';
-import { getSession, signIn, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/layout/Layout';
 import { Store } from '../utils/store';
 import useStyles from '../utils/styles';
@@ -39,7 +40,7 @@ export default function Shipping() {
     if (!session) {
       console.log('no sesh');
     }
-    console.log(shippingAddress);
+
     setValue('fullName', shippingAddress?.fullName);
     setValue('address', shippingAddress?.address);
     setValue('city', shippingAddress?.city);
@@ -74,6 +75,7 @@ export default function Shipping() {
 
   return (
     <Layout title="Shipping">
+      <CheckoutWizard activeStep={1} />
       <form onSubmit={handleSubmit(submitHandler)} className={classes.form}>
         <Typography component="h1" variant="h1">
           Shipping
