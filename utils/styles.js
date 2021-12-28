@@ -18,6 +18,16 @@ const useStyles = makeStyles({
   grow: {
     flexGrow: 1,
   },
+  _404: {
+    minHeight: '100vh',
+    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundColor: '#203040',
+    color: '#ffffff',
+  },
   main: {
     minHeight: '80vh',
   },
