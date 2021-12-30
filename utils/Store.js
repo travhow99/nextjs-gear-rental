@@ -53,6 +53,15 @@ function reducer(state, action) {
 
       return { ...state, cart: { ...state.cart, cartItems } };
     }
+    case 'CART_CLEAR': {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item._id !== action.payload._id
+      );
+
+      Cookies.remove('cartItems');
+
+      return { ...state, cart: { ...state.cart, cartItems: [] } };
+    }
     case 'SAVE_SHIPPING_ADDRESS': {
       return {
         ...state,

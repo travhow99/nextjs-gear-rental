@@ -37,10 +37,6 @@ export default function Shipping() {
   } = state;
 
   useEffect(() => {
-    if (!session) {
-      console.log('no sesh');
-    }
-
     setValue('fullName', shippingAddress?.fullName);
     setValue('address', shippingAddress?.address);
     setValue('city', shippingAddress?.city);

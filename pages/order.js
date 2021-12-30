@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  CircularProgress,
   Grid,
   Link,
   List,
@@ -17,7 +18,7 @@ import {
 } from '@material-ui/core';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/layout/Layout';
 import { Store } from '../utils/store';
@@ -26,11 +27,23 @@ import { useRouter } from 'next/router';
 import useStyles from '../utils/styles';
 import CheckoutWizard from '../components/CheckoutWizard';
 import ProductHelper from '../utils/methods/product';
+import { useSnackbar } from 'notistack';
+import { getError } from '../utils/error';
+import Cookies from 'js-cookie';
+import { useSession } from 'next-auth/react';
 
 function Order() {
   const classes = useStyles();
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
+  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
+  const { status, data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      signIn();
+    },
+  });
 
   console.log('state?', state);
   const {
@@ -38,14 +51,40 @@ function Order() {
   } = state;
   console.log('cart?', cartItems);
 
-  const checkoutHandler = () => {
-    router.push('/shipping');
-  };
-
   const subtotal = ProductHelper.determineSubtotal(cartItems);
   const taxPrice = 0.075;
   const taxTotal = ProductHelper.determineTax(subtotal, taxPrice);
   const totalPrice = ProductHelper.determineTotal(subtotal, taxTotal);
+
+  const placeOrderHandler = async () => {
+    closeSnackbar();
+
+    console.log('sesh', session.user.email);
+
+    try {
+      setLoading(true);
+
+      const { data } = await axios.post('/api/orders', {
+        orderItems: cartItems,
+        itemsPrice: subtotal,
+        shippingAddress,
+        paymentMethod,
+        taxPrice,
+        totalPrice,
+        email: session.user.email,
+      });
+
+      dispatch({ type: 'CART_CLEAR' });
+      Cookies.remove('cartItems');
+      setLoading(false);
+
+      router.push(`/order/${data._id}`);
+    } catch (err) {
+      setLoading(false);
+      const errorString = getError(err);
+      enqueueSnackbar(errorString, { variant: 'error' });
+    }
+  };
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -184,8 +223,19 @@ function Order() {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button variant="contained" color="primary" fullWidth>
-                  Place Order
+                <Button
+                  onClick={placeOrderHandler}
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                >
+                  {loading ? (
+                    <ListItem>
+                      <CircularProgress />
+                    </ListItem>
+                  ) : (
+                    'Place Order'
+                  )}
                 </Button>
               </ListItem>
             </List>
