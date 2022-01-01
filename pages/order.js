@@ -30,7 +30,7 @@ import ProductHelper from '../utils/methods/product';
 import { useSnackbar } from 'notistack';
 import { getError } from '../utils/error';
 import Cookies from 'js-cookie';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 function Order() {
   const classes = useStyles();
@@ -89,6 +89,9 @@ function Order() {
   useEffect(() => {
     if (!paymentMethod) {
       router.push('/payment');
+    }
+    if (!cartItems.length) {
+      router.push('/cart');
     }
   }, []);
 

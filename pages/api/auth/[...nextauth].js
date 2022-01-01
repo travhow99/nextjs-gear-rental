@@ -27,10 +27,16 @@ export default NextAuth({
   secret: process.env.AUTH_SECRET,
   jwt: {
       secret: process.env.JWT_SECRET,
-  },
+  },*/
   callbacks: {
-      async redirect(url, baseUrl) {
+    /* async redirect(url, baseUrl) {
           return "/";
-      },
-  }, */
+      }, */
+    async session({ session, token, user }) {
+      console.log('USER:', user);
+      // session.accessToken = token.accessToken;
+      session.user._id = user.id;
+      return session;
+    },
+  },
 });
