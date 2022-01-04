@@ -15,6 +15,9 @@ const initialState = {
       ? Cookies.get('paymentMethod')
       : {},
   },
+  requestLoading: true,
+  order: {},
+  requestError: '',
 };
 
 function reducer(state, action) {
@@ -54,10 +57,6 @@ function reducer(state, action) {
       return { ...state, cart: { ...state.cart, cartItems } };
     }
     case 'CART_CLEAR': {
-      const cartItems = state.cart.cartItems.filter(
-        (item) => item._id !== action.payload._id
-      );
-
       Cookies.remove('cartItems');
 
       return { ...state, cart: { ...state.cart, cartItems: [] } };
@@ -74,6 +73,20 @@ function reducer(state, action) {
         cart: { ...state.cart, paymentMethod: action.payload },
       };
     }
+    /**
+     * Request Handling
+     */
+    case 'FETCH_REQUEST':
+      return { ...state, requestLoading: true, requestError: '' };
+    case 'FETCH_SUCCESS':
+      return {
+        ...state,
+        requestLoading: false,
+        order: action.payload,
+        requestError: '',
+      };
+    case 'FETCH_FAIL':
+      return { ...state, requestLoading: false, requestError: action.payload };
     default:
       return state;
   }

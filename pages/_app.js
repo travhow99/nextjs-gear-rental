@@ -3,7 +3,6 @@ import { SessionProvider } from 'next-auth/react';
 import { StoreProvider } from '../utils/store';
 import '../styles/global.css';
 import { SnackbarProvider } from 'notistack';
-import { RequestProvider } from '../utils/Request';
 
 export default function App({
   Component,
@@ -22,9 +21,7 @@ export default function App({
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <StoreProvider>
-          <RequestProvider>
-            <Component {...pageProps} />
-          </RequestProvider>
+          <Component {...pageProps} />
         </StoreProvider>
       </SnackbarProvider>
     </SessionProvider>
