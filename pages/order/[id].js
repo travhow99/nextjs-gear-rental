@@ -144,12 +144,12 @@ function Order({ params }) {
                             <TableCell>
                               <NextLink href={`/product/${item.slug}`} passHref>
                                 <Link>
-                                  {/* <Image
+                                  <Image
                                     src={item.imageUrl}
                                     alt={item.name}
                                     width={50}
                                     height={50}
-                                  ></Image> */}
+                                  ></Image>
                                 </Link>
                               </NextLink>
                             </TableCell>
