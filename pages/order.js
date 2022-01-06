@@ -31,11 +31,15 @@ import { useSnackbar } from 'notistack';
 import { getError } from '../utils/error';
 import Cookies from 'js-cookie';
 import { signIn, useSession } from 'next-auth/react';
+import { loadStripe } from '@stripe/stripe-js';
+import { CardElement, Elements } from '@stripe/react-stripe-js';
+import CheckoutWrapper from '../components/CheckoutForm';
 
 function Order() {
   const classes = useStyles();
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
+  const [stripePromise, setStripePromise] = useState(null);
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const { status, data: session } = useSession({
@@ -48,6 +52,8 @@ function Order() {
   console.log('state?', state);
   const {
     cart: { cartItems, shippingAddress, paymentMethod },
+    paySuccess,
+    payError,
   } = state;
   console.log('cart?', cartItems);
 
@@ -58,8 +64,6 @@ function Order() {
 
   const placeOrderHandler = async () => {
     closeSnackbar();
-
-    console.log('sesh', session.user.email);
 
     try {
       setLoading(true);
@@ -93,7 +97,21 @@ function Order() {
     if (!cartItems.length) {
       router.push('/cart');
     }
-  }, []);
+
+    if (paySuccess) {
+      dispatch({ type: 'PAY_SUCCESS' });
+    } else {
+      const loadStripeScript = async () => {
+        const { data: clientId } = await axios.get('/api/keys/stripe');
+
+        console.log('got:', clientId);
+        const stripePromise = loadStripe(clientId);
+
+        setStripePromise(stripePromise);
+      };
+      loadStripeScript();
+    }
+  }, [paySuccess]);
 
   return (
     <Layout title="Cart">
@@ -237,7 +255,7 @@ function Order() {
                       <CircularProgress />
                     </ListItem>
                   ) : (
-                    'Place Order'
+                    <CheckoutWrapper stripe={stripePromise} />
                   )}
                 </Button>
               </ListItem>
