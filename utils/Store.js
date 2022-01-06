@@ -18,6 +18,9 @@ const initialState = {
   requestLoading: true,
   order: {},
   requestError: '',
+  payLoading: false,
+  paySuccess: false,
+  payError: '',
 };
 
 function reducer(state, action) {
@@ -86,7 +89,23 @@ function reducer(state, action) {
         requestError: '',
       };
     case 'FETCH_FAIL':
-      return { ...state, requestLoading: false, requestError: action.payload };
+      return { ...state, payLoading: false, payError: action.payload };
+    /**
+     * Payment Handling
+     */
+    case 'PAY_REQUEST':
+      return { ...state, payLoading: true };
+    case 'PAY_SUCCESS':
+      return {
+        ...state,
+        payLoading: false,
+        payError: '',
+        paySuccess: true,
+      };
+    case 'PAY_FAIL':
+      return { ...state, payLoading: false, payError: action.payload };
+    case 'PAY_RESET':
+      return { ...state, payLoading: false, paySuccess: false, payError: '' };
     default:
       return state;
   }
