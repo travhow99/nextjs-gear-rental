@@ -17,6 +17,7 @@ const initialState = {
   },
   requestLoading: true,
   order: {},
+  orders: [],
   requestError: '',
   payLoading: false,
   paySuccess: false,
@@ -24,6 +25,7 @@ const initialState = {
 };
 
 function reducer(state, action) {
+  console.log('reducer action', action);
   switch (action.type) {
     case 'DARK_MODE_ON':
       return { ...state, darkMode: true };
@@ -85,7 +87,7 @@ function reducer(state, action) {
       return {
         ...state,
         requestLoading: false,
-        order: action.payload,
+        [action.action]: action.payload,
         requestError: '',
       };
     case 'FETCH_FAIL':

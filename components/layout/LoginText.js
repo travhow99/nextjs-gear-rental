@@ -17,8 +17,11 @@ export default function LoginText() {
     setAnchorEl(e.currentTarget);
   };
 
-  const loginMenuCloseHandler = () => {
+  const loginMenuCloseHandler = (e, redirect = null) => {
     setAnchorEl(null);
+
+    console.log(e, 'red?', redirect);
+    if (redirect) router.push(redirect);
   };
 
   const logoutClickHandler = async () => {
@@ -47,10 +50,17 @@ export default function LoginText() {
           anchorEl={anchorEl}
           keepMounted
           open={Boolean(anchorEl)}
-          onClose={loginMenuCloseHandler}
+          onClose={(e) => loginMenuCloseHandler(e)}
         >
-          <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
-          <MenuItem onClick={loginMenuCloseHandler}>My account</MenuItem>
+          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/profile')}>
+            Profile
+          </MenuItem>
+          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/account')}>
+            My account
+          </MenuItem>
+          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/orders')}>
+            Orders
+          </MenuItem>
           <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
         </Menu>
         {/* <Box>

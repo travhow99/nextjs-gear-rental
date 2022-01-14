@@ -84,7 +84,7 @@ function Order({ params }) {
       dispatch({ type: 'FETCH_REQUEST' });
       const { data } = await axios.get(`/api/orders/${orderId}`);
       console.log('got data', data);
-      dispatch({ type: 'FETCH_SUCCESS', payload: data });
+      dispatch({ type: 'FETCH_SUCCESS', action: 'order', payload: data });
     } catch (error) {
       dispatch({ type: 'FETCH_FAIL' });
     }
