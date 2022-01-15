@@ -25,6 +25,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import useStyles from '../utils/styles';
+import ProductHelper from '../utils/methods/product';
 
 function Orders() {
   const router = useRouter();
@@ -88,9 +89,14 @@ function Orders() {
                 <TableBody>
                   {orders.map((order) => (
                     <TableRow key={order._id}>
-                      <TableCell>{order.createdAt}</TableCell>
+                      <TableCell>
+                        {ProductHelper.formatPurchaseDate(order.createdAt)}
+                      </TableCell>
                       <TableCell>${order.totalPrice}</TableCell>
-                      <TableCell>{order.paidAt || 'Unpaid'}</TableCell>
+                      <TableCell>
+                        {ProductHelper.formatPurchaseDate(order.paidAt) ||
+                          'Unpaid'}
+                      </TableCell>
                       <TableCell>{order.shippingAddress.fullName}</TableCell>
 
                       <TableCell>

@@ -1,4 +1,7 @@
 // const _product = { determineSubtotal };
+
+import DateHelper from '../DateHelper';
+
 // export default _product;
 export default class ProductHelper {
   /**
@@ -21,5 +24,9 @@ export default class ProductHelper {
 
   static roundToPenny(value) {
     return Math.round(value * 100) / 100;
+  }
+
+  static formatPurchaseDate(timestamp) {
+    return DateHelper.timestampToDate(timestamp);
   }
 }
