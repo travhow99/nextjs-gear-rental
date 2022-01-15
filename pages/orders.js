@@ -42,9 +42,8 @@ function Orders() {
   });
 
   useEffect(() => {
-    console.log('use effect!!');
-    if (!orders.length) fetchOrders();
-  }, [orders]);
+    fetchOrders();
+  }, []);
 
   const fetchOrders = async () => {
     try {
@@ -61,13 +60,15 @@ function Orders() {
   return (
     <Layout title="Cart">
       <Typography coponent="h1" variant="h1">
-        Cart
+        Orders
       </Typography>
       {orders.length === 0 ? (
         <div>
-          Cart is empty.{' '}
-          <NextLink href="/">
-            <Link>Keep Shopping</Link>
+          You have no orders yet...
+          <br />
+          <br />
+          <NextLink href="/" passHref>
+            <Link>Start Shopping!</Link>
           </NextLink>
         </div>
       ) : (

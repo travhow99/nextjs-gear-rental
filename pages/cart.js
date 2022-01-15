@@ -60,7 +60,7 @@ function Cart() {
       {cartItems.length === 0 ? (
         <div>
           Cart is empty.{' '}
-          <NextLink href="/">
+          <NextLink href="/" passHref>
             <Link>Keep Shopping</Link>
           </NextLink>
         </div>

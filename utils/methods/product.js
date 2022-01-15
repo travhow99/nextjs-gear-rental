@@ -8,14 +8,18 @@ export default class ProductHelper {
     console.log(cartItems);
     const total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
     console.log(total);
-    return total;
+    return this.roundToPenny(total);
   }
 
   static determineTax(subtotal, taxRate) {
-    return subtotal * taxRate;
+    return this.roundToPenny(subtotal * taxRate);
   }
 
   static determineTotal(subtotal, tax) {
-    return subtotal + tax;
+    return this.roundToPenny(subtotal + tax);
+  }
+
+  static roundToPenny(value) {
+    return Math.round(value * 100) / 100;
   }
 }

@@ -29,6 +29,7 @@ import Layout from '../../components/layout/Layout';
 import useStyles from '../../utils/styles';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { getError } from '../../utils/error';
+import ProductHelper from '../../utils/methods/product';
 
 function Order({ params }) {
   const orderId = params.id;
@@ -63,6 +64,8 @@ function Order({ params }) {
     isDelivered,
     deliveredAt,
   } = order;
+
+  const taxTotal = ProductHelper.determineTax(itemsPrice, taxPrice);
 
   useEffect(() => {
     /* if (!paymentMethod) {
@@ -259,9 +262,7 @@ function Order({ params }) {
                       <Typography>Tax</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">
-                        ${taxPrice * itemsPrice}
-                      </Typography>
+                      <Typography align="right">${taxTotal}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
