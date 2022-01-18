@@ -14,7 +14,7 @@ import { useSnackbar } from 'notistack';
 import React, { useContext, useEffect, useState } from 'react';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/layout/Layout';
-import { Store } from '../utils/store';
+import { Store } from '../utils/Store';
 import useStyles from '../utils/styles';
 
 export default function Payment() {

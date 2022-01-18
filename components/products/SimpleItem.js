@@ -12,7 +12,7 @@ import axios from 'axios';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
-import { Store } from '../../utils/store';
+import { Store } from '../../utils/Store';
 
 export default function SimpleItem(props) {
   const router = useRouter();

@@ -1,7 +1,7 @@
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { useEffect } from 'react';
 import { SessionProvider } from 'next-auth/react';
-import { StoreProvider } from '../utils/store';
+import { StoreProvider } from '../utils/Store';
 import '../styles/global.css';
 import { SnackbarProvider } from 'notistack';
 

@@ -15,7 +15,7 @@ import {
 import Header from './Header';
 import useStyles from '../../utils/styles';
 import { useContext } from 'react';
-import { Store } from '../../utils/store';
+import { Store } from '../../utils/Store';
 import Cookies from 'js-cookie';
 
 export default function Layout({ title, description, children, home }) {

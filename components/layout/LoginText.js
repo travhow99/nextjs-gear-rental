@@ -52,7 +52,9 @@ export default function LoginText() {
           open={Boolean(anchorEl)}
           onClose={(e) => loginMenuCloseHandler(e)}
         >
-          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/profile')}>
+          <MenuItem
+            onClick={(e) => loginMenuCloseHandler(e, '/account/profile')}
+          >
             Profile
           </MenuItem>
           <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/account')}>
