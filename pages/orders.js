@@ -1,6 +1,8 @@
 import {
   Button,
   Card,
+  Chip,
+  CircularProgress,
   Grid,
   Link,
   List,
@@ -26,6 +28,7 @@ import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import useStyles from '../utils/styles';
 import ProductHelper from '../utils/methods/product';
+import { Stack } from '@mui/material';
 
 function Orders() {
   const router = useRouter();
@@ -33,7 +36,8 @@ function Orders() {
   const classes = useStyles();
 
   console.log('state?', state);
-  const { orders, requestLoading, requestError, paySuccess } = state;
+  const { orders, requestLoading, requestFor, requestError, paySuccess } =
+    state;
 
   const { status, data: session } = useSession({
     required: true,
@@ -49,7 +53,12 @@ function Orders() {
   const fetchOrders = async () => {
     try {
       console.log('fetching order!!');
-      dispatch({ type: 'FETCH_REQUEST' });
+      dispatch({
+        type: 'FETCH_REQUEST',
+        payload: {
+          requestFor: 'orders',
+        },
+      });
       const { data } = await axios.get(`/api/orders/history`);
       console.log('got data', data);
       dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
@@ -63,7 +72,9 @@ function Orders() {
       <Typography coponent="h1" variant="h1">
         Orders
       </Typography>
-      {orders.length === 0 ? (
+      {requestLoading || (requestFor && requestFor !== 'orders') ? (
+        <CircularProgress />
+      ) : orders.length === 0 ? (
         <div>
           You have no orders yet...
           <br />
@@ -94,8 +105,25 @@ function Orders() {
                       </TableCell>
                       <TableCell>${order.totalPrice}</TableCell>
                       <TableCell>
-                        {ProductHelper.formatPurchaseDate(order.paidAt) ||
-                          'Unpaid'}
+                        {order.paidAt ? (
+                          <Stack>
+                            <Chip
+                              label={ProductHelper.formatPurchaseDate(
+                                order.paidAt
+                              )}
+                              color="primary"
+                              variant="outlined"
+                            />
+                          </Stack>
+                        ) : (
+                          <Stack>
+                            <Chip
+                              label="Unpaid"
+                              color="default"
+                              // variant="outlined"
+                            />
+                          </Stack>
+                        )}
                       </TableCell>
                       <TableCell>{order.shippingAddress.fullName}</TableCell>
 

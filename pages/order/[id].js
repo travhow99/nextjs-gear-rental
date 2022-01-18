@@ -49,7 +49,7 @@ function Order({ params }) {
   });
 
   console.log('state?', state);
-  const { order, requestLoading, requestError, paySuccess } = state;
+  const { order, requestLoading, requestFor, requestError, paySuccess } = state;
 
   const {
     shippingAddress,
@@ -68,10 +68,6 @@ function Order({ params }) {
   const taxTotal = ProductHelper.determineTax(itemsPrice, taxPrice);
 
   useEffect(() => {
-    /* if (!paymentMethod) {
-      router.push('/payment');
-    } */
-
     if (!order._id || paySuccess || (order._id && order._id !== orderId)) {
       fetchOrder();
       if (paySuccess) {
@@ -83,10 +79,19 @@ function Order({ params }) {
   }, [order, paySuccess]);
 
   const fetchOrder = async () => {
+    console.log('fetch order');
     try {
-      dispatch({ type: 'FETCH_REQUEST' });
+      dispatch({
+        type: 'FETCH_REQUEST',
+        payload: {
+          requestFor: 'order',
+        },
+      });
       const { data } = await axios.get(`/api/orders/${orderId}`);
       console.log('got data', data);
+
+      data.action = 'order';
+
       dispatch({ type: 'FETCH_SUCCESS', action: 'order', payload: data });
     } catch (error) {
       dispatch({ type: 'FETCH_FAIL' });
@@ -94,6 +99,8 @@ function Order({ params }) {
   };
 
   const loadPayPalScript = async () => {
+    console.log('paypal');
+
     const { data: clientId } = await axios.get('/api/keys/paypal');
 
     paypalDispatch({
@@ -112,7 +119,7 @@ function Order({ params }) {
         purchase_units: [
           {
             amount: {
-              value: totalPrice,
+              value: ProductHelper.roundToPenny(totalPrice),
             },
           },
         ],
@@ -152,7 +159,14 @@ function Order({ params }) {
         Order {orderId}
       </Typography>
 
-      {requestLoading ? (
+      {
+        /**
+         * @todo requestLoading defaulting to false from previous request
+         */
+        console.log(requestFor, requestLoading)
+      }
+      {requestLoading ||
+      (requestFor && requestFor !== 'order' && !order._id) ? (
         <CircularProgress />
       ) : requestError ? (
         <Typography className={classes.error}>{requestError}</Typography>
@@ -275,7 +289,9 @@ function Order({ params }) {
                     </Grid>
                     <Grid item xs={6}>
                       <Typography align="right">
-                        <strong>${totalPrice}</strong>
+                        <strong>
+                          ${ProductHelper.roundToPenny(totalPrice)}
+                        </strong>
                       </Typography>
                     </Grid>
                   </Grid>

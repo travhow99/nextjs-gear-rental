@@ -49,7 +49,7 @@ export default function Layout({ title, description, children, home }) {
         margin: '1rem 0',
       },
     },
-    palette: {
+    /* palette: {
       type: darkMode ? 'dark' : 'light',
       primary: {
         main: '#f0c000',
@@ -57,7 +57,13 @@ export default function Layout({ title, description, children, home }) {
       secondary: {
         main: '#208080',
       },
-    },
+      error: {
+        main: '#f44336',
+      },
+      warning: {
+        main: '#ffa726',
+      },
+    }, */
   });
 
   return (

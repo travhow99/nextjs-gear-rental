@@ -16,6 +16,7 @@ const initialState = {
       : {},
   },
   requestLoading: true,
+  requestFor: '',
   order: {},
   orders: [],
   requestError: '',
@@ -82,16 +83,27 @@ function reducer(state, action) {
      * Request Handling
      */
     case 'FETCH_REQUEST':
-      return { ...state, requestLoading: true, requestError: '' };
+      return {
+        ...state,
+        requestLoading: true,
+        requestFor: action.payload.requestFor,
+        requestError: '',
+      };
     case 'FETCH_SUCCESS':
       return {
         ...state,
         requestLoading: false,
         [action.action]: action.payload,
+        // requestFor: null,
         requestError: '',
       };
     case 'FETCH_FAIL':
-      return { ...state, payLoading: false, payError: action.payload };
+      return {
+        ...state,
+        payLoading: false,
+        payError: action.payload,
+        // requestFor: null,
+      };
     /**
      * Payment Handling
      */

@@ -15,15 +15,25 @@ export default class ProductHelper {
   }
 
   static determineTax(subtotal, taxRate) {
-    return this.roundToPenny(subtotal * taxRate);
+    const result = this.roundToPenny(Number(subtotal) * Number(taxRate));
+    console.log('determing tax', subtotal, taxRate, result);
+
+    return String(result);
   }
 
   static determineTotal(subtotal, tax) {
-    return this.roundToPenny(subtotal + tax);
+    const result = this.roundToPenny(Number(subtotal) + Number(tax));
+    console.log('determing total', subtotal, tax, result);
+    return String(result);
   }
 
+  /**
+   *
+   * @param {Float} value
+   * @returns
+   */
   static roundToPenny(value) {
-    return Math.round(value * 100) / 100;
+    return Number(value).toFixed(2);
   }
 
   static formatPurchaseDate(timestamp) {
