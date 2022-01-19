@@ -261,7 +261,7 @@ function Order({ params }) {
                   <Typography variant="h2">Order Summary</Typography>
                 </ListItem>
                 <ListItem>
-                  <Grid container>
+                  <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Typography>Subtotal</Typography>
                     </Grid>
@@ -271,7 +271,7 @@ function Order({ params }) {
                   </Grid>
                 </ListItem>
                 <ListItem>
-                  <Grid container>
+                  <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Typography>Tax</Typography>
                     </Grid>
@@ -281,7 +281,7 @@ function Order({ params }) {
                   </Grid>
                 </ListItem>
                 <ListItem>
-                  <Grid container>
+                  <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Typography>
                         <strong>Total</strong>

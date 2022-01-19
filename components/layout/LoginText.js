@@ -60,7 +60,9 @@ export default function LoginText() {
           <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/account')}>
             My account
           </MenuItem>
-          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/orders')}>
+          <MenuItem
+            onClick={(e) => loginMenuCloseHandler(e, '/account/orders')}
+          >
             Orders
           </MenuItem>
           <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>

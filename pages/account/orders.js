@@ -21,14 +21,15 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import React, { useContext, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import Layout from '../components/layout/Layout';
-import { Store } from '../utils/Store';
+import Layout from '../../components/layout/Layout';
+import { Store } from '../../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
-import useStyles from '../utils/styles';
-import ProductHelper from '../utils/methods/product';
+import useStyles from '../../utils/styles';
+import ProductHelper from '../../utils/methods/product';
 import { Stack } from '@mui/material';
+import ProfileContainer from '../../components/account/ProfileContainer';
 
 function Orders() {
   const router = useRouter();
@@ -68,7 +69,7 @@ function Orders() {
   };
 
   return (
-    <Layout title="Cart">
+    <ProfileContainer title={'Orders'}>
       <Typography coponent="h1" variant="h1">
         Orders
       </Typography>
@@ -142,7 +143,7 @@ function Orders() {
           </Grid>
         </Grid>
       )}
-    </Layout>
+    </ProfileContainer>
   );
 }
 
