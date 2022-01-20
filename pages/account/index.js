@@ -24,10 +24,8 @@ import { Store } from '../../utils/Store';
 import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 
-/**
- * @todo format with ProfilePage component
- */
-export default function Account() {
+const Account = () => {
+  const auth = true;
   const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
@@ -103,8 +101,10 @@ export default function Account() {
       <CircularProgress />
     </div>
   );
-}
+};
 
 Account.auth = true;
+
+export default Account;
 
 // export default dynamic(() => Promise.resolve(Account), { ssr: false });
