@@ -12,6 +12,7 @@ import {
   Button,
   ListItemText,
   TextField,
+  CircularProgress,
 } from '@material-ui/core';
 import { getError } from '../../utils/error';
 import useStyles from '../../utils/styles';
@@ -28,12 +29,16 @@ import ProfileContainer from '../../components/account/ProfileContainer';
  */
 function Profile() {
   const { state, dispatch } = useContext(Store);
-  const { status, data: session } = useSession({
+  const { data: session, status } = useSession({ required: true });
+
+  const loggedIn = !!session?.user;
+
+  /* const { status, data: session } = useSession({
     required: true,
     onUnauthenticated() {
       signIn();
     },
-  });
+  }); */
 
   const {
     handleSubmit,
@@ -50,11 +55,11 @@ function Profile() {
    * @todo not setting upon authentication
    */
   useEffect(() => {
-    if (session) {
+    if (loggedIn) {
       setValue('name', session.user.name);
       setValue('email', session.user.email);
     }
-  }, []);
+  }, [loggedIn]);
   const submitHandler = async ({ name, email, password, confirmPassword }) => {
     closeSnackbar();
     try {
@@ -72,7 +77,7 @@ function Profile() {
     }
   };
 
-  return (
+  return loggedIn ? (
     <ProfileContainer title={'Profile'}>
       <Card className={classes.section}>
         <List>
@@ -161,6 +166,10 @@ function Profile() {
         </List>
       </Card>
     </ProfileContainer>
+  ) : (
+    <div>
+      <CircularProgress />
+    </div>
   );
 }
 

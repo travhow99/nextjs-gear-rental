@@ -12,8 +12,7 @@ export default function LoginText() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const loginClickHandler = (e) => {
-    console.log('login');
+  const loginMenuOpenHandler = (e) => {
     setAnchorEl(e.currentTarget);
   };
 
@@ -22,6 +21,11 @@ export default function LoginText() {
 
     console.log(e, 'red?', redirect);
     if (redirect) router.push(redirect);
+  };
+
+  const loginClickHandler = async () => {
+    console.log('login click');
+    signIn();
   };
 
   const logoutClickHandler = async () => {
@@ -34,13 +38,14 @@ export default function LoginText() {
   };
 
   console.log('sesh:', session);
+  console.log('anchor:', anchorEl);
   if (session) {
     return (
       <>
         <Button
           aria-controls="simple-menu"
           aria-haspopup="true"
-          onClick={loginClickHandler}
+          onClick={loginMenuOpenHandler}
           className={classes.navbarButton}
         >
           {session.user.name}
@@ -76,7 +81,7 @@ export default function LoginText() {
   }
   return (
     <>
-      <Button onClick={() => signIn()} className={classes.navbarButton}>
+      <Button onClick={loginClickHandler} className={classes.navbarButton}>
         Sign in
       </Button>
     </>

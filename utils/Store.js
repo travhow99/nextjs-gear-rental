@@ -23,6 +23,7 @@ const initialState = {
   payLoading: false,
   paySuccess: false,
   payError: '',
+  user: {},
 };
 
 function reducer(state, action) {
@@ -120,6 +121,10 @@ function reducer(state, action) {
       return { ...state, payLoading: false, payError: action.payload };
     case 'PAY_RESET':
       return { ...state, payLoading: false, paySuccess: false, payError: '' };
+    case 'USER_LOGIN':
+      return { ...state, user: action.payload };
+    case 'USER_LOGOUT':
+      return { ...state, user: null };
     default:
       return state;
   }

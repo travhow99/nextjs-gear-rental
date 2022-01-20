@@ -13,6 +13,11 @@ export default function ProfileContainer({ title, children }) {
         <Grid item md={3} xs={12}>
           <Card className={classes.section}>
             <List>
+              <Link href="/account" passHref>
+                <ListItem selected={title === 'Account'} button component="a">
+                  <ListItemText primary="Account"></ListItemText>
+                </ListItem>
+              </Link>
               <Link href="/account/profile" passHref>
                 <ListItem selected={title === 'Profile'} button component="a">
                   <ListItemText primary="User Profile"></ListItemText>
