@@ -27,7 +27,6 @@ export default function Header({ darkMode, darkModeChangeHandler, cart }) {
         </NextLink>
         <div className={classes.grow}></div>
         <div>
-          <Switch checked={darkMode} onChange={darkModeChangeHandler} />
           <NextLink href="/cart" passHref>
             <Link>
               {cart?.cartItems.length > 0 ? (

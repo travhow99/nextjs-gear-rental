@@ -12,13 +12,20 @@ export default function LoginText() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const loginClickHandler = (e) => {
-    console.log('login');
+  const loginMenuOpenHandler = (e) => {
     setAnchorEl(e.currentTarget);
   };
 
-  const loginMenuCloseHandler = () => {
+  const loginMenuCloseHandler = (e, redirect = null) => {
     setAnchorEl(null);
+
+    console.log(e, 'red?', redirect);
+    if (redirect) router.push(redirect);
+  };
+
+  const loginClickHandler = async () => {
+    console.log('login click');
+    signIn();
   };
 
   const logoutClickHandler = async () => {
@@ -31,13 +38,14 @@ export default function LoginText() {
   };
 
   console.log('sesh:', session);
+  console.log('anchor:', anchorEl);
   if (session) {
     return (
       <>
         <Button
           aria-controls="simple-menu"
           aria-haspopup="true"
-          onClick={loginClickHandler}
+          onClick={loginMenuOpenHandler}
           className={classes.navbarButton}
         >
           {session.user.name}
@@ -47,10 +55,21 @@ export default function LoginText() {
           anchorEl={anchorEl}
           keepMounted
           open={Boolean(anchorEl)}
-          onClose={loginMenuCloseHandler}
+          onClose={(e) => loginMenuCloseHandler(e)}
         >
-          <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
-          <MenuItem onClick={loginMenuCloseHandler}>My account</MenuItem>
+          <MenuItem
+            onClick={(e) => loginMenuCloseHandler(e, '/account/profile')}
+          >
+            Profile
+          </MenuItem>
+          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/account')}>
+            My account
+          </MenuItem>
+          <MenuItem
+            onClick={(e) => loginMenuCloseHandler(e, '/account/orders')}
+          >
+            Orders
+          </MenuItem>
           <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
         </Menu>
         {/* <Box>
@@ -62,7 +81,7 @@ export default function LoginText() {
   }
   return (
     <>
-      <Button onClick={() => signIn()} className={classes.navbarButton}>
+      <Button onClick={loginClickHandler} className={classes.navbarButton}>
         Sign in
       </Button>
     </>

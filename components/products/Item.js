@@ -11,7 +11,7 @@ import {
   Button,
 } from '@material-ui/core';
 import useStyles from '../../utils/styles';
-import { Store } from '../../utils/store';
+import { Store } from '../../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 

@@ -20,7 +20,7 @@ import NextLink from 'next/link';
 import React, { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/layout/Layout';
-import { Store } from '../utils/store';
+import { Store } from '../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
@@ -60,7 +60,7 @@ function Cart() {
       {cartItems.length === 0 ? (
         <div>
           Cart is empty.{' '}
-          <NextLink href="/">
+          <NextLink href="/" passHref>
             <Link>Keep Shopping</Link>
           </NextLink>
         </div>

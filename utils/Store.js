@@ -16,14 +16,18 @@ const initialState = {
       : {},
   },
   requestLoading: true,
+  requestFor: '',
   order: {},
+  orders: [],
   requestError: '',
   payLoading: false,
   paySuccess: false,
   payError: '',
+  user: {},
 };
 
 function reducer(state, action) {
+  console.log('reducer action', action);
   switch (action.type) {
     case 'DARK_MODE_ON':
       return { ...state, darkMode: true };
@@ -80,16 +84,27 @@ function reducer(state, action) {
      * Request Handling
      */
     case 'FETCH_REQUEST':
-      return { ...state, requestLoading: true, requestError: '' };
+      return {
+        ...state,
+        requestLoading: true,
+        requestFor: action.payload.requestFor,
+        requestError: '',
+      };
     case 'FETCH_SUCCESS':
       return {
         ...state,
         requestLoading: false,
-        order: action.payload,
+        [action.action]: action.payload,
+        // requestFor: null,
         requestError: '',
       };
     case 'FETCH_FAIL':
-      return { ...state, payLoading: false, payError: action.payload };
+      return {
+        ...state,
+        payLoading: false,
+        payError: action.payload,
+        // requestFor: null,
+      };
     /**
      * Payment Handling
      */
@@ -106,6 +121,10 @@ function reducer(state, action) {
       return { ...state, payLoading: false, payError: action.payload };
     case 'PAY_RESET':
       return { ...state, payLoading: false, paySuccess: false, payError: '' };
+    case 'USER_LOGIN':
+      return { ...state, user: action.payload };
+    case 'USER_LOGOUT':
+      return { ...state, user: null };
     default:
       return state;
   }
