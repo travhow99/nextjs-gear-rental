@@ -30,6 +30,7 @@ import useStyles from '../../utils/styles';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { getError } from '../../utils/error';
 import ProductHelper from '../../utils/methods/product';
+import Loading from '../../components/Loading';
 
 function Order({ params }) {
   const orderId = params.id;
@@ -43,9 +44,6 @@ function Order({ params }) {
 
   const { status, data: session } = useSession({
     required: true,
-    onUnauthenticated() {
-      signIn();
-    },
   });
 
   console.log('state?', state);
@@ -153,7 +151,7 @@ function Order({ params }) {
     enqueueSnackbar(getError(err), { variant: 'error' });
   };
 
-  return (
+  return status ? (
     <Layout title={`Order ${orderId}`}>
       <Typography coponent="h1" variant="h1">
         Order {orderId}
@@ -333,6 +331,8 @@ function Order({ params }) {
         </Grid>
       )}
     </Layout>
+  ) : (
+    <Loading />
   );
 }
 
@@ -340,4 +340,6 @@ export async function getServerSideProps({ params }) {
   return { props: { params } };
 }
 
-export default dynamic(() => Promise.resolve(Order), { ssr: false });
+Order.auth = true;
+
+export default Order;

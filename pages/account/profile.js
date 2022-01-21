@@ -23,13 +23,19 @@ import Layout from '../../components/layout/Layout';
 import { Store } from '../../utils/Store';
 import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
+import Loading from '../../components/Loading';
 
 /**
  * @todo format with ProfilePage component
  */
 function Profile() {
   const { state, dispatch } = useContext(Store);
-  const { data: session, status } = useSession({ required: true });
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      signIn();
+    },
+  });
 
   const loggedIn = !!session?.user;
 
@@ -77,7 +83,7 @@ function Profile() {
     }
   };
 
-  return loggedIn ? (
+  return status ? (
     <ProfileContainer title={'Profile'}>
       <Card className={classes.section}>
         <List>
@@ -167,10 +173,10 @@ function Profile() {
       </Card>
     </ProfileContainer>
   ) : (
-    <div>
-      <CircularProgress />
-    </div>
+    <Loading />
   );
 }
 
-export default dynamic(() => Promise.resolve(Profile), { ssr: false });
+Profile.auth = true;
+
+export default Profile;

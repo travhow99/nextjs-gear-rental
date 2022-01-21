@@ -23,15 +23,13 @@ import Layout from '../../components/layout/Layout';
 import { Store } from '../../utils/Store';
 import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
+import Loading from '../../components/Loading';
 
 const Account = () => {
   const auth = true;
   const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
-    onUnauthenticated() {
-      signIn();
-    },
   });
 
   /* const { status, data: session } = useSession({
@@ -52,33 +50,6 @@ const Account = () => {
   const classes = useStyles();
   //   const { userInfo } = state;
 
-  /**
-   * @todo not setting upon authentication
-   */
-  useEffect(() => {
-    console.log('status', status);
-    if (status) {
-      //   setValue('name', session.user.name);
-      //   setValue('email', session.user.email);
-    }
-  }, [status]);
-  const submitHandler = async ({ name, email, password, confirmPassword }) => {
-    closeSnackbar();
-    try {
-      //   const { data } = await axios.put('/api/users/profile', {
-      //     name,
-      //     email,
-      //     password,
-      //   });
-      //   dispatch({ type: 'USER_LOGIN', payload: data });
-      //   Cookies.set('userInfo', data);
-
-      enqueueSnackbar('Profile updated successfully', { variant: 'success' });
-    } catch (err) {
-      enqueueSnackbar(getError(err), { variant: 'error' });
-    }
-  };
-
   return status ? (
     <ProfileContainer title={'Account'}>
       <Card className={classes.section}>
@@ -97,9 +68,7 @@ const Account = () => {
       </Card>
     </ProfileContainer>
   ) : (
-    <div>
-      <CircularProgress />
-    </div>
+    <Loading />
   );
 };
 

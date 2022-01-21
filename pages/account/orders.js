@@ -4,6 +4,7 @@ import {
   Chip,
   CircularProgress,
   Grid,
+  LinearProgress,
   Link,
   List,
   ListItem,
@@ -30,6 +31,7 @@ import useStyles from '../../utils/styles';
 import ProductHelper from '../../utils/methods/product';
 import { Stack } from '@mui/material';
 import ProfileContainer from '../../components/account/ProfileContainer';
+import Loading from '../../components/Loading';
 
 function Orders() {
   const router = useRouter();
@@ -40,11 +42,8 @@ function Orders() {
   const { orders, requestLoading, requestFor, requestError, paySuccess } =
     state;
 
-  const { status, data: session } = useSession({
+  const { data: session, status } = useSession({
     required: true,
-    onUnauthenticated() {
-      signIn();
-    },
   });
 
   useEffect(() => {
@@ -70,81 +69,91 @@ function Orders() {
 
   return (
     <ProfileContainer title={'Orders'}>
-      <Typography coponent="h1" variant="h1">
-        Orders
-      </Typography>
-      {requestLoading || (requestFor && requestFor !== 'orders') ? (
-        <CircularProgress />
-      ) : orders.length === 0 ? (
-        <div>
-          You have no orders yet...
-          <br />
-          <br />
-          <NextLink href="/" passHref>
-            <Link>Start Shopping!</Link>
-          </NextLink>
-        </div>
-      ) : (
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Order Placed</TableCell>
-                    <TableCell>Total</TableCell>
-                    <TableCell>Paid</TableCell>
-                    <TableCell>Ship To</TableCell>
-                    <TableCell>Order #</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order._id}>
-                      <TableCell>
-                        {ProductHelper.formatPurchaseDate(order.createdAt)}
-                      </TableCell>
-                      <TableCell>${order.totalPrice}</TableCell>
-                      <TableCell>
-                        {order.paidAt ? (
-                          <Stack>
-                            <Chip
-                              label={ProductHelper.formatPurchaseDate(
-                                order.paidAt
-                              )}
-                              color="primary"
-                              variant="outlined"
-                            />
-                          </Stack>
-                        ) : (
-                          <Stack>
-                            <Chip
-                              label="Unpaid"
-                              color="default"
-                              // variant="outlined"
-                            />
-                          </Stack>
-                        )}
-                      </TableCell>
-                      <TableCell>{order.shippingAddress.fullName}</TableCell>
+      {status ? (
+        <>
+          <Typography coponent="h1" variant="h1">
+            Orders
+          </Typography>
+          {requestLoading || (requestFor && requestFor !== 'orders') ? (
+            <Loading />
+          ) : orders.length === 0 ? (
+            <div>
+              You have no orders yet...
+              <br />
+              <br />
+              <NextLink href="/" passHref>
+                <Link>Start Shopping!</Link>
+              </NextLink>
+            </div>
+          ) : (
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Order Placed</TableCell>
+                        <TableCell>Total</TableCell>
+                        <TableCell>Paid</TableCell>
+                        <TableCell>Ship To</TableCell>
+                        <TableCell>Order #</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {orders.map((order) => (
+                        <TableRow key={order._id}>
+                          <TableCell>
+                            {ProductHelper.formatPurchaseDate(order.createdAt)}
+                          </TableCell>
+                          <TableCell>${order.totalPrice}</TableCell>
+                          <TableCell>
+                            {order.paidAt ? (
+                              <Stack>
+                                <Chip
+                                  label={ProductHelper.formatPurchaseDate(
+                                    order.paidAt
+                                  )}
+                                  color="primary"
+                                  variant="outlined"
+                                />
+                              </Stack>
+                            ) : (
+                              <Stack>
+                                <Chip
+                                  label="Unpaid"
+                                  color="default"
+                                  // variant="outlined"
+                                />
+                              </Stack>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {order.shippingAddress.fullName}
+                          </TableCell>
 
-                      <TableCell>
-                        <NextLink href={`/order/${order._id}`} passHref>
-                          <Link>
-                            <Typography>{order._id}</Typography>
-                          </Link>
-                        </NextLink>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-        </Grid>
+                          <TableCell>
+                            <NextLink href={`/order/${order._id}`} passHref>
+                              <Link>
+                                <Typography>{order._id}</Typography>
+                              </Link>
+                            </NextLink>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </Grid>
+          )}
+        </>
+      ) : (
+        <Loading />
       )}
     </ProfileContainer>
   );
 }
 
-export default dynamic(() => Promise.resolve(Orders), { ssr: false });
+Orders.auth = true;
+
+export default Orders; // dynamic(() => Promise.resolve(Orders), { ssr: false });
