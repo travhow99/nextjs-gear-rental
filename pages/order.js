@@ -21,7 +21,7 @@ import NextLink from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/layout/Layout';
-import { Store } from '../utils/store';
+import { Store } from '../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import useStyles from '../utils/styles';

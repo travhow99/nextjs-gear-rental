@@ -24,11 +24,13 @@ import { useRouter } from 'next/router';
 
 import { useSnackbar } from 'notistack';
 import { signIn, useSession } from 'next-auth/react';
-import { Store } from '../../utils/store';
+import { Store } from '../../utils/Store';
 import Layout from '../../components/layout/Layout';
 import useStyles from '../../utils/styles';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { getError } from '../../utils/error';
+import ProductHelper from '../../utils/methods/product';
+import Loading from '../../components/Loading';
 
 function Order({ params }) {
   const orderId = params.id;
@@ -42,13 +44,10 @@ function Order({ params }) {
 
   const { status, data: session } = useSession({
     required: true,
-    onUnauthenticated() {
-      signIn();
-    },
   });
 
   console.log('state?', state);
-  const { order, requestLoading, requestError, paySuccess } = state;
+  const { order, requestLoading, requestFor, requestError, paySuccess } = state;
 
   const {
     shippingAddress,
@@ -64,11 +63,9 @@ function Order({ params }) {
     deliveredAt,
   } = order;
 
-  useEffect(() => {
-    /* if (!paymentMethod) {
-      router.push('/payment');
-    } */
+  const taxTotal = ProductHelper.determineTax(itemsPrice, taxPrice);
 
+  useEffect(() => {
     if (!order._id || paySuccess || (order._id && order._id !== orderId)) {
       fetchOrder();
       if (paySuccess) {
@@ -80,17 +77,28 @@ function Order({ params }) {
   }, [order, paySuccess]);
 
   const fetchOrder = async () => {
+    console.log('fetch order');
     try {
-      dispatch({ type: 'FETCH_REQUEST' });
+      dispatch({
+        type: 'FETCH_REQUEST',
+        payload: {
+          requestFor: 'order',
+        },
+      });
       const { data } = await axios.get(`/api/orders/${orderId}`);
       console.log('got data', data);
-      dispatch({ type: 'FETCH_SUCCESS', payload: data });
+
+      data.action = 'order';
+
+      dispatch({ type: 'FETCH_SUCCESS', action: 'order', payload: data });
     } catch (error) {
       dispatch({ type: 'FETCH_FAIL' });
     }
   };
 
   const loadPayPalScript = async () => {
+    console.log('paypal');
+
     const { data: clientId } = await axios.get('/api/keys/paypal');
 
     paypalDispatch({
@@ -109,7 +117,7 @@ function Order({ params }) {
         purchase_units: [
           {
             amount: {
-              value: totalPrice,
+              value: ProductHelper.roundToPenny(totalPrice),
             },
           },
         ],
@@ -143,13 +151,20 @@ function Order({ params }) {
     enqueueSnackbar(getError(err), { variant: 'error' });
   };
 
-  return (
+  return status ? (
     <Layout title={`Order ${orderId}`}>
       <Typography coponent="h1" variant="h1">
         Order {orderId}
       </Typography>
 
-      {requestLoading ? (
+      {
+        /**
+         * @todo requestLoading defaulting to false from previous request
+         */
+        console.log(requestFor, requestLoading)
+      }
+      {requestLoading ||
+      (requestFor && requestFor !== 'order' && !order._id) ? (
         <CircularProgress />
       ) : requestError ? (
         <Typography className={classes.error}>{requestError}</Typography>
@@ -244,7 +259,7 @@ function Order({ params }) {
                   <Typography variant="h2">Order Summary</Typography>
                 </ListItem>
                 <ListItem>
-                  <Grid container>
+                  <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Typography>Subtotal</Typography>
                     </Grid>
@@ -254,19 +269,17 @@ function Order({ params }) {
                   </Grid>
                 </ListItem>
                 <ListItem>
-                  <Grid container>
+                  <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Typography>Tax</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">
-                        ${taxPrice * itemsPrice}
-                      </Typography>
+                      <Typography align="right">${taxTotal}</Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
                 <ListItem>
-                  <Grid container>
+                  <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Typography>
                         <strong>Total</strong>
@@ -274,7 +287,9 @@ function Order({ params }) {
                     </Grid>
                     <Grid item xs={6}>
                       <Typography align="right">
-                        <strong>${totalPrice}</strong>
+                        <strong>
+                          ${ProductHelper.roundToPenny(totalPrice)}
+                        </strong>
                       </Typography>
                     </Grid>
                   </Grid>
@@ -316,6 +331,8 @@ function Order({ params }) {
         </Grid>
       )}
     </Layout>
+  ) : (
+    <Loading />
   );
 }
 
@@ -323,4 +340,6 @@ export async function getServerSideProps({ params }) {
   return { props: { params } };
 }
 
-export default dynamic(() => Promise.resolve(Order), { ssr: false });
+Order.auth = true;
+
+export default Order;
