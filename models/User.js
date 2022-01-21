@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true },
     email_verified: { type: Date, default: null },
     image: { type: String, default: null },
+    role: { type: String, default: 'user' },
+    seller: { type: Boolean, default: false },
   },
   {
     timestamps: true,

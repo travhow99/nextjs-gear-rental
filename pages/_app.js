@@ -45,7 +45,9 @@ export default function App({
 function Auth({ children }) {
   const { data: session, status } = useSession({ required: true });
   const isUser = !!session?.user;
+  const admin = isUser && session.user.role === 'admin';
 
+  // console.log('i am auth,', )
   useEffect(() => {
     if (session) console.log('sesshhhhh', session, status);
     if (status === 'loading') return; // Do nothing while loading

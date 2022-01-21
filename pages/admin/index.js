@@ -25,7 +25,7 @@ import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 
-const Account = () => {
+const Admin = () => {
   const auth = true;
   const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
@@ -44,12 +44,12 @@ const Account = () => {
   //   const { userInfo } = state;
 
   return status ? (
-    <ProfileContainer title={'Account'}>
+    <ProfileContainer title={'Admin'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Account
+              Admin
             </Typography>
           </ListItem>
           <ListItem>
@@ -65,8 +65,6 @@ const Account = () => {
   );
 };
 
-Account.auth = true;
+Admin.auth = { role: 'admin', loading: <Loading />, unauthorized: '/' };
 
-export default Account;
-
-// export default dynamic(() => Promise.resolve(Account), { ssr: false });
+export default Admin;

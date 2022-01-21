@@ -36,6 +36,9 @@ export default NextAuth({
       console.log('USER:', user);
       // session.accessToken = token.accessToken;
       session.user._id = user.id;
+      session.user.role = user.role;
+      session.user.seller = user.seller;
+
       return session;
     },
   },
