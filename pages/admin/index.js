@@ -25,13 +25,14 @@ import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 
-const Admin = () => {
+function Admin() {
   const auth = true;
   const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
   });
 
+  console.log('session?', session);
   const {
     handleSubmit,
     control,
@@ -63,7 +64,7 @@ const Admin = () => {
   ) : (
     <Loading />
   );
-};
+}
 
 Admin.auth = { role: 'admin', loading: <Loading />, unauthorized: '/' };
 
