@@ -28,7 +28,7 @@ import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
 import AdminContainer from '../../components/admin/AdminContainer';
 
-function Admin() {
+function Sales() {
   const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
@@ -52,17 +52,17 @@ function Admin() {
   //   const { userInfo } = state;
 
   return status ? (
-    <AdminContainer title={'Admin'}>
+    <AdminContainer title={'Sales'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Admin
+              Sales
             </Typography>
           </ListItem>
           <ListItem>
             <Typography component="p" variant="subtitle1">
-              Welcome to the Admin Portal!
+              Here are your recent sales.
             </Typography>
           </ListItem>
         </List>
@@ -73,6 +73,6 @@ function Admin() {
   );
 }
 
-Admin.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
+Sales.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
 
-export default Admin;
+export default Sales;

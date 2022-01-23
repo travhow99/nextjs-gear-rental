@@ -1,4 +1,4 @@
-import { Container, Link, Typography } from '@material-ui/core';
+import { Container, Grid, Link, Typography } from '@material-ui/core';
 import NextLink from 'next/link';
 import useStyles from '../utils/styles';
 
@@ -7,7 +7,7 @@ export default function Custom404() {
 
   return (
     <div>
-      <Container className={classes._404}>
+      <Grid container className={classes._404}>
         <Typography component="h2" variant="h2">
           404 - Page Not Found
         </Typography>
@@ -16,7 +16,7 @@ export default function Custom404() {
             <Typography className={classes.brand}>adventurebuddy</Typography>
           </Link>
         </NextLink>
-      </Container>
+      </Grid>
     </div>
   );
 }

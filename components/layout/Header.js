@@ -30,13 +30,9 @@ export default function Header({ darkMode, darkModeChangeHandler, cart }) {
         <div>
           <NextLink href="/cart" passHref>
             <Link>
-              {cart?.cartItems.length > 0 ? (
-                <Badge color="secondary" badgeContent={cart.cartItems.length}>
-                  <ShoppingCartIcon />
-                </Badge>
-              ) : (
-                'Cart'
-              )}
+              <Badge color="secondary" badgeContent={cart.cartItems.length}>
+                <ShoppingCartIcon />
+              </Badge>
             </Link>
           </NextLink>
           <LoginText />

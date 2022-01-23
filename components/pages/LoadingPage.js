@@ -14,7 +14,7 @@ export default function LoadingPage() {
 
   return (
     <div>
-      <Container className={classes._404}>
+      <Grid container className={classes._404}>
         <Grid item xs={12}>
           <CircularProgress />
         </Grid>
@@ -24,7 +24,7 @@ export default function LoadingPage() {
             <Typography className={classes.brand}>adventurebuddy</Typography>
           </Link>
         </NextLink>
-      </Container>
+      </Grid>
     </div>
   );
 }
