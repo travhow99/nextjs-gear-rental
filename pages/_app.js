@@ -6,6 +6,7 @@ import '../styles/global.css';
 import { SnackbarProvider } from 'notistack';
 import LoadingPage from '../components/pages/LoadingPage';
 import UnauthorizedPage from '../components/pages/UnauthorizedPage';
+import { useRouter } from 'next/router';
 
 export default function App({
   Component,
@@ -75,6 +76,7 @@ function Auth({ children, redirect }) {
 
 const Admin = ({ children, redirect }) => {
   console.log('redirect?', redirect);
+  const router = useRouter();
   const { data: session, status } = useSession({ required: true });
   const isUser = !!session?.user;
 
@@ -94,7 +96,8 @@ const Admin = ({ children, redirect }) => {
       console.log('i am admin, load my auth children');
       return children;
     } else {
-      return <UnauthorizedPage />;
+      router.push(redirect);
+      // return <UnauthorizedPage redirect={redirect} />;
     }
   }
 

@@ -42,4 +42,13 @@ export default NextAuth({
       return session;
     },
   },
+  events: {
+    createUser: async (message) => {
+      console.log(message);
+
+      /**
+       * @todo Add default User attributes for database ie. role & seller
+       */
+    },
+  },
 });

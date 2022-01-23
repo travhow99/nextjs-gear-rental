@@ -7,6 +7,7 @@ import {
   Switch,
   Badge,
 } from '@material-ui/core';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import useStyles from '../../utils/styles';
 import LoginText from './LoginText';
 
@@ -31,7 +32,7 @@ export default function Header({ darkMode, darkModeChangeHandler, cart }) {
             <Link>
               {cart?.cartItems.length > 0 ? (
                 <Badge color="secondary" badgeContent={cart.cartItems.length}>
-                  Cart
+                  <ShoppingCartIcon />
                 </Badge>
               ) : (
                 'Cart'

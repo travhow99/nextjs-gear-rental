@@ -24,6 +24,7 @@ import { Store } from '../../utils/Store';
 import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
+import LoadingPage from '../../components/pages/LoadingPage';
 
 function Admin() {
   const auth = true;
@@ -33,6 +34,11 @@ function Admin() {
   });
 
   console.log('session?', session);
+  const isUser = !!session?.user;
+
+  const isAdmin = isUser && session.user.role === 'admin';
+
+  console.log('is admin?', isAdmin);
   const {
     handleSubmit,
     control,
@@ -66,6 +72,6 @@ function Admin() {
   );
 }
 
-Admin.auth = { role: 'admin', loading: <Loading />, unauthorized: '/' };
+Admin.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
 
 export default Admin;
