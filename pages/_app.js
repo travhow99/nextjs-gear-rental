@@ -7,6 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import LoadingPage from '../components/pages/LoadingPage';
 import UnauthorizedPage from '../components/pages/UnauthorizedPage';
 import { useRouter } from 'next/router';
+import { AdminStoreProvider } from '../utils/admin/AdminStore';
 
 export default function App({
   Component,
@@ -27,7 +28,9 @@ export default function App({
             {Component.auth ? (
               Component.auth.role === 'admin' ? (
                 <Admin redirect={Component.auth.unauthorized}>
-                  <Component {...pageProps} />
+                  <AdminStoreProvider>
+                    <Component {...pageProps} />
+                  </AdminStoreProvider>
                 </Admin>
               ) : (
                 <Auth redirect={Component.auth.redirect}>
@@ -56,7 +59,6 @@ function Auth({ children, redirect }) {
 
   // console.log('i am auth,', )
   useEffect(() => {
-    if (session) console.log('sesshhhhh', session, status);
     if (status === 'loading') return; // Do nothing while loading
     /**
      * @todo Show Restricted / Members area page with login or home button
@@ -83,7 +85,6 @@ const Admin = ({ children, redirect }) => {
   const isAdmin = isUser && session.user.role === 'admin';
   // console.log('i am auth,', )
   useEffect(() => {
-    if (session) console.log('sesshhhhh', session, status);
     if (status === 'loading') return; // Do nothing while loading
     /**
      * @todo Show Restricted / Members area page with login or home button
