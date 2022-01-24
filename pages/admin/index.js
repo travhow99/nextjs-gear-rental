@@ -24,14 +24,22 @@ import { Store } from '../../utils/Store';
 import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
+import LoadingPage from '../../components/pages/LoadingPage';
+import SideNav from '../../components/layout/SideNav';
+import AdminContainer from '../../components/admin/AdminContainer';
 
-const Account = () => {
-  const auth = true;
+function Admin() {
   const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
   });
 
+  console.log('session?', session);
+  const isUser = !!session?.user;
+
+  const isAdmin = isUser && session.user.role === 'admin';
+
+  console.log('is admin?', isAdmin);
   const {
     handleSubmit,
     control,
@@ -44,29 +52,27 @@ const Account = () => {
   //   const { userInfo } = state;
 
   return status ? (
-    <ProfileContainer title={'Account'}>
+    <AdminContainer title={'Admin'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Account
+              Admin
             </Typography>
           </ListItem>
           <ListItem>
             <Typography component="p" variant="subtitle1">
-              Let's get started!
+              Welcome to the Admin Portal!
             </Typography>
           </ListItem>
         </List>
       </Card>
-    </ProfileContainer>
+    </AdminContainer>
   ) : (
     <Loading />
   );
-};
+}
 
-Account.auth = true;
+Admin.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
 
-export default Account;
-
-// export default dynamic(() => Promise.resolve(Account), { ssr: false });
+export default Admin;

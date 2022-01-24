@@ -9,14 +9,16 @@ import {
 import NextLink from 'next/link';
 import useStyles from '../../utils/styles';
 
-export default function LoadingPage() {
+export default function UnauthorizedPage() {
   const classes = useStyles();
 
   return (
     <div>
-      <Grid container className={classes._404}>
+      <Container className={classes._404}>
         <Grid item xs={12}>
-          <CircularProgress />
+          <Typography component="h1" variant="h1">
+            Unauthorized
+          </Typography>
         </Grid>
 
         <NextLink href="/" passHref>
@@ -24,7 +26,7 @@ export default function LoadingPage() {
             <Typography className={classes.brand}>adventurebuddy</Typography>
           </Link>
         </NextLink>
-      </Grid>
+      </Container>
     </div>
   );
 }

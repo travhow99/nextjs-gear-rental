@@ -5,23 +5,23 @@ import useStyles from '../../utils/styles';
 import Layout from '../layout/Layout';
 import SideNav from '../layout/SideNav';
 
-export default function ProfileContainer({ title, children }) {
+export default function AdminContainer({ title, children }) {
   const classes = useStyles();
   const links = [
     {
-      href: '/account',
-      selected: title === 'Account',
-      title: 'Account',
+      href: '/admin',
+      selected: title === 'Admin',
+      title: 'Admin',
     },
     {
-      href: '/account/profile',
-      selected: title === 'Profile',
-      title: 'Profile',
+      href: '/admin/sales',
+      selected: title === 'Sales',
+      title: 'Sales',
     },
     {
-      href: '/account/orders',
-      selected: title === 'Orders',
-      title: 'Orders',
+      href: '/admin/inventory',
+      selected: title === 'Inventory',
+      title: 'Inventory',
     },
   ];
 

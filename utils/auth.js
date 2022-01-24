@@ -1,4 +1,3 @@
-import next from 'next';
 import { getSession } from 'next-auth/react';
 
 const isAuth = async (req, res, next) => {
