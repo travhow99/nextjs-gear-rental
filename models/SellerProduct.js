@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
-const productSchema = new mongoose.Schema(
+const sellerProductSchema = new mongoose.Schema(
   {
     //   id: { type: String, required: true },
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     slug: { type: String, required: true, unique: true },
-    imageUrl: { type: String, required: true } /** @todo store many images */,
-    imageAlt: { type: String, required: true },
     stock: { type: Number, default: 0 },
     category: { type: String, required: true },
     rental_min: { type: Number, required: true },
@@ -13,8 +13,9 @@ const productSchema = new mongoose.Schema(
     brand: { type: String, required: true },
     gender: { type: String, default: null },
     size: { type: String, default: null },
+    condition: { type: String, default: null },
     price: { type: Number, required: true },
-    rating: { type: Number, required: true, default: 0 },
+    // rating: { type: Number, required: true, default: 0 },
     description: { type: String, required: true },
     keyword: { type: String },
   },
@@ -30,14 +31,8 @@ const productSchema = new mongoose.Schema(
 /**
  * Statics
  */
-productSchema.statics.determinePrice = function determinePrice(
-  item,
-  quantity,
-  cb
-) {
-  return this.where('_id', item._id).exec(cb);
-};
 
-const Product =
-  mongoose.models['Product'] || mongoose.model('Product', productSchema);
-export default Product;
+const SellerProduct =
+  mongoose.models['SellerProduct'] ||
+  mongoose.model('SellerProduct', sellerProductSchema);
+export default SellerProduct;

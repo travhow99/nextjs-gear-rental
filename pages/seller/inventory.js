@@ -58,13 +58,23 @@ function Inventory() {
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Inventory
+              Add Item
             </Typography>
           </ListItem>
           <ListItem>
             <Typography component="p" variant="subtitle1">
               Welcome to the Inventory Portal!
             </Typography>
+          </ListItem>
+          <ListItem>
+            <Button variant="outlined" color="primary">
+              <Link
+                href="/seller/products/new"
+                // component="button"
+              >
+                Add Product
+              </Link>
+            </Button>
           </ListItem>
         </List>
       </Card>

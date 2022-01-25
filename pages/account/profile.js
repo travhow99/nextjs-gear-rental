@@ -39,13 +39,6 @@ function Profile() {
 
   const loggedIn = !!session?.user;
 
-  /* const { status, data: session } = useSession({
-    required: true,
-    onUnauthenticated() {
-      signIn();
-    },
-  }); */
-
   const {
     handleSubmit,
     control,

@@ -9,17 +9,17 @@ export default function SellerContainer({ title, children }) {
   const classes = useStyles();
   const links = [
     {
-      href: '/seller-portal',
+      href: '/seller',
       selected: title === 'Seller',
       title: 'Seller',
     },
     {
-      href: '/seller-portal/sales',
+      href: '/seller/sales',
       selected: title === 'Sales',
       title: 'Sales',
     },
     {
-      href: '/seller-portal/inventory',
+      href: '/seller/inventory',
       selected: title === 'Inventory',
       title: 'Inventory',
     },
