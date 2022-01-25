@@ -8,6 +8,7 @@ import LoadingPage from '../components/pages/LoadingPage';
 import UnauthorizedPage from '../components/pages/UnauthorizedPage';
 import { useRouter } from 'next/router';
 import { AdminStoreProvider } from '../utils/admin/AdminStore';
+import { SellerStoreProvider } from '../utils/seller/SellerStore';
 
 export default function App({
   Component,
@@ -32,6 +33,12 @@ export default function App({
                     <Component {...pageProps} />
                   </AdminStoreProvider>
                 </Admin>
+              ) : Component.auth.role === 'seller' ? (
+                <Seller redirect={Component.auth.redirect}>
+                  <SellerStoreProvider>
+                    <Component {...pageProps} />
+                  </SellerStoreProvider>
+                </Seller>
               ) : (
                 <Auth redirect={Component.auth.redirect}>
                   <Component {...pageProps} />
@@ -95,6 +102,39 @@ const Admin = ({ children, redirect }) => {
   if (isUser) {
     if (isAdmin) {
       console.log('i am admin, load my auth children');
+      return children;
+    } else {
+      router.push(redirect);
+      // return <UnauthorizedPage redirect={redirect} />;
+    }
+  }
+
+  console.log('not user,', children);
+  // Session is being fetched, or no user.
+  // If no user, useEffect() will redirect.
+  return <LoadingPage />;
+};
+
+const Seller = ({ children, redirect }) => {
+  console.log('redirect?', redirect);
+  const router = useRouter();
+  const { data: session, status } = useSession({ required: true });
+  const isUser = !!session?.user;
+
+  const isSeller =
+    isUser && (session.user.role === 'seller' || session.user.role === 'admin');
+  // console.log('i am auth,', )
+  useEffect(() => {
+    if (status === 'loading') return; // Do nothing while loading
+    /**
+     * @todo Show Restricted / Members area page with login or home button
+     */
+    if (!isUser) signIn(); // If not authenticated, force log in
+  }, [isUser, status]);
+
+  if (isUser) {
+    if (isSeller) {
+      console.log('i am Seller, load my auth children');
       return children;
     } else {
       router.push(redirect);
