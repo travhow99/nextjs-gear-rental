@@ -73,7 +73,102 @@ function AddProduct() {
                   {/* 
                   @todo Autocomplete to either fill in brands/categories/items or fill in product to base on
                    */}
-                  <Autocomplete />
+                  {/* <Autocomplete /> */}
+                  <Controller
+                    name="title"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: true,
+                      minLength: 2,
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+                        id="title"
+                        label="Product Name"
+                        inputProps={{ type: 'title' }}
+                        error={Boolean(errors.name)}
+                        helperText={
+                          errors.name
+                            ? errors.name.type === 'minLength'
+                              ? 'Product Name length is more than 1'
+                              : 'Product Name is required'
+                            : ''
+                        }
+                        {...field}
+                      ></TextField>
+                    )}
+                  ></Controller>
+                </ListItem>
+                <ListItem>
+                  <Controller
+                    name="brand"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: true,
+                      minLength: 2,
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+                        id="brand"
+                        label="Brand"
+                        inputProps={{ type: 'brand' }}
+                        error={Boolean(errors.name)}
+                        helperText={
+                          errors.name
+                            ? errors.name.type === 'minLength'
+                              ? 'Brand length is more than 1'
+                              : 'Brand is required'
+                            : ''
+                        }
+                        {...field}
+                      ></TextField>
+                    )}
+                  ></Controller>
+                </ListItem>
+                <ListItem>
+                  <Controller
+                    name="category"
+                    control={control}
+                    defaultValue=""
+                    rules={{
+                      required: true,
+                      minLength: 2,
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+                        id="category"
+                        label="Category"
+                        inputProps={{ type: 'category' }}
+                        error={Boolean(errors.name)}
+                        helperText={
+                          errors.name
+                            ? errors.name.type === 'minLength'
+                              ? 'Category length is more than 1'
+                              : 'Category is required'
+                            : ''
+                        }
+                        {...field}
+                      ></TextField>
+                    )}
+                  ></Controller>
+                </ListItem>
+                <ListItem>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    fullWidth
+                    color="primary"
+                  >
+                    Add
+                  </Button>
                 </ListItem>
               </List>
             </form>
