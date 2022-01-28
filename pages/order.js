@@ -31,6 +31,7 @@ import { useSnackbar } from 'notistack';
 import { getError } from '../utils/error';
 import Cookies from 'js-cookie';
 import { signIn, useSession } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Order() {
   const classes = useStyles();
@@ -46,9 +47,13 @@ function Order() {
   });
 
   console.log('state?', state);
-  const {
-    cart: { cartItems, shippingAddress, paymentMethod },
-  } = state;
+  /*  const {
+    cart: { shippingAddress, paymentMethod },
+  } = state; */
+
+  const { cart } = useSelector((state) => state);
+  const { cartItems } = cart;
+
   console.log('cart?', cartItems);
 
   const subtotal = ProductHelper.determineSubtotal(cartItems);
@@ -67,8 +72,8 @@ function Order() {
       const { data } = await axios.post('/api/orders', {
         orderItems: cartItems,
         itemsPrice: subtotal,
-        shippingAddress,
-        paymentMethod,
+        // shippingAddress,
+        // paymentMethod,
         taxPrice,
         totalPrice,
         email: session.user.email,
@@ -87,9 +92,9 @@ function Order() {
   };
 
   useEffect(() => {
-    if (!paymentMethod) {
+    /* if (!paymentMethod) {
       router.push('/payment');
-    }
+    } */
     if (!cartItems.length) {
       router.push('/cart');
     }
@@ -111,11 +116,11 @@ function Order() {
                   Shipping Address
                 </Typography>
               </ListItem>
-              <ListItem>
+              {/* <ListItem>
                 {shippingAddress.fullName}, {shippingAddress.address},{' '}
                 {shippingAddress.city}, {shippingAddress.postalCode},{' '}
                 {shippingAddress.country}
-              </ListItem>
+              </ListItem> */}
             </List>
           </Card>
           <Card className={classes.section}>
@@ -125,7 +130,7 @@ function Order() {
                   Payment Method
                 </Typography>
               </ListItem>
-              <ListItem>{paymentMethod}</ListItem>
+              {/* <ListItem>{paymentMethod}</ListItem> */}
             </List>
           </Card>
 

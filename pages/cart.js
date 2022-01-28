@@ -23,15 +23,16 @@ import Layout from '../components/layout/Layout';
 import { Store } from '../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, removeItem } from '../redux/cart/cartSlice';
 
 function Cart() {
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const dispatch = useDispatch();
 
-  console.log('state?', state);
-  const {
-    cart: { cartItems },
-  } = state;
+  const { cart } = useSelector((state) => state);
+  const { cartItems } = cart;
+
   console.log('cart?', cartItems);
 
   const updateCartHandler = async (product, quantity) => {
@@ -41,11 +42,12 @@ function Cart() {
       alert('OUT OF STOCK');
       return;
     }
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+
+    dispatch(addItem({ ...product, quantity }));
   };
 
   const removeCartHandler = async (product) => {
-    dispatch({ type: 'CART_REMOVE_ITEM', payload: product });
+    dispatch(removeItem(product));
   };
 
   const checkoutHandler = () => {

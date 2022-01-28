@@ -17,6 +17,7 @@ import useStyles from '../../utils/styles';
 import { useContext } from 'react';
 import { Store } from '../../utils/Store';
 import Cookies from 'js-cookie';
+import { useSelector } from 'react-redux';
 
 export default function Layout({ title, description, children, home }) {
   const classes = useStyles();
@@ -24,7 +25,8 @@ export default function Layout({ title, description, children, home }) {
   const siteTitle = title ? title + ' - ' + baseTitle : baseTitle;
 
   const { state, dispatch } = useContext(Store);
-  const { darkMode, cart } = state;
+  const { darkMode } = state;
+  const { cart } = useSelector((state) => state);
 
   const darkModeChangeHandler = () => {
     dispatch({

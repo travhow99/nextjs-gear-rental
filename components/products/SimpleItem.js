@@ -11,18 +11,20 @@ import {
 import axios from 'axios';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { Store } from '../../utils/Store';
+import { addItem } from '../../redux/cart/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function SimpleItem(props) {
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  // const cart = useSelector();
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state);
 
-  console.log(props);
+  console.log('cart', cart, props);
   const product = props.product;
 
   const addToCartHandler = async (product) => {
-    const existingItem = state.cart.cartItems.find(
+    const existingItem = cart.cartItems.find(
       (item) => item._id === product._id
     );
     const quantity = existingItem ? existingItem.quantity + 1 : 1;
@@ -33,7 +35,8 @@ export default function SimpleItem(props) {
       return;
     }
 
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+    dispatch(addItem({ ...product, quantity }));
+
     router.push('/cart');
   };
 
