@@ -34,4 +34,6 @@ export default class ProductHelper {
   static formatPurchaseDate(timestamp) {
     return DateHelper.timestampToDate(timestamp);
   }
+
+  static async addProductToCart(product) {}
 }

@@ -32,13 +32,16 @@ import { getError } from '../utils/error';
 import Cookies from 'js-cookie';
 import { signIn, useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
+import { clearCart } from '../redux/cart/cartSlice';
 
 function Order() {
   const classes = useStyles();
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const { state } = useContext(Store);
+  const dispatch = useDispatch();
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+
   const { status, data: session } = useSession({
     required: true,
     onUnauthenticated() {
@@ -79,7 +82,8 @@ function Order() {
         email: session.user.email,
       });
 
-      dispatch({ type: 'CART_CLEAR' });
+      // dispatch({ type: 'CART_CLEAR' });
+      dispatch(clearCart);
       Cookies.remove('cartItems');
       setLoading(false);
 
@@ -198,32 +202,32 @@ function Order() {
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography>Subtotal</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography align="right">${subtotal}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography>Tax</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography align="right">${taxTotal}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography>
                       <strong>Total</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography align="right">
                       <strong>${totalPrice}</strong>
                     </Typography>

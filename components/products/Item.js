@@ -14,10 +14,13 @@ import useStyles from '../../utils/styles';
 import { Store } from '../../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Item(props) {
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const { state } = useContext(Store);
+  const dispatch = useDispatch();
+
   const classes = useStyles();
   const product = props.product;
 
