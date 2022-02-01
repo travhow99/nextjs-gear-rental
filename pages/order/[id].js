@@ -31,6 +31,8 @@ import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { getError } from '../../utils/error';
 import ProductHelper from '../../utils/methods/product';
 import Loading from '../../components/Loading';
+import { useDispatch, useSelector } from 'react-redux';
+import { request, succes, fail } from '../../redux/orders/ordersSlice';
 
 function Order({ params }) {
   const orderId = params.id;
@@ -41,14 +43,20 @@ function Order({ params }) {
   const { state, dispatch } = useContext(Store);
   console.log('STATE', state);
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const reduxDispatch = useDispatch();
+  const { orders } = useSelector((state) => state);
 
   const { status, data: session } = useSession({
     required: true,
   });
 
-  console.log('state?', state);
-  const { order, requestLoading, requestFor, requestError, paySuccess } = state;
+  console.log('orders?', orders);
+  const { /* order, requestLoading, requestFor, requestError, */ paySuccess } =
+    state;
 
+  const order = orders.orders.find((o) => o._id === orderId) || {};
+
+  console.log(order);
   const {
     shippingAddress,
     paymentMethod,
@@ -69,7 +77,7 @@ function Order({ params }) {
     if (!order._id || paySuccess || (order._id && order._id !== orderId)) {
       fetchOrder();
       if (paySuccess) {
-        dispatch({ type: 'PAY_RESET' });
+        reduxDispatch({ type: 'PAY_RESET' });
       }
     } else {
       loadPayPalScript();
@@ -79,20 +87,16 @@ function Order({ params }) {
   const fetchOrder = async () => {
     console.log('fetch order');
     try {
-      dispatch({
-        type: 'FETCH_REQUEST',
-        payload: {
-          requestFor: 'order',
-        },
-      });
-      const { data } = await axios.get(`/api/orders/${orderId}`);
+      reduxDispatch(request());
+
+      const { data } = await axios.get(`/api/orders/history`);
       console.log('got data', data);
 
-      data.action = 'order';
-
-      dispatch({ type: 'FETCH_SUCCESS', action: 'order', payload: data });
+      reduxDispatch(succes(data));
     } catch (error) {
-      dispatch({ type: 'FETCH_FAIL' });
+      // reduxDispatch({ type: 'FETCH_FAIL' });
+
+      reduxDispatch(fail(error));
     }
   };
 
@@ -157,17 +161,13 @@ function Order({ params }) {
         Order {orderId}
       </Typography>
 
-      {
-        /**
-         * @todo requestLoading defaulting to false from previous request
-         */
-        console.log(requestFor, requestLoading)
-      }
-      {requestLoading ||
-      (requestFor && requestFor !== 'order' && !order._id) ? (
+      {/**
+       * @todo requestLoading defaulting to false from previous request
+       */}
+      {orders.requestLoading || !orders.orders.length ? (
         <CircularProgress />
-      ) : requestError ? (
-        <Typography className={classes.error}>{requestError}</Typography>
+      ) : orders.requestError ? (
+        <Typography className={classes.error}>{orders.requestError}</Typography>
       ) : (
         <Grid container spacing={1}>
           <Grid item md={9} xs={12}>

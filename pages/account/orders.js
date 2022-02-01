@@ -32,38 +32,40 @@ import ProductHelper from '../../utils/methods/product';
 import { Stack } from '@mui/material';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { request, succes, fail } from '../../redux/orders/ordersSlice';
 function Orders() {
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const { state } = useContext(Store);
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { orders } = useSelector((state) => state);
 
   console.log('state?', state);
-  const { orders, requestLoading, requestFor, requestError, paySuccess } =
-    state;
+  // const { orders, requestLoading, requestFor, requestError, paySuccess } =
+  //   state;
 
   const { data: session, status } = useSession({
     required: true,
   });
 
   useEffect(() => {
-    fetchOrders();
+    if (!orders.orders.length) fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
     try {
-      console.log('fetching order!!');
-      dispatch({
-        type: 'FETCH_REQUEST',
-        payload: {
-          requestFor: 'orders',
-        },
-      });
+      console.log('fetching orders!!');
+      dispatch(request());
+
       const { data } = await axios.get(`/api/orders/history`);
       console.log('got data', data);
-      dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
+      // dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
+      dispatch(succes(data));
     } catch (error) {
-      dispatch({ type: 'FETCH_FAIL' });
+      // dispatch({ type: 'FETCH_FAIL' });
+
+      dispatch(fail(error));
     }
   };
 
@@ -74,9 +76,9 @@ function Orders() {
           <Typography coponent="h1" variant="h1">
             Orders
           </Typography>
-          {requestLoading || (requestFor && requestFor !== 'orders') ? (
+          {orders.requestLoading || !orders.orders.length ? (
             <Loading />
-          ) : orders.length === 0 ? (
+          ) : orders.orders.length === 0 ? (
             <div>
               You have no orders yet...
               <br />
@@ -100,7 +102,7 @@ function Orders() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {orders.map((order) => (
+                      {orders.orders.map((order) => (
                         <TableRow key={order._id}>
                           <TableCell>
                             {ProductHelper.formatPurchaseDate(order.createdAt)}
