@@ -37,9 +37,18 @@ import AdminHelper from '../../utils/admin/AdminHelper';
 import { AdminStore } from '../../utils/admin/AdminStore';
 import { Stack } from '@mui/material';
 import ProductHelper from '../../utils/methods/product';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  orderRequest,
+  orderSucces,
+  orderFail,
+} from '../../redux/orders/ordersSlice';
 
 function Sales() {
-  const { state, dispatch } = useContext(AdminStore);
+  // const { state } = useContext(AdminStore);
+  const dispatch = useDispatch();
+  const { orders } = useSelector((state) => state);
+
   const { data: session, status } = useSession({
     required: true,
   });
@@ -51,7 +60,7 @@ function Sales() {
 
   console.log('is admin?', isAdmin);
 
-  const { orders } = state;
+  // const { orders } = state;
 
   useEffect(() => {
     fetchOrders();
@@ -59,12 +68,17 @@ function Sales() {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get('/api/admin/orders');
-      console.log('got orders', data);
-      dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
+      console.log('fetching orders!!');
+      dispatch(orderRequest());
+
+      const { data } = await axios.get(`/api/admin/orders`);
+      console.log('got data', data);
+      // dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
+      dispatch(orderSucces(data));
     } catch (error) {
-      console.log('fetch erro', error);
-      dispatch({ type: 'FETCH_FAIL' });
+      // dispatch({ type: 'FETCH_FAIL' });
+
+      dispatch(orderFail(error));
     }
   };
 
@@ -91,7 +105,7 @@ function Sales() {
       </Card>
       <Card className={classes.section}>
         <List>
-          {orders.length ? (
+          {orders.orders.length ? (
             <TableContainer>
               <Table>
                 <TableHead>
@@ -102,12 +116,14 @@ function Sales() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {orders.map((order) => (
+                  {orders.orders.map((order) => (
                     <TableRow key={order._id}>
                       <TableCell>
                         {ProductHelper.formatPurchaseDate(order.createdAt)}
                       </TableCell>
-                      <TableCell>${order.totalPrice}</TableCell>
+                      <TableCell>
+                        ${ProductHelper.roundToPenny(order.totalPrice)}
+                      </TableCell>
                       <TableCell>
                         {order.paidAt ? (
                           <Stack>

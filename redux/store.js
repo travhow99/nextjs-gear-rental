@@ -8,8 +8,5 @@ export default configureStore({
     cart: cartReducer,
     orders: ordersReducer,
     paypal: payPalReducer,
-    admin: {
-      orders: ordersReducer,
-    },
   },
 });
