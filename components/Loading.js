@@ -7,10 +7,10 @@ const Loading = () => {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid item md={12} xs={12}>
         <LinearProgress color="secondary" />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item md={12} xs={12}>
         <LinearProgress color="primary" />
       </Grid>
 

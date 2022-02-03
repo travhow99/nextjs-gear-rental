@@ -11,28 +11,37 @@ import {
   Button,
 } from '@material-ui/core';
 import useStyles from '../../utils/styles';
-import { Store } from '../../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { addItem } from '../../redux/cart/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
 
 export default function Item(props) {
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state);
+  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+
   const classes = useStyles();
   const product = props.product;
 
   const addToCartHandler = async () => {
-    const existingItem = state.cart.cartItems.find(
+    const existingItem = cart.cartItems.find(
       (item) => item._id === product._id
     );
     const quantity = existingItem ? existingItem.quantity + 1 : 1;
 
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.stock < quantity) {
+      enqueueSnackbar('OUT OF STOCK', { variant: 'error' });
+
       alert('OUT OF STOCK');
       return;
     }
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+
+    dispatch(addItem({ ...product, quantity }));
+
     router.push('/cart');
   };
 
@@ -85,20 +94,20 @@ export default function Item(props) {
             <List>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>Price</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>${product.price}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>Status</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>
                       {product.stock > 0 ? 'In stock' : 'Unavailable'}
                     </Typography>

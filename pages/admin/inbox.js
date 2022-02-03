@@ -25,9 +25,9 @@ import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
-import SellerContainer from '../../components/seller/SellerContainer';
+import AdminContainer from '../../components/admin/AdminContainer';
 
-function Inventory() {
+function Inbox() {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -35,10 +35,9 @@ function Inventory() {
   console.log('session?', session);
   const isUser = !!session?.user;
 
-  const isSeller =
-    isUser && (session.user.seller || session.user.role === 'admin');
+  const isAdmin = isUser && session.user.role === 'admin';
 
-  console.log('is seller?', isSeller);
+  console.log('is admin?', isAdmin);
   const {
     handleSubmit,
     control,
@@ -51,41 +50,27 @@ function Inventory() {
   //   const { userInfo } = state;
 
   return status ? (
-    <SellerContainer title={'Inventory'}>
+    <AdminContainer title={'Inbox'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Add Item
+              Inbox
             </Typography>
           </ListItem>
           <ListItem>
             <Typography component="p" variant="subtitle1">
-              Welcome to the Inventory Portal!
+              Welcome to the Inbox Portal!
             </Typography>
-          </ListItem>
-          <ListItem>
-            <Button variant="outlined" color="primary">
-              <Link
-                href="/seller/products/new"
-                // component="button"
-              >
-                Add Product
-              </Link>
-            </Button>
           </ListItem>
         </List>
       </Card>
-    </SellerContainer>
+    </AdminContainer>
   ) : (
     <Loading />
   );
 }
 
-Inventory.auth = {
-  role: 'seller',
-  loading: <LoadingPage />,
-  unauthorized: '/',
-};
+Inbox.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
 
-export default Inventory;
+export default Inbox;

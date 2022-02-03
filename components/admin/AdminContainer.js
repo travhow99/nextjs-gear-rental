@@ -23,6 +23,11 @@ export default function AdminContainer({ title, children }) {
       selected: title === 'Inventory',
       title: 'Inventory',
     },
+    {
+      href: '/admin/inbox',
+      selected: title === 'Inbox',
+      title: 'Inbox',
+    },
   ];
 
   return (
