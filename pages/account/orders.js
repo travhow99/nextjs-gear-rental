@@ -33,15 +33,17 @@ import { Stack } from '@mui/material';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 import { useDispatch, useSelector } from 'react-redux';
-import { request, succes, fail } from '../../redux/orders/ordersSlice';
+import {
+  orderRequest,
+  orderSucces,
+  orderFail,
+} from '../../redux/orders/ordersSlice';
 function Orders() {
   const router = useRouter();
-  const { state } = useContext(Store);
   const classes = useStyles();
   const dispatch = useDispatch();
   const { orders } = useSelector((state) => state);
 
-  console.log('state?', state);
   // const { orders, requestLoading, requestFor, requestError, paySuccess } =
   //   state;
 
@@ -56,16 +58,16 @@ function Orders() {
   const fetchOrders = async () => {
     try {
       console.log('fetching orders!!');
-      dispatch(request());
+      dispatch(orderRequest());
 
       const { data } = await axios.get(`/api/orders/history`);
       console.log('got data', data);
       // dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
-      dispatch(succes(data));
+      dispatch(orderSucces(data));
     } catch (error) {
       // dispatch({ type: 'FETCH_FAIL' });
 
-      dispatch(fail(error));
+      dispatch(orderFail(error));
     }
   };
 
@@ -89,7 +91,7 @@ function Orders() {
             </div>
           ) : (
             <Grid container spacing={1}>
-              <Grid item xs={12}>
+              <Grid item md={12} xs={12}>
                 <TableContainer>
                   <Table>
                     <TableHead>
@@ -107,7 +109,9 @@ function Orders() {
                           <TableCell>
                             {ProductHelper.formatPurchaseDate(order.createdAt)}
                           </TableCell>
-                          <TableCell>${order.totalPrice}</TableCell>
+                          <TableCell>
+                            ${ProductHelper.roundToPenny(order.totalPrice)}
+                          </TableCell>
                           <TableCell>
                             {order.paidAt ? (
                               <Stack>

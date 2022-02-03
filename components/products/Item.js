@@ -96,20 +96,20 @@ export default function Item(props) {
             <List>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>Price</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>${product.price}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>Status</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={12} xs={6}>
                     <Typography>
                       {product.stock > 0 ? 'In stock' : 'Unavailable'}
                     </Typography>

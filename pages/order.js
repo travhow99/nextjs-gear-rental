@@ -194,7 +194,7 @@ function Order() {
             </List>
           </Card>
         </Grid>
-        <Grid md={3} xs={12}>
+        <Grid item md={3} xs={12}>
           <Card className={classes.section}>
             <List>
               <ListItem>
