@@ -24,7 +24,6 @@ export const payPalSlice = createSlice({
     payReset: (state) => {
       state = { ...initialState };
     },
-    // selectOrder:
   },
 });
 

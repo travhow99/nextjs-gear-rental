@@ -1,10 +1,11 @@
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import React, { useEffect, useContext } from 'react';
 import {
   Grid,
+  Link,
   List,
   ListItem,
   Typography,
@@ -39,15 +40,17 @@ import { Stack } from '@mui/material';
 import ProductHelper from '../../utils/methods/product';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  orderRequest,
-  orderSucces,
-  orderFail,
-} from '../../redux/orders/ordersSlice';
+  adminSalesRequest,
+  adminSalesSuccess,
+  adminSalesFail,
+} from '../../redux/admin/adminSlice';
 
 function Sales() {
   // const { state } = useContext(AdminStore);
   const dispatch = useDispatch();
-  const { orders } = useSelector((state) => state);
+  const {
+    admin: { sales },
+  } = useSelector((state) => state);
 
   const { data: session, status } = useSession({
     required: true,
@@ -69,16 +72,13 @@ function Sales() {
   const fetchOrders = async () => {
     try {
       console.log('fetching orders!!');
-      dispatch(orderRequest());
+      dispatch(adminSalesRequest());
 
       const { data } = await axios.get(`/api/admin/orders`);
       console.log('got data', data);
-      // dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
-      dispatch(orderSucces(data));
+      dispatch(adminSalesSuccess(data));
     } catch (error) {
-      // dispatch({ type: 'FETCH_FAIL' });
-
-      dispatch(orderFail(error));
+      dispatch(adminSalesFail(error));
     }
   };
 
@@ -105,7 +105,7 @@ function Sales() {
       </Card>
       <Card className={classes.section}>
         <List>
-          {orders.orders.length ? (
+          {sales.length ? (
             <TableContainer>
               <Table>
                 <TableHead>
@@ -116,42 +116,31 @@ function Sales() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {orders.orders.map((order) => (
-                    <TableRow key={order._id}>
-                      <TableCell>
-                        {ProductHelper.formatPurchaseDate(order.createdAt)}
-                      </TableCell>
-                      <TableCell>
-                        ${ProductHelper.roundToPenny(order.totalPrice)}
-                      </TableCell>
-                      <TableCell>
-                        {order.paidAt ? (
-                          <Stack>
-                            <Chip
-                              label={ProductHelper.formatPurchaseDate(
-                                order.paidAt
-                              )}
-                              color="primary"
-                              variant="outlined"
-                            />
-                          </Stack>
-                        ) : (
-                          <Stack>
-                            <Chip
-                              label="Unpaid"
-                              color="default"
-                              // variant="outlined"
-                            />
-                          </Stack>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {sales
+                    .slice(0)
+                    .reverse()
+                    .map((order) => (
+                      <TableRow key={order._id}>
+                        <TableCell>
+                          {ProductHelper.formatPurchaseDate(order.createdAt)}
+                        </TableCell>
+                        <TableCell>
+                          ${ProductHelper.roundToPenny(order.totalPrice)}
+                        </TableCell>
+                        <TableCell>
+                          <NextLink href={`/order/${order._id}`} passHref>
+                            <Link>
+                              <Typography>{order._id}</Typography>
+                            </Link>
+                          </NextLink>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
           ) : (
-            <ListItem>No orders found.</ListItem>
+            <ListItem>No sales found.</ListItem>
           )}
         </List>
       </Card>

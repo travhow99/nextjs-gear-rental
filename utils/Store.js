@@ -108,19 +108,6 @@ function reducer(state, action) {
     /**
      * Payment Handling
      */
-    case 'PAY_REQUEST':
-      return { ...state, payLoading: true };
-    case 'PAY_SUCCESS':
-      return {
-        ...state,
-        payLoading: false,
-        payError: '',
-        paySuccess: true,
-      };
-    case 'PAY_FAIL':
-      return { ...state, payLoading: false, payError: action.payload };
-    case 'PAY_RESET':
-      return { ...state, payLoading: false, paySuccess: false, payError: '' };
     case 'USER_LOGIN':
       return { ...state, user: action.payload };
     case 'USER_LOGOUT':

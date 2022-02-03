@@ -62,11 +62,8 @@ function Orders() {
 
       const { data } = await axios.get(`/api/orders/history`);
       console.log('got data', data);
-      // dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
       dispatch(orderSucces(data));
     } catch (error) {
-      // dispatch({ type: 'FETCH_FAIL' });
-
       dispatch(orderFail(error));
     }
   };
@@ -104,48 +101,53 @@ function Orders() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {orders.orders.map((order) => (
-                        <TableRow key={order._id}>
-                          <TableCell>
-                            {ProductHelper.formatPurchaseDate(order.createdAt)}
-                          </TableCell>
-                          <TableCell>
-                            ${ProductHelper.roundToPenny(order.totalPrice)}
-                          </TableCell>
-                          <TableCell>
-                            {order.paidAt ? (
-                              <Stack>
-                                <Chip
-                                  label={ProductHelper.formatPurchaseDate(
-                                    order.paidAt
-                                  )}
-                                  color="primary"
-                                  variant="outlined"
-                                />
-                              </Stack>
-                            ) : (
-                              <Stack>
-                                <Chip
-                                  label="Unpaid"
-                                  color="default"
-                                  // variant="outlined"
-                                />
-                              </Stack>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {order.shippingAddress.fullName}
-                          </TableCell>
+                      {orders.orders
+                        .slice(0)
+                        .reverse()
+                        .map((order) => (
+                          <TableRow key={order._id}>
+                            <TableCell>
+                              {ProductHelper.formatPurchaseDate(
+                                order.createdAt
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              ${ProductHelper.roundToPenny(order.totalPrice)}
+                            </TableCell>
+                            <TableCell>
+                              {order.paidAt ? (
+                                <Stack>
+                                  <Chip
+                                    label={ProductHelper.formatPurchaseDate(
+                                      order.paidAt
+                                    )}
+                                    color="primary"
+                                    variant="outlined"
+                                  />
+                                </Stack>
+                              ) : (
+                                <Stack>
+                                  <Chip
+                                    label="Unpaid"
+                                    color="default"
+                                    // variant="outlined"
+                                  />
+                                </Stack>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {order.shippingAddress.fullName}
+                            </TableCell>
 
-                          <TableCell>
-                            <NextLink href={`/order/${order._id}`} passHref>
-                              <Link>
-                                <Typography>{order._id}</Typography>
-                              </Link>
-                            </NextLink>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                            <TableCell>
+                              <NextLink href={`/order/${order._id}`} passHref>
+                                <Link>
+                                  <Typography>{order._id}</Typography>
+                                </Link>
+                              </NextLink>
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
