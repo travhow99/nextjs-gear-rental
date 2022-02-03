@@ -34,8 +34,6 @@ import Loading from '../../components/Loading';
 import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
 import AdminContainer from '../../components/admin/AdminContainer';
-import AdminHelper from '../../utils/admin/AdminHelper';
-import { AdminStore } from '../../utils/admin/AdminStore';
 import { Stack } from '@mui/material';
 import ProductHelper from '../../utils/methods/product';
 import { useDispatch, useSelector } from 'react-redux';
@@ -46,7 +44,6 @@ import {
 } from '../../redux/admin/adminSlice';
 
 function Sales() {
-  // const { state } = useContext(AdminStore);
   const dispatch = useDispatch();
   const {
     admin: { sales },

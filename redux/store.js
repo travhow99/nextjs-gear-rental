@@ -3,6 +3,7 @@ import cartReducer from './cart/cartSlice';
 import ordersReducer from './orders/ordersSlice';
 import payPalReducer from './paypal/payPalSlice';
 import adminReducer from './admin/adminSlice';
+import sellerReducer from './seller/sellerSlice';
 
 export default configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
     orders: ordersReducer,
     paypal: payPalReducer,
     admin: adminReducer,
+    seller: sellerReducer,
   },
 });

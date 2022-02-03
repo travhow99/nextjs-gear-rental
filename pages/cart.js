@@ -20,7 +20,6 @@ import NextLink from 'next/link';
 import React, { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/layout/Layout';
-import { Store } from '../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';

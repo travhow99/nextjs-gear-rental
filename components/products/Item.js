@@ -11,7 +11,6 @@ import {
   Button,
 } from '@material-ui/core';
 import useStyles from '../../utils/styles';
-import { Store } from '../../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { addItem } from '../../redux/cart/cartSlice';
@@ -20,7 +19,6 @@ import { useSnackbar } from 'notistack';
 
 export default function Item(props) {
   const router = useRouter();
-  const { state } = useContext(Store);
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state);
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();

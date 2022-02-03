@@ -24,7 +24,7 @@ import { useRouter } from 'next/router';
 
 import { useSnackbar } from 'notistack';
 import { signIn, useSession } from 'next-auth/react';
-import { Store } from '../../utils/Store';
+
 import Layout from '../../components/layout/Layout';
 import useStyles from '../../utils/styles';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
@@ -44,9 +44,7 @@ function Order({ params }) {
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
   const classes = useStyles();
   const router = useRouter();
-  console.log('REQ', Store);
-  const { state } = useContext(Store);
-  console.log('STATE', state);
+
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { orders, paypal } = useSelector((state) => state);

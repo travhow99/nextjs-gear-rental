@@ -14,8 +14,6 @@ import {
 } from '@material-ui/core';
 import Header from './Header';
 import useStyles from '../../utils/styles';
-import { useContext } from 'react';
-import { Store } from '../../utils/Store';
 import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 
@@ -24,14 +22,15 @@ export default function Layout({ title, description, children, home }) {
   const baseTitle = 'Adventure Buddy';
   const siteTitle = title ? title + ' - ' + baseTitle : baseTitle;
 
-  const { state, dispatch } = useContext(Store);
-  const { darkMode } = state;
   const { cart } = useSelector((state) => state);
 
+  /**
+   * @todo implement in redux theme store
+   */
   const darkModeChangeHandler = () => {
-    dispatch({
+    /* dispatch({
       type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON',
-    });
+    }); */
 
     const newDarkMode = !darkMode;
     console.log('set darkMode to ', newDarkMode);
@@ -90,8 +89,8 @@ export default function Layout({ title, description, children, home }) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Header
-          darkMode={darkMode}
-          darkModeChangeHandler={darkModeChangeHandler}
+          darkMode={false}
+          // darkModeChangeHandler={darkModeChangeHandler}
           cart={cart}
         />
         <Container className={classes.main}>{children}</Container>

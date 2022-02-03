@@ -1,14 +1,12 @@
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { useEffect } from 'react';
 import { SessionProvider, signIn, useSession } from 'next-auth/react';
-import { StoreProvider } from '../utils/Store';
 import '../styles/global.css';
 import { SnackbarProvider } from 'notistack';
 import LoadingPage from '../components/pages/LoadingPage';
 import UnauthorizedPage from '../components/pages/UnauthorizedPage';
 import { useRouter } from 'next/router';
-import { AdminStoreProvider } from '../utils/admin/AdminStore';
-import { SellerStoreProvider } from '../utils/seller/SellerStore';
+
 import reduxStore from '../redux/store';
 import { Provider } from 'react-redux';
 
@@ -27,35 +25,29 @@ export default function App({
 
   return (
     <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-      <StoreProvider>
-        <Provider store={reduxStore}>
-          <PayPalScriptProvider deferLoading={true}>
-            <SessionProvider session={session}>
-              {Component.auth ? (
-                Component.auth.role === 'admin' ? (
-                  <Admin redirect={Component.auth.unauthorized}>
-                    <AdminStoreProvider>
-                      <Component {...pageProps} />
-                    </AdminStoreProvider>
-                  </Admin>
-                ) : Component.auth.role === 'seller' ? (
-                  <Seller redirect={Component.auth.redirect}>
-                    <SellerStoreProvider>
-                      <Component {...pageProps} />
-                    </SellerStoreProvider>
-                  </Seller>
-                ) : (
-                  <Auth redirect={Component.auth.redirect}>
-                    <Component {...pageProps} />
-                  </Auth>
-                )
+      <Provider store={reduxStore}>
+        <PayPalScriptProvider deferLoading={true}>
+          <SessionProvider session={session}>
+            {Component.auth ? (
+              Component.auth.role === 'admin' ? (
+                <Admin redirect={Component.auth.unauthorized}>
+                  <Component {...pageProps} />
+                </Admin>
+              ) : Component.auth.role === 'seller' ? (
+                <Seller redirect={Component.auth.redirect}>
+                  <Component {...pageProps} />
+                </Seller>
               ) : (
-                <Component {...pageProps} />
-              )}
-            </SessionProvider>
-          </PayPalScriptProvider>
-        </Provider>
-      </StoreProvider>
+                <Auth redirect={Component.auth.redirect}>
+                  <Component {...pageProps} />
+                </Auth>
+              )
+            ) : (
+              <Component {...pageProps} />
+            )}
+          </SessionProvider>
+        </PayPalScriptProvider>
+      </Provider>
     </SnackbarProvider>
   );
 }
