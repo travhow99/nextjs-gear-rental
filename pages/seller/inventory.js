@@ -25,7 +25,7 @@ import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
-import AdminContainer from '../../components/admin/AdminContainer';
+import SellerContainer from '../../components/seller/SellerContainer';
 
 function Inventory() {
   const { data: session, status } = useSession({
@@ -35,9 +35,10 @@ function Inventory() {
   console.log('session?', session);
   const isUser = !!session?.user;
 
-  const isAdmin = isUser && session.user.role === 'admin';
+  const isSeller =
+    isUser && (session.user.seller || session.user.role === 'admin');
 
-  console.log('is admin?', isAdmin);
+  console.log('is seller?', isSeller);
   const {
     handleSubmit,
     control,
@@ -50,12 +51,12 @@ function Inventory() {
   //   const { userInfo } = state;
 
   return status ? (
-    <AdminContainer title={'Inventory'}>
+    <SellerContainer title={'Inventory'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Inventory
+              Add Item
             </Typography>
           </ListItem>
           <ListItem>
@@ -63,14 +64,28 @@ function Inventory() {
               Welcome to the Inventory Portal!
             </Typography>
           </ListItem>
+          <ListItem>
+            <Button variant="outlined" color="primary">
+              <Link
+                href="/seller/products/new"
+                // component="button"
+              >
+                Add Product
+              </Link>
+            </Button>
+          </ListItem>
         </List>
       </Card>
-    </AdminContainer>
+    </SellerContainer>
   ) : (
     <Loading />
   );
 }
 
-Inventory.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
+Inventory.auth = {
+  role: 'seller',
+  loading: <LoadingPage />,
+  unauthorized: '/',
+};
 
 export default Inventory;

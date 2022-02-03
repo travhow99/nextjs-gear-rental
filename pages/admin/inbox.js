@@ -27,7 +27,7 @@ import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
 import AdminContainer from '../../components/admin/AdminContainer';
 
-function Inventory() {
+function Inbox() {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -50,17 +50,17 @@ function Inventory() {
   //   const { userInfo } = state;
 
   return status ? (
-    <AdminContainer title={'Inventory'}>
+    <AdminContainer title={'Inbox'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Inventory
+              Inbox
             </Typography>
           </ListItem>
           <ListItem>
             <Typography component="p" variant="subtitle1">
-              Welcome to the Inventory Portal!
+              Welcome to the Inbox Portal!
             </Typography>
           </ListItem>
         </List>
@@ -71,6 +71,6 @@ function Inventory() {
   );
 }
 
-Inventory.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
+Inbox.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
 
-export default Inventory;
+export default Inbox;

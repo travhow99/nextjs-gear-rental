@@ -5,28 +5,23 @@ import useStyles from '../../utils/styles';
 import Layout from '../layout/Layout';
 import SideNav from '../layout/SideNav';
 
-export default function AdminContainer({ title, children }) {
+export default function SellerContainer({ title, children }) {
   const classes = useStyles();
   const links = [
     {
-      href: '/admin',
-      selected: title === 'Admin',
-      title: 'Admin',
+      href: '/seller',
+      selected: title === 'Seller',
+      title: 'Seller',
     },
     {
-      href: '/admin/sales',
+      href: '/seller/sales',
       selected: title === 'Sales',
       title: 'Sales',
     },
     {
-      href: '/admin/inventory',
+      href: '/seller/inventory',
       selected: title === 'Inventory',
       title: 'Inventory',
-    },
-    {
-      href: '/admin/inbox',
-      selected: title === 'Inbox',
-      title: 'Inbox',
     },
   ];
 

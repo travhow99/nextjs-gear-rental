@@ -28,25 +28,26 @@ import { Controller, useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 import Cookies from 'js-cookie';
 import Layout from '../../components/layout/Layout';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
-import AdminContainer from '../../components/admin/AdminContainer';
+
 import { Stack } from '@mui/material';
 import ProductHelper from '../../utils/methods/product';
+import SellerContainer from '../../components/seller/SellerContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  adminSalesRequest,
-  adminSalesSuccess,
-  adminSalesFail,
-} from '../../redux/admin/adminSlice';
+  sellerSalesFail,
+  sellerSalesRequest,
+  sellerSalesSuccess,
+} from '../../redux/seller/sellerSlice';
 
-function Sales() {
+function SellerSales() {
   const dispatch = useDispatch();
   const {
-    admin: { sales },
+    seller: { sales },
   } = useSelector((state) => state);
 
   const { data: session, status } = useSession({
@@ -56,11 +57,10 @@ function Sales() {
   console.log('session?', session);
   const isUser = !!session?.user;
 
-  const isAdmin = isUser && session.user.role === 'admin';
+  const isSeller =
+    isUser && (session.user.seller || session.user.role === 'admin');
 
-  console.log('is admin?', isAdmin);
-
-  // const { orders } = state;
+  console.log('is seller?', isSeller);
 
   useEffect(() => {
     fetchOrders();
@@ -68,14 +68,16 @@ function Sales() {
 
   const fetchOrders = async () => {
     try {
-      console.log('fetching orders!!');
-      dispatch(adminSalesRequest());
+      dispatch(sellerSalesRequest());
 
-      const { data } = await axios.get(`/api/admin/orders`);
-      console.log('got data', data);
-      dispatch(adminSalesSuccess(data));
+      const { data } = await axios.get('/api/seller/orders');
+      console.log('got orders', data);
+      // dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
+      dispatch(sellerSalesSuccess(data));
     } catch (error) {
-      dispatch(adminSalesFail(error));
+      console.log('fetch erro', error);
+      // dispatch({ type: 'FETCH_FAIL' });
+      dispatch(sellerSalesFail(error));
     }
   };
 
@@ -85,7 +87,7 @@ function Sales() {
   //   const { userInfo } = state;
 
   return status ? (
-    <AdminContainer title={'Sales'}>
+    <SellerContainer title={'Sales'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
@@ -113,40 +115,41 @@ function Sales() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {sales
-                    .slice(0)
-                    .reverse()
-                    .map((order) => (
-                      <TableRow key={order._id}>
-                        <TableCell>
-                          {ProductHelper.formatPurchaseDate(order.createdAt)}
-                        </TableCell>
-                        <TableCell>
-                          ${ProductHelper.roundToPenny(order.totalPrice)}
-                        </TableCell>
-                        <TableCell>
-                          <NextLink href={`/order/${order._id}`} passHref>
-                            <Link>
-                              <Typography>{order._id}</Typography>
-                            </Link>
-                          </NextLink>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                  {sales.map((order) => (
+                    <TableRow key={order._id}>
+                      <TableCell>
+                        {ProductHelper.formatPurchaseDate(order.createdAt)}
+                      </TableCell>
+                      <TableCell>
+                        ${ProductHelper.roundToPenny(order.totalPrice)}
+                      </TableCell>
+                      <TableCell>
+                        <NextLink href={`/order/${order._id}`} passHref>
+                          <Link>
+                            <Typography>{order._id}</Typography>
+                          </Link>
+                        </NextLink>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
           ) : (
-            <ListItem>No sales found.</ListItem>
+            <ListItem>No orders found.</ListItem>
           )}
         </List>
       </Card>
-    </AdminContainer>
+    </SellerContainer>
   ) : (
     <Loading />
   );
 }
 
-Sales.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
+SellerSales.auth = {
+  role: 'seller',
+  loading: <LoadingPage />,
+  unauthorized: '/',
+};
 
-export default Sales;
+export default SellerSales;

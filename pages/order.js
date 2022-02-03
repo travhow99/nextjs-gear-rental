@@ -21,7 +21,6 @@ import NextLink from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Layout from '../components/layout/Layout';
-import { Store } from '../utils/Store';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import useStyles from '../utils/styles';
@@ -31,13 +30,16 @@ import { useSnackbar } from 'notistack';
 import { getError } from '../utils/error';
 import Cookies from 'js-cookie';
 import { signIn, useSession } from 'next-auth/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearCart } from '../redux/cart/cartSlice';
 
 function Order() {
   const classes = useStyles();
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+  const dispatch = useDispatch();
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+
   const { status, data: session } = useSession({
     required: true,
     onUnauthenticated() {
@@ -45,10 +47,13 @@ function Order() {
     },
   });
 
-  console.log('state?', state);
-  const {
-    cart: { cartItems, shippingAddress, paymentMethod },
-  } = state;
+  /*  const {
+    cart: { shippingAddress, paymentMethod },
+  } = state; */
+
+  const { cart } = useSelector((state) => state);
+  const { cartItems } = cart;
+
   console.log('cart?', cartItems);
 
   const subtotal = ProductHelper.determineSubtotal(cartItems);
@@ -67,14 +72,15 @@ function Order() {
       const { data } = await axios.post('/api/orders', {
         orderItems: cartItems,
         itemsPrice: subtotal,
-        shippingAddress,
-        paymentMethod,
+        // shippingAddress,
+        // paymentMethod,
         taxPrice,
         totalPrice,
         email: session.user.email,
       });
 
-      dispatch({ type: 'CART_CLEAR' });
+      // dispatch({ type: 'CART_CLEAR' });
+      dispatch(clearCart);
       Cookies.remove('cartItems');
       setLoading(false);
 
@@ -87,9 +93,9 @@ function Order() {
   };
 
   useEffect(() => {
-    if (!paymentMethod) {
+    /* if (!paymentMethod) {
       router.push('/payment');
-    }
+    } */
     if (!cartItems.length) {
       router.push('/cart');
     }
@@ -111,11 +117,11 @@ function Order() {
                   Shipping Address
                 </Typography>
               </ListItem>
-              <ListItem>
+              {/* <ListItem>
                 {shippingAddress.fullName}, {shippingAddress.address},{' '}
                 {shippingAddress.city}, {shippingAddress.postalCode},{' '}
                 {shippingAddress.country}
-              </ListItem>
+              </ListItem> */}
             </List>
           </Card>
           <Card className={classes.section}>
@@ -125,7 +131,7 @@ function Order() {
                   Payment Method
                 </Typography>
               </ListItem>
-              <ListItem>{paymentMethod}</ListItem>
+              {/* <ListItem>{paymentMethod}</ListItem> */}
             </List>
           </Card>
 
@@ -185,7 +191,7 @@ function Order() {
             </List>
           </Card>
         </Grid>
-        <Grid md={3} xs={12}>
+        <Grid item md={3} xs={12}>
           <Card className={classes.section}>
             <List>
               <ListItem>
@@ -193,32 +199,32 @@ function Order() {
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography>Subtotal</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography align="right">${subtotal}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography>Tax</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography align="right">${taxTotal}</Typography>
                   </Grid>
                 </Grid>
               </ListItem>
               <ListItem>
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography>
                       <strong>Total</strong>
                     </Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item md={6} xs={6}>
                     <Typography align="right">
                       <strong>${totalPrice}</strong>
                     </Typography>

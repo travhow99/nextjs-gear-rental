@@ -25,9 +25,9 @@ import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
-import AdminContainer from '../../components/admin/AdminContainer';
+import SellerContainer from '../../components/seller/SellerContainer';
 
-function Inventory() {
+function Seller() {
   const { data: session, status } = useSession({
     required: true,
   });
@@ -35,9 +35,10 @@ function Inventory() {
   console.log('session?', session);
   const isUser = !!session?.user;
 
-  const isAdmin = isUser && session.user.role === 'admin';
+  const isSeller =
+    isUser && (session.user.seller || session.user.role === 'admin');
 
-  console.log('is admin?', isAdmin);
+  console.log('is seller?', isSeller);
   const {
     handleSubmit,
     control,
@@ -50,27 +51,27 @@ function Inventory() {
   //   const { userInfo } = state;
 
   return status ? (
-    <AdminContainer title={'Inventory'}>
+    <SellerContainer title={'Seller'}>
       <Card className={classes.section}>
         <List>
           <ListItem>
             <Typography component="h1" variant="h1">
-              Inventory
+              Seller
             </Typography>
           </ListItem>
           <ListItem>
             <Typography component="p" variant="subtitle1">
-              Welcome to the Inventory Portal!
+              Welcome to the Seller Portal!
             </Typography>
           </ListItem>
         </List>
       </Card>
-    </AdminContainer>
+    </SellerContainer>
   ) : (
     <Loading />
   );
 }
 
-Inventory.auth = { role: 'admin', loading: <LoadingPage />, unauthorized: '/' };
+Seller.auth = { role: 'seller', loading: <LoadingPage />, unauthorized: '/' };
 
-export default Inventory;
+export default Seller;

@@ -20,7 +20,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 import Cookies from 'js-cookie';
 import Layout from '../../components/layout/Layout';
-import { Store } from '../../utils/Store';
 import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
@@ -29,7 +28,6 @@ import SideNav from '../../components/layout/SideNav';
 import AdminContainer from '../../components/admin/AdminContainer';
 
 function Admin() {
-  const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
   });
