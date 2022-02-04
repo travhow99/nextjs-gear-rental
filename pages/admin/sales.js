@@ -62,8 +62,11 @@ function Sales() {
 
   // const { orders } = state;
 
+  /**
+   * @todo determine if this should happen every page load or pull from store?
+   */
   useEffect(() => {
-    fetchOrders();
+    if (!sales.length) fetchOrders();
   }, []);
 
   const fetchOrders = async () => {

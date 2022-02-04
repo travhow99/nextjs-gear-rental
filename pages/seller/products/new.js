@@ -2,7 +2,7 @@ import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import {
   Grid,
   List,
@@ -11,7 +11,7 @@ import {
   Card,
   Button,
   ListItemText,
-  TextField,
+  // TextField,
   CircularProgress,
 } from '@material-ui/core';
 import { getError } from '../../../utils/error';
@@ -26,9 +26,20 @@ import Loading from '../../../components/Loading';
 import LoadingPage from '../../../components/pages/LoadingPage';
 import SideNav from '../../../components/layout/SideNav';
 import SellerContainer from '../../../components/seller/SellerContainer';
-import { Autocomplete } from '@mui/material';
+import { Autocomplete, TextField } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  brandSuccess,
+  brandRequest,
+  brandFail,
+} from '../../../redux/brand/brandSlice';
 
 function AddProduct() {
+  const dispatch = useDispatch();
+  const {
+    brand: { brands },
+  } = useSelector((state) => state);
+
   const { data: session, status } = useSession({
     required: true,
   });
@@ -38,6 +49,25 @@ function AddProduct() {
 
   const isSeller =
     isUser && (session.user.seller || session.user.role === 'admin');
+
+  useEffect(() => {
+    if (!brands.length) fetchBrands();
+  }, [brands]);
+
+  const fetchBrands = async () => {
+    try {
+      dispatch(brandRequest());
+
+      const { data } = await axios.get('/api/brands');
+      console.log('got brands', data);
+
+      dispatch(brandSuccess(data));
+    } catch (error) {
+      console.log('fetch error', error);
+
+      dispatch(brandFail(error));
+    }
+  };
 
   console.log('is seller?', isSeller);
   const {
@@ -71,7 +101,6 @@ function AddProduct() {
                   {/* 
                   @todo Autocomplete to either fill in brands/categories/items or fill in product to base on
                    */}
-                  {/* <Autocomplete /> */}
                   <Controller
                     name="title"
                     control={control}
@@ -101,33 +130,14 @@ function AddProduct() {
                   ></Controller>
                 </ListItem>
                 <ListItem>
-                  <Controller
-                    name="brand"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                      required: true,
-                      minLength: 2,
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        id="brand"
-                        label="Brand"
-                        inputProps={{ type: 'brand' }}
-                        error={Boolean(errors.name)}
-                        helperText={
-                          errors.name
-                            ? errors.name.type === 'minLength'
-                              ? 'Brand length is more than 1'
-                              : 'Brand is required'
-                            : ''
-                        }
-                        {...field}
-                      ></TextField>
+                  <Autocomplete
+                    disablePortal
+                    fullWidth
+                    options={brands.map((brand) => brand.title)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Brand" />
                     )}
-                  ></Controller>
+                  />
                 </ListItem>
                 <ListItem>
                   <Controller
