@@ -33,11 +33,17 @@ import {
   brandRequest,
   brandFail,
 } from '../../../redux/brand/brandSlice';
+import {
+  categorySuccess,
+  categoryRequest,
+  categoryFail,
+} from '../../../redux/category/categorySlice';
 
 function AddProduct() {
   const dispatch = useDispatch();
   const {
     brand: { brands },
+    category: { categories },
   } = useSelector((state) => state);
 
   const { data: session, status } = useSession({
@@ -52,6 +58,7 @@ function AddProduct() {
 
   useEffect(() => {
     if (!brands.length) fetchBrands();
+    if (!categories.length) fetchCategories();
   }, [brands]);
 
   const fetchBrands = async () => {
@@ -69,6 +76,20 @@ function AddProduct() {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      dispatch(categoryRequest());
+
+      const { data } = await axios.get('/api/categories');
+
+      dispatch(categorySuccess(data));
+    } catch (error) {
+      console.log('fetch error', error);
+
+      dispatch(categoryFail(error));
+    }
+  };
+
   console.log('is seller?', isSeller);
   const {
     handleSubmit,
@@ -79,6 +100,18 @@ function AddProduct() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const router = useRouter();
   const classes = useStyles();
+
+  const submitHandler = async () => {
+    // console.log('input:', input);
+    closeSnackbar();
+    try {
+
+      enqueueSnackbar('Profile updated successfully', { variant: 'success' });
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: 'error' });
+    }
+  };
+
   //   const { userInfo } = state;
 
   return status ? (
@@ -91,16 +124,12 @@ function AddProduct() {
             </Typography>
           </ListItem>
           <ListItem>
-            <form /* onSubmit={handle} */ className={classes.form}>
+            <form
+              onSubmit={handleSubmit(submitHandler)}
+              className={classes.form}
+            >
               <List>
                 <ListItem>
-                  {/* <Controller
-                    name="Product Search"
-                    control={control}
-                  ></Controller> */}
-                  {/* 
-                  @todo Autocomplete to either fill in brands/categories/items or fill in product to base on
-                   */}
                   <Controller
                     name="title"
                     control={control}
@@ -131,7 +160,7 @@ function AddProduct() {
                 </ListItem>
                 <ListItem>
                   <Autocomplete
-                    disablePortal
+                    freeSolo
                     fullWidth
                     options={brands.map((brand) => brand.title)}
                     renderInput={(params) => (
@@ -140,33 +169,14 @@ function AddProduct() {
                   />
                 </ListItem>
                 <ListItem>
-                  <Controller
-                    name="category"
-                    control={control}
-                    defaultValue=""
-                    rules={{
-                      required: true,
-                      minLength: 2,
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        id="category"
-                        label="Category"
-                        inputProps={{ type: 'category' }}
-                        error={Boolean(errors.name)}
-                        helperText={
-                          errors.name
-                            ? errors.name.type === 'minLength'
-                              ? 'Category length is more than 1'
-                              : 'Category is required'
-                            : ''
-                        }
-                        {...field}
-                      ></TextField>
+                  <Autocomplete
+                    freeSolo
+                    fullWidth
+                    options={categories.map((category) => category.name)}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Category" />
                     )}
-                  ></Controller>
+                  />
                 </ListItem>
                 <ListItem>
                   <Button

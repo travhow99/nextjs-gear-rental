@@ -1,30 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const brandSlice = createSlice({
-  name: 'brand',
+export const categorySlice = createSlice({
+  name: 'category',
   initialState: {
-    brands: [],
+    categories: [],
     requestLoading: false,
     requestError: '',
   },
   reducers: {
-    brandRequest: (state) => {
+    categoryRequest: (state) => {
       state.requestLoading = true;
       state.requestError = '';
     },
-    brandFail: (state, action) => {
+    categoryFail: (state, action) => {
       state.requestLoading = false;
       state.requestError = action.payload;
     },
-    brandSuccess: (state, action) => {
+    categorySuccess: (state, action) => {
       state.requestLoading = false;
       state.requestError = '';
-      state.brands = action.payload;
+      state.categories = action.payload;
     },
-    // selectBrand:
+    // selectcategory:
   },
 });
 
-export const { brandRequest, brandFail, brandSuccess } = brandSlice.actions;
+export const { categoryRequest, categoryFail, categorySuccess } =
+  categorySlice.actions;
 
-export default brandSlice.reducer;
+export default categorySlice.reducer;
