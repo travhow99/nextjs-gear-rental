@@ -11,7 +11,6 @@ import {
   Card,
   Button,
   ListItemText,
-  // TextField,
   CircularProgress,
 } from '@material-ui/core';
 import { getError } from '../../../utils/error';
@@ -42,10 +41,30 @@ import ControlledAutoComplete from '../../../components/utilities/form/Controlle
 import CountrySelect from '../../../components/utilities/form/CountrySelect';
 
 function AddProduct() {
+  const [title, setTitle] = useState('');
+  // const [titleInputValue, setTitleInputValue] = useState('');
   const [brand, setBrand] = useState(null);
   const [brandInputValue, setBrandInputValue] = useState('');
   const [category, setCategory] = useState(null);
   const [categoryInputValue, setCategoryInputValue] = useState('');
+
+  const [errors, setErrors] = useState({
+    title: null,
+    brand: null,
+    category: null,
+  });
+
+  const [rules, setRules] = useState({
+    title: {
+      required: true,
+    },
+    brand: {
+      required: true,
+    },
+    category: {
+      required: true,
+    },
+  });
 
   const dispatch = useDispatch();
   const {
@@ -98,21 +117,34 @@ function AddProduct() {
   };
 
   console.log('is seller?', isSeller);
-  const {
+  /*   const {
     handleSubmit,
     control,
     formState: { errors },
     setValue,
     getValues,
-  } = useForm();
+  } = useForm(); */
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const router = useRouter();
   const classes = useStyles();
 
-  const submitHandler = async (data) => {
-    console.log('data:', data);
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    console.log('title:', title);
+    console.log('submit', 'brand', brand, 'category', category);
     console.log('formsubmit!!!!');
-    closeSnackbar();
+
+    if (!validateForm({ title: title, brand: brand, category: category })) {
+      enqueueSnackbar('There is an error with your submission!', {
+        variant: 'error',
+      });
+
+      return;
+    }
+
+    if (errors) closeSnackbar();
     try {
       enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (err) {
@@ -120,10 +152,86 @@ function AddProduct() {
     }
   };
 
+  const validateForm = ({ title, brand, category }) => {
+    console.log('validating ', title, brand, category);
+
+    const newErrors = {};
+
+    if (rules.title) {
+      console.log('title rules', title);
+      if (rules.title.required && (!title || !title.length)) {
+        console.log('title req', title);
+
+        newErrors.title = { type: 'required' };
+      } else {
+        // final else clause to clear errors
+        newErrors.title = null;
+      }
+    }
+
+    if (rules.category) {
+      console.log('cat rules', category);
+
+      if (
+        rules.category.required &&
+        (!category || !category.length) &&
+        (!categoryInputValue || !categoryInputValue.length)
+      ) {
+        newErrors.category = { type: 'required' };
+      } else {
+        // final else clause to clear errors
+        newErrors.category = null;
+      }
+    }
+
+    console.log(rules);
+
+    if (rules.brand) {
+      console.log('brand rules', brand);
+
+      if (
+        rules.brand.required &&
+        (!brand || !brand.length) &&
+        (!brandInputValue || !brandInputValue.length)
+      ) {
+        newErrors.brand = { type: 'required' };
+      } else {
+        // final else clause to clear errors
+        newErrors.brand = null;
+      }
+    }
+
+    console.log(
+      {
+        ...errors,
+        ...newErrors,
+      },
+      newErrors
+    );
+
+    const newState = {
+      ...errors,
+      ...newErrors,
+    };
+    setErrors(newState);
+
+    const errorCount = Object.keys(newState).filter((err) => newState[err]);
+    Object.keys(newState).filter((err) => newState[err]);
+    const hasErrors = errorCount && errorCount.length >= 1;
+
+    console.log('errs', errorCount, hasErrors);
+    return !hasErrors;
+  };
+
   //   const { userInfo } = state;
 
+  /**
+   * @todo Implement mui validation handling
+   * https://mui.com/components/text-fields/#validation
+   */
+
   console.log('form err?', errors);
-  console.log(brands.map((brand) => brand.title));
+  console.log(title, brand);
 
   return status ? (
     <SellerContainer title={'Add Product'}>
@@ -135,66 +243,31 @@ function AddProduct() {
             </Typography>
           </ListItem>
           <ListItem>
-            <form
-              onSubmit={handleSubmit(submitHandler)}
-              className={classes.form}
-            >
+            <form onSubmit={submitHandler} className={classes.form}>
               <List>
                 <ListItem>
-                  <Controller
-                    render={(props) => (
-                      <Autocomplete
-                        {...props}
-                        options={brands.map((brand) => brand.title)}
-                        // getOptionLabel={(option) => option.title}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Country"
-                            placeholder="Select a Country"
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            variant="outlined"
-                          />
-                        )}
-                        onChange={(_, data) => setBrand(data)}
-                      >
-                        {console.log('autocomp props', props)}
-                      </Autocomplete>
-                    )}
-                    name="country"
-                    control={control}
-                  />
-                </ListItem>
-                <ListItem>
-                  <Controller
-                    name="name"
-                    control={control}
+                  <TextField
+                    name="title"
                     defaultValue=""
-                    rules={{
-                      required: true,
-                      minLength: 2,
+                    variant="outlined"
+                    fullWidth
+                    id="title"
+                    label="Product Name"
+                    value={title}
+                    onChange={(e, newValue) => {
+                      setTitle(e.target.value);
                     }}
-                    render={({ field }) => (
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        id="title"
-                        label="Product Name"
-                        inputProps={{ type: 'title' }}
-                        error={Boolean(errors.name)}
-                        helperText={
-                          errors.name
-                            ? errors.name.type === 'minLength'
-                              ? 'Product Name length is more than 1'
-                              : 'Product Name is required'
-                            : ''
-                        }
-                        {...field}
-                      ></TextField>
-                    )}
-                  ></Controller>
+                    // inputValue={titleInputValue}
+                    // inputProps={{ type: 'title' }}
+                    error={Boolean(errors.title)}
+                    helperText={
+                      errors.title
+                        ? errors.title.type === 'minLength'
+                          ? 'Product Name length is more than 1'
+                          : 'Product Name is required'
+                        : ''
+                    }
+                  />
                 </ListItem>
                 <ListItem>
                   <Autocomplete
@@ -203,27 +276,23 @@ function AddProduct() {
                     options={brands.map((brand) => brand.title)}
                     value={brand}
                     onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
                       setBrand(newValue);
                     }}
                     inputValue={brandInputValue}
-                    onInputChange={(e, newValue) =>
-                      setBrandInputValue(newValue)
-                    }
-                    // getOptionLabel={getOptionLabel}
-                    //   renderOption={renderOption}
-                    /* renderInput={renderInput}
-                    onChange={(e, data) => {
-                      console.log('onchange', data);
-                      field.onChange(data);
-                    }} */
+                    onInputChange={(e, newValue) => {
+                      setBrandInputValue(newValue);
+                      console.log('onchange input', e, newValue);
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         label="Brand"
-                        error={Boolean(errors.brand)}
+                        error={errors.brand}
                         helperText={
-                          errors.name
-                            ? errors.name.type === 'minLength'
+                          errors.brand
+                            ? errors.brand.type === 'minLength'
                               ? 'Brand length is more than 1'
                               : 'Brand is required'
                             : ''
@@ -231,36 +300,40 @@ function AddProduct() {
                       />
                     )}
                   />
-                  {/* <ControlledAutoComplete
-                    control={control}
-                    rules={{
-                      required: true,
+                </ListItem>
+                <ListItem>
+                  <Autocomplete
+                    freeSolo
+                    fullWidth
+                    options={categories.map((category) => category.name)}
+                    value={category}
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setCategory(newValue);
                     }}
-                    name="brand"
-                    freeSolo={true}
-                    getOptionLabel={(option) => {
-                      console.log(option);
-                      return option.label ?? option;
+                    inputValue={categoryInputValue}
+                    onInputChange={(e, newValue) => {
+                      setCategoryInputValue(newValue);
+                      console.log('onchange input', e, newValue);
                     }}
-                    options={brands.map((brand) => brand.title)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Brand"
-                        error={Boolean(errors.brand)}
+                        label="Category"
+                        error={errors.category}
                         helperText={
-                          errors.name
-                            ? errors.name.type === 'minLength'
-                              ? 'Brand length is more than 1'
-                              : 'Brand is required'
+                          errors.category
+                            ? errors.category.type === 'minLength'
+                              ? 'Category length is more than 1'
+                              : 'Category is required'
                             : ''
                         }
                       />
                     )}
-                    // defaultValue={null}
-                  /> */}
+                  />
                 </ListItem>
-                <ListItem>
+                {/* <ListItem>
                   <ControlledAutoComplete
                     control={control}
                     rules={{
@@ -272,7 +345,7 @@ function AddProduct() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Category" /* margin="normal" */
+                        label="Category" 
                         error={Boolean(errors.category)}
                         helperText={
                           errors.category
@@ -285,7 +358,7 @@ function AddProduct() {
                     )}
                     defaultValue={null}
                   />
-                </ListItem>
+                </ListItem> */}
                 {/* <ListItem>
                   <Autocomplete
                     freeSolo

@@ -16,30 +16,21 @@ const ControlledAutocomplete = ({
 }) => {
   console.log(control);
   return (
-    <Controller
-      render={({ field }) => (
-        <Autocomplete
-          freeSolo={freeSolo}
-          fullWidth
-          options={options}
-          getOptionLabel={getOptionLabel}
-          //   renderOption={renderOption}
-          renderInput={renderInput}
-          onChange={(e, data) => {
-            console.log('onchange', data);
-            field.onChange(data);
-          }}
-          {...field}
-        >
-          {console.log('field', field)}
-        </Autocomplete>
-      )}
-      //   onChange={([, data]) => data}
-      defaultValue={defaultValue || null}
-      name={name}
-      control={control}
-      rules={rules}
-    />
+    <Autocomplete
+      freeSolo={freeSolo}
+      fullWidth
+      options={options}
+      getOptionLabel={getOptionLabel}
+      //   renderOption={renderOption}
+      renderInput={renderInput}
+      onChange={(e, data) => {
+        console.log('onchange', data);
+        field.onChange(data);
+      }}
+      {...field}
+    >
+      {console.log('field', field)}
+    </Autocomplete>
   );
 };
 
