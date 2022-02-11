@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 export default (apiCall) => {
+  console.log('api call!', apiCall);
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ export default (apiCall) => {
     try {
       const result = await apiCall(...args);
       setData(result.data);
-    } catch (error) {
+    } catch (err) {
       setError(err.message || 'Unexpected Error!');
     } finally {
       setLoading(false);

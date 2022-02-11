@@ -8,7 +8,7 @@ const sellerProductSchema = new mongoose.Schema(
       required: true,
     } /* { type: mongoose.Schema.Types.ObjectId, ref: 'Product' } */,
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    slug: { type: String, required: true, unique: true },
+    // slug: { type: String, required: true },
     stock: { type: Number, default: 0 },
     category: { type: String, required: true },
     rental_min: { type: Number, required: true },
@@ -19,7 +19,7 @@ const sellerProductSchema = new mongoose.Schema(
     condition: { type: String, default: null },
     price: { type: Number, required: true },
     // rating: { type: Number, required: true, default: 0 },
-    description: { type: String, required: true },
+    description: { type: String },
     keyword: { type: String },
   },
   {

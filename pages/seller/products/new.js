@@ -39,6 +39,9 @@ import {
 } from '../../../redux/category/categorySlice';
 import ControlledAutoComplete from '../../../components/utilities/form/ControlledAutoComplete';
 import CountrySelect from '../../../components/utilities/form/CountrySelect';
+import useApi from '../../../utils/hooks/useApi';
+
+const postProduct = (payload) => axios.post('/api/sellerProducts', payload);
 
 function AddProduct() {
   const [title, setTitle] = useState('');
@@ -47,6 +50,7 @@ function AddProduct() {
   const [brandInputValue, setBrandInputValue] = useState('');
   const [category, setCategory] = useState(null);
   const [categoryInputValue, setCategoryInputValue] = useState('');
+  const postProductApi = useApi(postProduct);
 
   const [errors, setErrors] = useState({
     title: null,
@@ -54,7 +58,7 @@ function AddProduct() {
     category: null,
   });
 
-  const [rules, setRules] = useState({
+  const rules = {
     title: {
       required: true,
     },
@@ -64,7 +68,7 @@ function AddProduct() {
     category: {
       required: true,
     },
-  });
+  };
 
   const dispatch = useDispatch();
   const {
@@ -126,11 +130,12 @@ function AddProduct() {
   } = useForm(); */
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const router = useRouter();
   const classes = useStyles();
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    closeSnackbar();
 
     console.log('title:', title);
     console.log('submit', 'brand', brand, 'category', category);
@@ -144,11 +149,25 @@ function AddProduct() {
       return;
     }
 
-    if (errors) closeSnackbar();
     try {
+      const { data } = postProductApi.request({
+        product: title,
+        // user: session.user, backend
+        slug: '',
+        category: category,
+        rental_min: 1,
+        title: title,
+        brand: brand,
+        price: 0,
+        description: '',
+      });
+
+      console.log('got post data', data);
+
       enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (err) {
-      enqueueSnackbar(getError(err), { variant: 'error' });
+      console.log('got err!', err);
+      // enqueueSnackbar(getError(err), { variant: 'error' });
     }
   };
 
@@ -201,14 +220,6 @@ function AddProduct() {
       }
     }
 
-    console.log(
-      {
-        ...errors,
-        ...newErrors,
-      },
-      newErrors
-    );
-
     const newState = {
       ...errors,
       ...newErrors,
@@ -219,7 +230,6 @@ function AddProduct() {
     Object.keys(newState).filter((err) => newState[err]);
     const hasErrors = errorCount && errorCount.length >= 1;
 
-    console.log('errs', errorCount, hasErrors);
     return !hasErrors;
   };
 
@@ -248,7 +258,6 @@ function AddProduct() {
                 <ListItem>
                   <TextField
                     name="title"
-                    defaultValue=""
                     variant="outlined"
                     fullWidth
                     id="title"
@@ -289,7 +298,7 @@ function AddProduct() {
                       <TextField
                         {...params}
                         label="Brand"
-                        error={errors.brand}
+                        error={Boolean(errors.brand)}
                         helperText={
                           errors.brand
                             ? errors.brand.type === 'minLength'
@@ -321,7 +330,7 @@ function AddProduct() {
                       <TextField
                         {...params}
                         label="Category"
-                        error={errors.category}
+                        error={Boolean(errors.category)}
                         helperText={
                           errors.category
                             ? errors.category.type === 'minLength'
