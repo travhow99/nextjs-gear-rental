@@ -12,6 +12,12 @@ import {
   Button,
   ListItemText,
   CircularProgress,
+  Select,
+  MenuItem,
+  FormHelperText,
+  InputLabel,
+  FormControl,
+  Box,
 } from '@material-ui/core';
 import { getError } from '../../../utils/error';
 import useStyles from '../../../utils/styles';
@@ -45,6 +51,7 @@ const postProduct = (payload) => axios.post('/api/sellerProducts', payload);
 
 function AddProduct() {
   const [title, setTitle] = useState('');
+  const [stock, setStock] = useState('');
   // const [titleInputValue, setTitleInputValue] = useState('');
   const [brand, setBrand] = useState(null);
   const [brandInputValue, setBrandInputValue] = useState('');
@@ -66,6 +73,9 @@ function AddProduct() {
       required: true,
     },
     category: {
+      required: true,
+    },
+    stock: {
       required: true,
     },
   };
@@ -141,7 +151,14 @@ function AddProduct() {
     console.log('submit', 'brand', brand, 'category', category);
     console.log('formsubmit!!!!');
 
-    if (!validateForm({ title: title, brand: brand, category: category })) {
+    if (
+      !validateForm({
+        title: title,
+        brand: brand,
+        category: category,
+        stock: stock,
+      })
+    ) {
       enqueueSnackbar('There is an error with your submission!', {
         variant: 'error',
       });
@@ -159,6 +176,7 @@ function AddProduct() {
         title: title,
         brand: brand,
         price: 0,
+        stock: stock,
         description: '',
       });
 
@@ -171,7 +189,9 @@ function AddProduct() {
     }
   };
 
-  const validateForm = ({ title, brand, category }) => {
+  const validateForm = (data) => {
+    console.log('got data');
+    const { title, brand, category } = data;
     console.log('validating ', title, brand, category);
 
     const newErrors = {};
@@ -217,6 +237,17 @@ function AddProduct() {
       } else {
         // final else clause to clear errors
         newErrors.brand = null;
+      }
+    }
+
+    if (rules.stock) {
+      console.log('stock rules', stock);
+
+      if (rules.stock.required && !stock) {
+        newErrors.stock = { type: 'required' };
+      } else {
+        // final else clause to clear errors
+        newErrors.stock = null;
       }
     }
 
@@ -280,7 +311,6 @@ function AddProduct() {
                 </ListItem>
                 <ListItem>
                   <Autocomplete
-                    freeSolo
                     fullWidth
                     options={brands.map((brand) => brand.title)}
                     value={brand}
@@ -312,7 +342,6 @@ function AddProduct() {
                 </ListItem>
                 <ListItem>
                   <Autocomplete
-                    freeSolo
                     fullWidth
                     options={categories.map((category) => category.name)}
                     value={category}
@@ -342,6 +371,37 @@ function AddProduct() {
                     )}
                   />
                 </ListItem>
+                <ListItem>
+                  <FormControl fullWidth>
+                    {console.log('has stock?', stock)}
+                    <TextField
+                      name="stock"
+                      variant="outlined"
+                      type={'number'}
+                      fullWidth
+                      id="sellerProductStock"
+                      labelId="sellerProductStock"
+                      label="Stock"
+                      value={stock}
+                      displayEmpty
+                      onChange={(e, newValue) => {
+                        console.log('onchange,', e.target.value, newValue);
+                        setStock(e.target.value);
+                      }}
+                      select
+                      // inputValue={stockInputValue}
+                      // inputProps={{ type: 'stock' }}
+                      error={Boolean(errors.stock)}
+                      helperText={errors.stock ? 'Stock is required' : ''}
+                    >
+                      {[...Array(10).keys()].map((num) => (
+                        <MenuItem value={num}>{num}</MenuItem>
+                      ))}
+                    </TextField>
+                  </FormControl>
+                </ListItem>
+                <ListItem></ListItem>
+
                 {/* <ListItem>
                   <ControlledAutoComplete
                     control={control}

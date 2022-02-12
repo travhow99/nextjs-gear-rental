@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
+/**
+ * Src https://betterprogramming.pub/clean-api-call-with-react-hooks-3bd6438a375a
+ */
 export default (apiCall) => {
-  console.log('api call!', apiCall);
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
