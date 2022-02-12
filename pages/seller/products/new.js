@@ -18,6 +18,7 @@ import {
   InputLabel,
   FormControl,
   Box,
+  InputAdornment,
 } from '@material-ui/core';
 import { getError } from '../../../utils/error';
 import useStyles from '../../../utils/styles';
@@ -52,6 +53,8 @@ const postProduct = (payload) => axios.post('/api/sellerProducts', payload);
 function AddProduct() {
   const [title, setTitle] = useState('');
   const [stock, setStock] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
   // const [titleInputValue, setTitleInputValue] = useState('');
   const [brand, setBrand] = useState(null);
   const [brandInputValue, setBrandInputValue] = useState('');
@@ -63,6 +66,8 @@ function AddProduct() {
     title: null,
     brand: null,
     category: null,
+    description: null,
+    price: null,
   });
 
   const rules = {
@@ -76,6 +81,12 @@ function AddProduct() {
       required: true,
     },
     stock: {
+      required: true,
+    },
+    description: {
+      required: true,
+    },
+    price: {
       required: true,
     },
   };
@@ -157,6 +168,8 @@ function AddProduct() {
         brand: brand,
         category: category,
         stock: stock,
+        description: description,
+        price: price,
       })
     ) {
       enqueueSnackbar('There is an error with your submission!', {
@@ -175,9 +188,9 @@ function AddProduct() {
         rental_min: 1,
         title: title,
         brand: brand,
-        price: 0,
+        price: price,
         stock: stock,
-        description: '',
+        description: description,
       });
 
       console.log('got post data', data);
@@ -248,6 +261,17 @@ function AddProduct() {
       } else {
         // final else clause to clear errors
         newErrors.stock = null;
+      }
+    }
+
+    if (rules.price) {
+      console.log('price rules', price);
+
+      if (rules.price.required && !price) {
+        newErrors.price = { type: 'required' };
+      } else {
+        // final else clause to clear errors
+        newErrors.price = null;
       }
     }
 
@@ -372,35 +396,96 @@ function AddProduct() {
                   />
                 </ListItem>
                 <ListItem>
-                  <FormControl fullWidth>
-                    {console.log('has stock?', stock)}
-                    <TextField
-                      name="stock"
-                      variant="outlined"
-                      type={'number'}
-                      fullWidth
-                      id="sellerProductStock"
-                      labelId="sellerProductStock"
-                      label="Stock"
-                      value={stock}
-                      displayEmpty
-                      onChange={(e, newValue) => {
-                        console.log('onchange,', e.target.value, newValue);
-                        setStock(e.target.value);
-                      }}
-                      select
-                      // inputValue={stockInputValue}
-                      // inputProps={{ type: 'stock' }}
-                      error={Boolean(errors.stock)}
-                      helperText={errors.stock ? 'Stock is required' : ''}
-                    >
-                      {[...Array(10).keys()].map((num) => (
-                        <MenuItem value={num}>{num}</MenuItem>
-                      ))}
-                    </TextField>
-                  </FormControl>
+                  <Grid container spacing={1}>
+                    <Grid item xs>
+                      <FormControl fullWidth>
+                        {console.log('has stock?', stock)}
+                        <TextField
+                          name="stock"
+                          variant="outlined"
+                          type={'number'}
+                          fullWidth
+                          id="sellerProductStock"
+                          labelId="sellerProductStock"
+                          label="Stock"
+                          value={stock}
+                          onChange={(e, newValue) => {
+                            console.log('onchange,', e.target.value, newValue);
+                            setStock(e.target.value);
+                          }}
+                          select
+                          // inputValue={stockInputValue}
+                          // inputProps={{ type: 'stock' }}
+                          error={Boolean(errors.stock)}
+                          helperText={errors.stock ? 'Stock is required' : ''}
+                        >
+                          {[...Array(10).keys()].map((num) => (
+                            <MenuItem value={num}>{num}</MenuItem>
+                          ))}
+                        </TextField>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs>
+                      <FormControl fullWidth>
+                        {console.log('has price?', price)}
+                        <TextField
+                          name="price"
+                          variant="outlined"
+                          fullWidth
+                          id="sellerProductPrice"
+                          labelId="sellerProductPrice"
+                          label="Price"
+                          value={price}
+                          onChange={(e, newValue) => {
+                            const numsOnly = e.target.value.replace(
+                              /[^0-9.]/g,
+                              ''
+                            );
+
+                            console.log('onchange,', e.target.value, numsOnly);
+
+                            if (numsOnly.indexOf('.') >= 0) {
+                              setPrice(Number(numsOnly).toFixed(2));
+                            } else {
+                              setPrice(Number(numsOnly));
+                            }
+                          }}
+                          error={Boolean(errors.price)}
+                          helperText={errors.price ? 'Price is required' : ''}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                $
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
                 </ListItem>
-                <ListItem></ListItem>
+                <ListItem>
+                  <TextField
+                    name="description"
+                    variant="outlined"
+                    type={'number'}
+                    fullWidth
+                    id="sellerProductDescription"
+                    labelId="sellerProductDescription"
+                    label="Description"
+                    value={description}
+                    onChange={(e, newValue) => {
+                      console.log('onchange,', e.target.value, newValue);
+                      setDescription(e.target.value);
+                    }}
+                    multiline
+                    maxRows={4}
+                    error={Boolean(errors.description)}
+                    helperText={
+                      errors.description ? 'Description is required' : ''
+                    }
+                  />
+                </ListItem>
 
                 {/* <ListItem>
                   <ControlledAutoComplete
