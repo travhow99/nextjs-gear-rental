@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default (apiCall) => {
+export default (formHook) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -9,7 +9,7 @@ export default (apiCall) => {
     setLoading(true);
 
     try {
-      const result = await apiCall(...args);
+      const result = await formHook(...args);
       setData(result.data);
     } catch (error) {
       setError(err.message || 'Unexpected Error!');

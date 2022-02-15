@@ -44,8 +44,6 @@ import {
   categoryRequest,
   categoryFail,
 } from '../../../redux/category/categorySlice';
-import ControlledAutoComplete from '../../../components/utilities/form/ControlledAutoComplete';
-import CountrySelect from '../../../components/utilities/form/CountrySelect';
 import useApi from '../../../utils/hooks/useApi';
 
 const postProduct = (payload) => axios.post('/api/sellerProducts', payload);
@@ -66,6 +64,7 @@ function AddProduct() {
     title: null,
     brand: null,
     category: null,
+    stock: null,
     description: null,
     price: null,
   });
@@ -182,7 +181,6 @@ function AddProduct() {
     try {
       const { data } = postProductApi.request({
         product: title,
-        // user: session.user, backend
         slug: '',
         category: category,
         rental_min: 1,
@@ -289,11 +287,6 @@ function AddProduct() {
   };
 
   //   const { userInfo } = state;
-
-  /**
-   * @todo Implement mui validation handling
-   * https://mui.com/components/text-fields/#validation
-   */
 
   console.log('form err?', errors);
   console.log(title, brand);
