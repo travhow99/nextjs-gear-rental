@@ -26,7 +26,6 @@ import Loading from '../../components/Loading';
 
 const Account = () => {
   const auth = true;
-  const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
   });

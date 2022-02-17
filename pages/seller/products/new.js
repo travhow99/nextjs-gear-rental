@@ -179,7 +179,7 @@ function AddProduct() {
     }
 
     try {
-      const { data } = postProductApi.request({
+      const { data } = await postProductApi.request({
         product: title,
         slug: '',
         category: category,
