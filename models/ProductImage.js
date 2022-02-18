@@ -1,12 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
-const sellerProductSchema = new mongoose.Schema(
+const productImageSchema = new mongoose.Schema(
   {
-    //   id: { type: String, required: true },
-    product: {
-      type: String,
-      required: true,
-    } /* { type: mongoose.Schema.Types.ObjectId, ref: 'Product' } */,
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     // slug: { type: String, required: true },
     stock: { type: Number, default: 0 },
@@ -21,12 +16,6 @@ const sellerProductSchema = new mongoose.Schema(
     // rating: { type: Number, required: true, default: 0 },
     description: { type: String },
     keyword: { type: String },
-    images: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ProductImage',
-      },
-    ],
   },
   {
     timestamps: true,
@@ -41,7 +30,7 @@ const sellerProductSchema = new mongoose.Schema(
  * Statics
  */
 
-const SellerProduct =
-  mongoose.models['SellerProduct'] ||
-  mongoose.model('SellerProduct', sellerProductSchema);
-export default SellerProduct;
+const ProductImage =
+  mongoose.models['ProductImage'] ||
+  mongoose.model('ProductImage', productImageSchema);
+export default ProductImage;
