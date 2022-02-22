@@ -16,9 +16,21 @@ import {
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
 import LoadingPage from '../../../components/pages/LoadingPage';
 import SellerContainer from '../../../components/seller/SellerContainer';
+import {
+  brandFail,
+  brandRequest,
+  brandSuccess,
+} from '../../../redux/brand/brandSlice';
+import {
+  categoryFail,
+  categoryRequest,
+  categorySuccess,
+} from '../../../redux/category/categorySlice';
+import SellerHelper from '../../../utils/seller/SellerHelper';
 
 import useStyles from '../../../utils/styles';
 
@@ -42,14 +54,22 @@ function SellerProduct({ params }) {
 
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+  const {
+    brand: { brands },
+    category: { categories },
+  } = useSelector((state) => state);
+
   const { data: session, status } = useSession({
     required: true,
   });
 
   useEffect(() => {
     setLoading(true);
+    if (!brands.length) fetchBrands();
+    if (!categories.length) fetchCategories();
     fetchSellerProduct();
-  }, []);
+  }, [brands, categories]);
 
   const fetchSellerProduct = async () => {
     try {
@@ -75,6 +95,36 @@ function SellerProduct({ params }) {
       setLoading(false);
     } catch (err) {
       console.log('got err!', err);
+    }
+  };
+
+  const fetchBrands = async () => {
+    try {
+      dispatch(brandRequest());
+
+      const data = await SellerHelper.fetchBrands();
+      console.log('got brands', data);
+
+      dispatch(brandSuccess(data));
+    } catch (error) {
+      console.log('fetch error', error);
+
+      dispatch(brandFail(error));
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      dispatch(categoryRequest());
+
+      const data = await SellerHelper.fetchCategories();
+      console.log('got cats', data);
+
+      dispatch(categorySuccess(data));
+    } catch (error) {
+      console.log('fetch error', error);
+
+      dispatch(categoryFail(error));
     }
   };
 
@@ -107,50 +157,94 @@ function SellerProduct({ params }) {
               <TextField
                 id="stock"
                 label="Stock"
-                value={stock}
+                value={stock || ''}
                 type={'number'}
                 variant="outlined"
               />
             </ListItem>
             <ListItem>
-              <Typography component="label">Category:&nbsp;</Typography>
-              <Typography component="p">{category}</Typography>
+              <TextField
+                id="category"
+                label="Category"
+                value={category || ''}
+                type={'number'}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Rental Min:&nbsp;</Typography>
-              <Typography component="p">{rentalMin}</Typography>
+              <TextField
+                id="rentalMin"
+                label="Rental Min"
+                value={rentalMin || ''}
+                type={'number'}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Title:&nbsp;</Typography>
-              <Typography component="p">{title}</Typography>
+              <TextField
+                id="title"
+                label="Title"
+                value={title || ''}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Brand:&nbsp;</Typography>
-              <Typography component="p">{brand}</Typography>
+              <TextField
+                id="brand"
+                label="Brand"
+                value={brand || ''}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Gender:&nbsp;</Typography>
-              <Typography component="p">{gender}</Typography>
+              <TextField
+                id="gender"
+                label="Gender"
+                value={gender || ''}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Size:&nbsp;</Typography>
-              <Typography component="p">{size}</Typography>
+              <TextField
+                id="size"
+                label="Size"
+                value={size || ''}
+                type={'number'}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Condition:&nbsp;</Typography>
-              <Typography component="p">{condition}</Typography>
+              <TextField
+                id="condition"
+                label="Condition"
+                value={condition || ''}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Price:&nbsp;</Typography>
-              <Typography component="p">{price}</Typography>
+              <TextField
+                id="price"
+                label="Price"
+                value={price || ''}
+                type={'number'}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Description:&nbsp;</Typography>
-              <Typography component="p">{description}</Typography>
+              <TextField
+                id="description"
+                label="Description"
+                value={description || ''}
+                variant="outlined"
+              />
             </ListItem>
             <ListItem>
-              <Typography component="label">Keyword:&nbsp;</Typography>
-              <Typography component="p">{keyword}</Typography>
+              <TextField
+                id="keyword"
+                label="Keyword"
+                value={keyword || ''}
+                variant="outlined"
+              />
             </ListItem>
           </List>
         ) : (

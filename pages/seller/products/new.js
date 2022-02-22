@@ -45,6 +45,7 @@ import {
   categoryFail,
 } from '../../../redux/category/categorySlice';
 import useApi from '../../../utils/hooks/useApi';
+import SellerHelper from '../../../utils/seller/SellerHelper';
 
 const postProduct = (payload) => axios.post('/api/sellerProducts', payload);
 
@@ -115,7 +116,7 @@ function AddProduct() {
     try {
       dispatch(brandRequest());
 
-      const { data } = await axios.get('/api/brands');
+      const data = await SellerHelper.fetchBrands();
       console.log('got brands', data);
 
       dispatch(brandSuccess(data));
@@ -130,7 +131,8 @@ function AddProduct() {
     try {
       dispatch(categoryRequest());
 
-      const { data } = await axios.get('/api/categories');
+      const data = await SellerHelper.fetchCategories();
+      console.log('got cats', data);
 
       dispatch(categorySuccess(data));
     } catch (error) {
@@ -413,7 +415,9 @@ function AddProduct() {
                           helperText={errors.stock ? 'Stock is required' : ''}
                         >
                           {[...Array(10).keys()].map((num) => (
-                            <MenuItem value={num}>{num}</MenuItem>
+                            <MenuItem key={num} value={num}>
+                              {num}
+                            </MenuItem>
                           ))}
                         </TextField>
                       </FormControl>
