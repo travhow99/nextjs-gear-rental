@@ -13,8 +13,10 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { Autocomplete, TextField as MuiTextField } from '@mui/material';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
@@ -44,6 +46,8 @@ function SellerProduct({ params }) {
   const [rentalMin, setRentalMin] = useState(false);
   const [title, setTitle] = useState(false);
   const [brand, setBrand] = useState(false);
+  const [brandInputValue, setBrandInputValue] = useState('');
+  const [categoryInputValue, setCategoryInputValue] = useState('');
   const [gender, setGender] = useState(false);
   const [size, setSize] = useState(false);
   const [condition, setCondition] = useState(false);
@@ -51,6 +55,7 @@ function SellerProduct({ params }) {
   const [description, setDescription] = useState(false);
   const [keyword, setKeyword] = useState(false);
   const [images, setImages] = useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const classes = useStyles();
 
@@ -128,6 +133,31 @@ function SellerProduct({ params }) {
     }
   };
 
+  /**
+   * @todo compare to return data & only PUT if data has changed
+   */
+  const handleBlur = async (e) => {
+    closeSnackbar();
+
+    console.log(e, e.target, e.target.name, e.target.value);
+
+    try {
+      const { data } = await axios.put(
+        `/api/sellerProducts/${sellerProductId}`,
+        {
+          [e.target.name]: e.target.value,
+        }
+      );
+
+      enqueueSnackbar('Product updated successfully', { variant: 'success' });
+
+      console.log('blur data', data);
+    } catch (error) {
+      console.log('got err!', err);
+      enqueueSnackbar(getError(err), { variant: 'error' });
+    }
+  };
+
   const sellerProduct = null;
   return status ? (
     <SellerContainer>
@@ -155,95 +185,241 @@ function SellerProduct({ params }) {
             </ListItem>
             <ListItem>
               <TextField
-                id="stock"
-                label="Stock"
-                value={stock || ''}
-                type={'number'}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="category"
-                label="Category"
-                value={category || ''}
-                type={'number'}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="rentalMin"
-                label="Rental Min"
-                value={rentalMin || ''}
-                type={'number'}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
+                fullWidth
                 id="title"
+                name="title"
                 label="Title"
                 value={title || ''}
                 variant="outlined"
+                onChange={(e, newValue) => {
+                  console.log('onchange', e, e.target.value);
+
+                  setTitle(e.target.value);
+                }}
+                onBlur={handleBlur}
               />
+            </ListItem>
+
+            <ListItem>
+              <Grid container spacing={1}>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    id="stock"
+                    name="stock"
+                    label="Stock"
+                    value={stock || ''}
+                    type={'number'}
+                    variant="outlined"
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setStock(e.target.value);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    id="rentalMin"
+                    name="rentalMin"
+                    label="Rental Min"
+                    value={rentalMin || ''}
+                    type={'number'}
+                    variant="outlined"
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setRentalMin(e.target.value);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+              </Grid>
+            </ListItem>
+            <ListItem>
+              <Grid container spacing={1}>
+                <Grid item xs>
+                  <Autocomplete
+                    fullWidth
+                    name="brand"
+                    options={brands.map((brand) => brand.title)}
+                    value={brand || null}
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setBrand(newValue);
+                    }}
+                    inputValue={brandInputValue}
+                    onInputChange={(e, newValue) => {
+                      setBrandInputValue(newValue);
+                      console.log('onchange input', e, newValue);
+                    }}
+                    onBlur={handleBlur}
+                    disableClearable
+                    renderInput={(params) => (
+                      <MuiTextField
+                        fullWidth
+                        {...params}
+                        label="Brand"
+                        // error={Boolean(errors.brand)}
+                        /* helperText={
+                      errors.brand
+                        ? errors.brand.type === 'minLength'
+                          ? 'Brand length is more than 1'
+                          : 'Brand is required'
+                        : ''
+                    } */
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <Autocomplete
+                    fullWidth
+                    name="category"
+                    disableClearable
+                    options={categories.map((category) => category.name)}
+                    value={category || null}
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+                      setCategory(newValue);
+                    }}
+                    inputValue={categoryInputValue}
+                    onInputChange={(e, newValue) => {
+                      setCategoryInputValue(newValue);
+                      console.log('onchange input', e, newValue);
+                    }}
+                    onBlur={handleBlur}
+                    renderInput={(params) => (
+                      <MuiTextField
+                        {...params}
+                        label="Category"
+                        /* error={Boolean(errors.category)}
+                      helperText={
+                        errors.category
+                          ? errors.category.type === 'minLength'
+                            ? 'Category length is more than 1'
+                            : 'Category is required'
+                          : ''
+                      } */
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            </ListItem>
+
+            <ListItem>
+              <Grid container spacing={1}>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    id="gender"
+                    name="gender"
+                    label="Gender"
+                    value={gender || ''}
+                    variant="outlined"
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setGender(e.target.value);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    id="size"
+                    name="size"
+                    label="Size"
+                    value={size || ''}
+                    type={'number'}
+                    variant="outlined"
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setSize(e.target.value);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    id="condition"
+                    name="condition"
+                    label="Condition"
+                    value={condition || ''}
+                    variant="outlined"
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setCondition(e.target.value);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+              </Grid>
+            </ListItem>
+            <ListItem>
+              <Grid container spacing={1}>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    id="price"
+                    name="price"
+                    label="Price"
+                    value={price || ''}
+                    type={'number'}
+                    variant="outlined"
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setPrice(e.target.value);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    id="keyword"
+                    name="keyword"
+                    label="Keyword"
+                    value={keyword || ''}
+                    variant="outlined"
+                    onChange={(e, newValue) => {
+                      console.log('onchange', e, newValue);
+
+                      setKeyword(e.target.value);
+                    }}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+              </Grid>
             </ListItem>
             <ListItem>
               <TextField
-                id="brand"
-                label="Brand"
-                value={brand || ''}
+                name="description"
                 variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="gender"
-                label="Gender"
-                value={gender || ''}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="size"
-                label="Size"
-                value={size || ''}
-                type={'number'}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="condition"
-                label="Condition"
-                value={condition || ''}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="price"
-                label="Price"
-                value={price || ''}
-                type={'number'}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="description"
+                fullWidth
+                id="sellerProductDescription"
+                // labelId="sellerProductDescription"
                 label="Description"
                 value={description || ''}
-                variant="outlined"
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                id="keyword"
-                label="Keyword"
-                value={keyword || ''}
-                variant="outlined"
+                onChange={(e, newValue) => {
+                  setDescription(e.target.value);
+                }}
+                onBlur={handleBlur}
+                multiline
+                maxRows={4}
+                /* error={Boolean(errors.description)}
+                    helperText={
+                      errors.description ? 'Description is required' : ''
+                    } */
               />
             </ListItem>
           </List>

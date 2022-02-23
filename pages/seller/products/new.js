@@ -465,10 +465,9 @@ function AddProduct() {
                   <TextField
                     name="description"
                     variant="outlined"
-                    type={'number'}
                     fullWidth
                     id="sellerProductDescription"
-                    labelId="sellerProductDescription"
+                    // labelId="sellerProductDescription"
                     label="Description"
                     value={description}
                     onChange={(e, newValue) => {
