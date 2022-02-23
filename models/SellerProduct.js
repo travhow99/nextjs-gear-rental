@@ -11,7 +11,7 @@ const sellerProductSchema = new mongoose.Schema(
     // slug: { type: String, required: true },
     stock: { type: Number, default: 0 },
     category: { type: String, required: true },
-    rental_min: { type: Number, required: true },
+    rentalMin: { type: Number, required: true },
     title: { type: String, required: true },
     brand: { type: String, required: true },
     gender: { type: String, default: null },

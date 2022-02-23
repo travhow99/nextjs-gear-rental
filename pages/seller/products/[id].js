@@ -57,6 +57,8 @@ function SellerProduct({ params }) {
   const [images, setImages] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+  const [product, setProduct] = useState({});
+
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -86,7 +88,7 @@ function SellerProduct({ params }) {
 
       setCategory(data.category);
       setStock(data.stock);
-      setRentalMin(data.rental_min);
+      setRentalMin(data.rentalMin);
       setTitle(data.title);
       setBrand(data.brand);
       setGender(data.gender);
@@ -96,6 +98,21 @@ function SellerProduct({ params }) {
       setDescription(data.description);
       setKeyword(data.keyword);
       setImages(data.images);
+
+      setProduct({
+        category: data.category,
+        stock: data.stock,
+        rentalMin: data.rentalMin,
+        title: data.title,
+        brand: data.brand,
+        gender: data.gender,
+        size: data.size,
+        condition: data.condition,
+        price: data.price,
+        description: data.description,
+        keyword: data.keyword,
+        images: data.images,
+      });
 
       setLoading(false);
     } catch (err) {
@@ -149,6 +166,8 @@ function SellerProduct({ params }) {
         }
       );
 
+      setProduct(data.result);
+
       enqueueSnackbar('Product updated successfully', { variant: 'success' });
 
       console.log('blur data', data);
@@ -158,7 +177,10 @@ function SellerProduct({ params }) {
     }
   };
 
-  const sellerProduct = null;
+  const checkForChange = (name, val) => {
+    return val != product[name];
+  };
+
   return status ? (
     <SellerContainer>
       <Card className={classes.section}>
@@ -170,7 +192,7 @@ function SellerProduct({ params }) {
               </Typography>
             </ListItem>
             <ListItem>
-              {images?.length &&
+              {images?.length >= 1 &&
                 images.map((product) => (
                   <Grid item xs={4}>
                     'images

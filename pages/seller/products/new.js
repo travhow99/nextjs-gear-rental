@@ -50,6 +50,8 @@ import SellerHelper from '../../../utils/seller/SellerHelper';
 const postProduct = (payload) => axios.post('/api/sellerProducts', payload);
 
 function AddProduct() {
+  const router = useRouter();
+
   const [title, setTitle] = useState('');
   const [stock, setStock] = useState('');
   const [description, setDescription] = useState('');
@@ -151,6 +153,9 @@ function AddProduct() {
     getValues,
   } = useForm(); */
 
+  if (postProductApi.data?._id)
+    router.push(`/seller/products/${postProductApi.data._id}`);
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const classes = useStyles();
 
@@ -181,11 +186,11 @@ function AddProduct() {
     }
 
     try {
-      const { data } = await postProductApi.request({
+      await postProductApi.request({
         product: title,
         slug: '',
         category: category,
-        rental_min: 1,
+        rentalMin: 1,
         title: title,
         brand: brand,
         price: price,
@@ -193,7 +198,7 @@ function AddProduct() {
         description: description,
       });
 
-      console.log('got post data', data);
+      console.log('got post data', postProductApi.data);
 
       enqueueSnackbar('Profile updated successfully', { variant: 'success' });
     } catch (err) {
