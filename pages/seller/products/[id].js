@@ -158,6 +158,8 @@ function SellerProduct({ params }) {
 
     console.log(e, e.target, e.target.name, e.target.value);
 
+    if (!checkForChange(e.target.name, e.target.value)) return;
+
     try {
       const { data } = await axios.put(
         `/api/sellerProducts/${sellerProductId}`,
