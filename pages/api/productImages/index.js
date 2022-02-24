@@ -68,6 +68,7 @@ handler.post(async (req, res) => {
 
   const productImage = new ProductImage({
     user: req.user._id,
+    product: req.body.productId,
     path: result.secure_url,
     category: 'test',
   });

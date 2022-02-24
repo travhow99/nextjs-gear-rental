@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import axios from 'axios';
 
-export default function ImageUpload({}) {
+export default function ImageUpload({ productId }) {
   const uploadHandler = async (e) => {
     const formData = new FormData();
     const files = [];
@@ -12,7 +12,7 @@ export default function ImageUpload({}) {
     );
 
     // const file = e.target.files[0];
-    // formData.append('file', files);
+    formData.append('productId', productId);
 
     try {
       const { data } = axios.post('/api/productImages', formData, {

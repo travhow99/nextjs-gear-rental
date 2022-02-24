@@ -16,14 +16,7 @@ handler.get(async (req, res) => {
   console.log(req.query.id);
 
   const sellerproduct = await SellerProduct.findById(req.query.id);
-
-  /* .populate({
-      path: 'images'  , 'path' ,
-    })
-    .exec(); */
-  // .exec();
-  console.log('got sp:', sellerproduct);
-
+  console.log(sellerproduct);
   await db.disconnect();
 
   res.send(sellerproduct);

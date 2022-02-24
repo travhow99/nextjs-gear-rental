@@ -204,7 +204,7 @@ function SellerProduct({ params }) {
                 ))}
 
               {/* @todo implement AWS / Cloudflare upload process */}
-              <ImageUpload />
+              <ImageUpload productId={sellerProductId} />
             </ListItem>
             <ListItem>
               <TextField
