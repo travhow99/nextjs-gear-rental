@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
 import LoadingPage from '../../../components/pages/LoadingPage';
+import ImageUpload from '../../../components/seller/ImageUpload';
 import SellerContainer from '../../../components/seller/SellerContainer';
 import {
   brandFail,
@@ -32,13 +33,13 @@ import {
   categoryRequest,
   categorySuccess,
 } from '../../../redux/category/categorySlice';
+import { sellerUploadRequest } from '../../../redux/seller/sellerSlice';
 import SellerHelper from '../../../utils/seller/SellerHelper';
 
 import useStyles from '../../../utils/styles';
 
 function SellerProduct({ params }) {
   const sellerProductId = params.id;
-
   const [loading, setLoading] = useState(false);
 
   const [category, setCategory] = useState(false);
@@ -65,6 +66,7 @@ function SellerProduct({ params }) {
   const {
     brand: { brands },
     category: { categories },
+    seller: { uploadRequestLoading, uploadRequestError },
   } = useSelector((state) => state);
 
   const { data: session, status } = useSession({
@@ -202,10 +204,7 @@ function SellerProduct({ params }) {
                 ))}
 
               {/* @todo implement AWS / Cloudflare upload process */}
-              <Button variant="contained" component="label">
-                Upload File
-                <input type="file" hidden />
-              </Button>
+              <ImageUpload />
             </ListItem>
             <ListItem>
               <TextField
