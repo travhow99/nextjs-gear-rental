@@ -16,6 +16,7 @@ import {
 import { Autocomplete, TextField as MuiTextField } from '@mui/material';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -181,6 +182,13 @@ function SellerProduct({ params }) {
     }
   };
 
+  const onImageUpload = (data) => {
+    console.log('img upload data', data);
+
+    const updatedImages = [...images, data];
+    setImages(updatedImages);
+  };
+
   const checkForChange = (name, val) => {
     return val != product[name];
   };
@@ -197,14 +205,22 @@ function SellerProduct({ params }) {
             </ListItem>
             <ListItem>
               {images?.length >= 1 &&
-                images.map((product) => (
-                  <Grid item xs={4}>
-                    'images
+                images.map((image) => (
+                  <Grid key={image._id} item xs={4}>
+                    <Image
+                      src={image.path}
+                      alt={''}
+                      width={640}
+                      height={640}
+                      layout="responsive"
+                    ></Image>
                   </Grid>
                 ))}
 
-              {/* @todo implement AWS / Cloudflare upload process */}
-              <ImageUpload productId={sellerProductId} />
+              <ImageUpload
+                productId={sellerProductId}
+                onUpload={onImageUpload}
+              />
             </ListItem>
             <ListItem>
               <TextField

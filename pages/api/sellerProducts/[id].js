@@ -1,5 +1,6 @@
 import nc from 'next-connect';
 import SellerProduct from '../../../models/SellerProduct';
+import ProductImage from '../../../models/ProductImage';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
@@ -13,16 +14,9 @@ handler.use(isSeller);
 handler.get(async (req, res) => {
   await db.connect();
 
-  console.log(req.query.id);
-
-  const sellerproduct = await SellerProduct.findById(req.query.id);
-
-  /* .populate({
-      path: 'images'  , 'path' ,
-    })
-    .exec(); */
-  // .exec();
-  console.log('got sp:', sellerproduct);
+  const sellerproduct = await SellerProduct.findById(req.query.id).populate(
+    'images'
+  );
 
   await db.disconnect();
 
