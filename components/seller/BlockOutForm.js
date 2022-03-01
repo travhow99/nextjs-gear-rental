@@ -1,9 +1,10 @@
-import { Card } from '@material-ui/core';
+import { Card, Grid } from '@material-ui/core';
 import {
   Button,
   List,
   ListItem,
   Paper,
+  Stack,
   styled,
   TextField,
   Typography,
@@ -13,7 +14,11 @@ import { useState } from 'react';
 import DateHelper from '../../utils/DateHelper';
 import useStyles from '../../utils/styles';
 
-export default function BlockOutForm({ productId, blockOuts }) {
+export default function BlockOutForm({
+  productId,
+  blockOuts,
+  updateBlockOuts,
+}) {
   const [adding, setAdding] = useState(false);
   const [dateIn, setDateIn] = useState('');
   const [dateOut, setDateOut] = useState('');
@@ -48,6 +53,9 @@ export default function BlockOutForm({ productId, blockOuts }) {
       };
 
       const { data } = await axios.post('/api/blockOuts', formData);
+
+      updateBlockOuts([...blockOuts, data]);
+      setAdding(false);
     } catch (error) {
       console.log('product img err', error);
     }
@@ -80,6 +88,16 @@ export default function BlockOutForm({ productId, blockOuts }) {
             <ListItem>
               <Button
                 variant="contained"
+                fullWidth
+                color="secondary"
+                onClick={() => setAdding(false)}
+              >
+                Cancel
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                variant="contained"
                 type="submit"
                 fullWidth
                 color="primary"
@@ -99,11 +117,11 @@ export default function BlockOutForm({ productId, blockOuts }) {
                 + Add BlockOut
               </Paper>
             </ListItem>
-            <ListItem>
-              {blockOuts &&
-                blockOuts.length > 0 &&
-                blockOuts.map((bo) => (
-                  <Paper key={bo._id} className={classes.paper} elevation={3}>
+            {blockOuts &&
+              blockOuts.length > 0 &&
+              blockOuts.map((bo) => (
+                <ListItem key={bo._id}>
+                  <Paper className={classes.paper} elevation={3}>
                     {/**
                      *
                      * @todo Display hours & minutes as well
@@ -112,8 +130,8 @@ export default function BlockOutForm({ productId, blockOuts }) {
                     {DateHelper.timestampToDate(bo.dateOut)} -{' '}
                     {DateHelper.timestampToDate(bo.dateIn)}
                   </Paper>
-                ))}
-            </ListItem>
+                </ListItem>
+              ))}
           </>
         )}
       </List>

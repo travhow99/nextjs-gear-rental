@@ -477,7 +477,11 @@ function SellerProduct({ params }) {
       </Card>
       <Grid container spacing={1}>
         <Grid item xs>
-          <BlockOutForm productId={sellerProductId} blockOuts={blockOuts} />
+          <BlockOutForm
+            updateBlockOuts={setBlockOuts}
+            productId={sellerProductId}
+            blockOuts={blockOuts}
+          />
         </Grid>
         <Grid item xs></Grid>
       </Grid>
