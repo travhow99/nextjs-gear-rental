@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
 import LoadingPage from '../../../components/pages/LoadingPage';
+import BlockOutForm from '../../../components/seller/BlockOutForm';
 import ImageUpload from '../../../components/seller/ImageUpload';
 import SellerContainer from '../../../components/seller/SellerContainer';
 import {
@@ -57,6 +58,7 @@ function SellerProduct({ params }) {
   const [description, setDescription] = useState(false);
   const [keyword, setKeyword] = useState(false);
   const [images, setImages] = useState(false);
+  const [blockOuts, setBlockOuts] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [product, setProduct] = useState({});
@@ -101,6 +103,7 @@ function SellerProduct({ params }) {
       setDescription(data.description);
       setKeyword(data.keyword);
       setImages(data.images);
+      setBlockOuts(data.blockOuts);
 
       setProduct({
         category: data.category,
@@ -204,23 +207,29 @@ function SellerProduct({ params }) {
               </Typography>
             </ListItem>
             <ListItem>
-              {images?.length >= 1 &&
-                images.map((image) => (
-                  <Grid key={image._id} item xs={4}>
-                    <Image
-                      src={image.path}
-                      alt={''}
-                      width={640}
-                      height={640}
-                      layout="responsive"
-                    ></Image>
-                  </Grid>
-                ))}
+              <Grid container spacing={1}>
+                {/**
+                 * @todo upgrade to using image list
+                 * https://mui.com/components/image-list/
+                 */}
+                {images?.length >= 1 &&
+                  images.map((image) => (
+                    <Grid key={image._id} item xs={3}>
+                      <Image
+                        src={image.path}
+                        alt={''}
+                        width={640}
+                        height={640}
+                        layout="responsive"
+                      ></Image>
+                    </Grid>
+                  ))}
 
-              <ImageUpload
-                productId={sellerProductId}
-                onUpload={onImageUpload}
-              />
+                <ImageUpload
+                  productId={sellerProductId}
+                  onUpload={onImageUpload}
+                />
+              </Grid>
             </ListItem>
             <ListItem>
               <TextField
@@ -466,6 +475,12 @@ function SellerProduct({ params }) {
           <CircularProgress />
         )}
       </Card>
+      <Grid container spacing={1}>
+        <Grid item xs>
+          <BlockOutForm productId={sellerProductId} blockOuts={blockOuts} />
+        </Grid>
+        <Grid item xs></Grid>
+      </Grid>
     </SellerContainer>
   ) : (
     <Loading />

@@ -3,9 +3,14 @@ import mongoose from 'mongoose';
 const blockOutSchema = new mongoose.Schema(
   {
     user_id: { type: String, required: true },
-    product_id: { type: String, required: true },
-    date_out: { type: Date },
-    date_in: { type: Date },
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'SellerProduct',
+      required: true,
+    },
+    count: { type: Number, default: 1 },
+    dateOut: { type: Date },
+    dateIn: { type: Date },
     details: { type: String },
   },
   {

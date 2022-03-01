@@ -1,8 +1,5 @@
 import nc from 'next-connect';
 import SellerProduct from '../../../models/SellerProduct';
-import ProductImage from '../../../models/ProductImage';
-import Rental from '../../../models/Rental';
-import BlockOut from '../../../models/BlockOut';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
@@ -14,22 +11,15 @@ const handler = nc({
 handler.use(isSeller);
 
 handler.get(async (req, res) => {
-  try {
-    await db.connect();
+  await db.connect();
 
-    const sellerproduct = await SellerProduct.findById(req.query.id).populate([
-      'images',
-      // 'rentals',
-      'blockOuts',
-    ]);
+  console.log(req.query.id);
 
-    await db.disconnect();
+  const sellerproduct = await SellerProduct.findById(req.query.id);
+  console.log(sellerproduct);
+  await db.disconnect();
 
-    res.send(sellerproduct);
-  } catch (error) {
-    console.log('err', error);
-    res.status(404).send({ message: 'product not found' });
-  }
+  res.send(sellerproduct);
 });
 
 handler.put(async (req, res) => {

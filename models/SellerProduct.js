@@ -27,6 +27,18 @@ const sellerProductSchema = new mongoose.Schema(
         ref: 'ProductImage',
       },
     ],
+    rentals: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Rental',
+      },
+    ],
+    blockOuts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'BlockOut',
+      },
+    ],
   },
   {
     timestamps: true,

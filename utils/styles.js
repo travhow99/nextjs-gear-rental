@@ -57,6 +57,13 @@ const useStyles = makeStyles({
     maxWidth: 800,
     margin: '0 auto',
   },
+  paper: {
+    width: '100%',
+    textAlign: 'center',
+    height: 60,
+    lineHeight: '60px',
+    cursor: 'pointer',
+  },
 });
 
 export default useStyles;
