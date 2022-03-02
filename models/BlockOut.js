@@ -12,6 +12,7 @@ const blockOutSchema = new mongoose.Schema(
     dateOut: { type: Date },
     dateIn: { type: Date },
     details: { type: String },
+    softDelete: { type: Boolean, default: false },
   },
   {
     timestamps: true,

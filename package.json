@@ -43,5 +43,8 @@
     "remark-html": "^15.0.0",
     "streamifier": "^0.1.1",
     "tailwindcss": "^2.2.19"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.2"
   }
 }

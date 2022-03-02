@@ -1,5 +1,5 @@
 import nc from 'next-connect';
-import SellerProduct from '../../../models/SellerProduct';
+import BlockOut from '../../../models/BlockOut';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
@@ -15,17 +15,17 @@ handler.get(async (req, res) => {
 
   console.log(req.query.id);
 
-  const sellerproduct = await SellerProduct.findById(req.query.id);
-  console.log(sellerproduct);
+  const blockOut = await BlockOut.findById(req.query.id);
+  console.log(blockOut);
   await db.disconnect();
 
-  res.send(sellerproduct);
+  res.send(blockOut);
 });
 
 handler.put(async (req, res) => {
   await db.connect();
 
-  SellerProduct.findByIdAndUpdate(
+  BlockOut.findByIdAndUpdate(
     req.query.id,
     req.body,
     { new: true },
@@ -34,9 +34,28 @@ handler.put(async (req, res) => {
 
       if (err) {
         console.log('err', err);
-        res.status(404).send({ message: 'product not found' });
+        res.status(404).send({ message: 'blockout not found' });
       } else {
-        res.send({ message: 'product updated', result });
+        res.send({ message: 'blockout updated', result });
+      }
+    }
+  );
+});
+
+handler.delete(async (req, res) => {
+  await db.connect();
+
+  BlockOut.findByIdAndUpdate(
+    req.query.id,
+    { softDelete: true },
+    async (err, result) => {
+      await db.disconnect();
+
+      if (err) {
+        console.log('err', err);
+        res.status(404).send({ message: 'blockout not found' });
+      } else {
+        res.send({ message: 'blockout deleted', result });
       }
     }
   );

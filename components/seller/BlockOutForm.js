@@ -13,6 +13,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import DateHelper from '../../utils/DateHelper';
 import useStyles from '../../utils/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmationDialog from '../utilities/dialogs/ConfirmationDialog';
 
 export default function BlockOutForm({
   productId,
@@ -22,9 +24,12 @@ export default function BlockOutForm({
   const [adding, setAdding] = useState(false);
   const [dateIn, setDateIn] = useState('');
   const [dateOut, setDateOut] = useState('');
+  const [showDelete, setShowDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
   const classes = useStyles();
 
-  console.log('bo form', blockOuts, productId, dateIn, dateOut);
+  console.log('bo form', deleteId);
 
   const uploadHandler = async (e) => {
     try {
@@ -61,6 +66,63 @@ export default function BlockOutForm({
     }
   };
 
+  const updateBlockOutHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = {
+        id: adding,
+        dateIn,
+        dateOut,
+        product: productId,
+      };
+
+      const { data } = await axios.post('/api/blockOuts', formData);
+
+      updateBlockOuts([...blockOuts, data]);
+      setAdding(false);
+    } catch (error) {
+      console.log('product img err', error);
+    }
+  };
+
+  const handleDelete = (e, deleteId) => {
+    e.stopPropagation();
+    console.log('do delete');
+
+    setShowDelete(true);
+    setDeleteId(deleteId);
+  };
+  const handleCancel = () => {
+    setAdding(false);
+    setDateIn('');
+    setDateOut('');
+  };
+
+  const handleCancelDelete = () => {
+    setShowDelete(false);
+    setDeleteId(null);
+  };
+
+  const editBlockOut = ({ dateIn, dateOut, _id }) => {
+    setDateIn(DateHelper.dateToDateTimeLocalFormat(dateIn));
+    setDateOut(DateHelper.dateToDateTimeLocalFormat(dateOut));
+    setAdding(_id);
+  };
+
+  const handleConfirmDelete = async () => {
+    await axios.delete(`/api/blockOuts/${deleteId}`);
+
+    const removeIndex = blockOuts.findIndex((bo) => bo._id === deleteId);
+    const updatedBlockOuts = blockOuts.filter(
+      (bo, index) => index !== removeIndex
+    );
+
+    updateBlockOuts(updatedBlockOuts);
+
+    setShowDelete(false);
+    setDeleteId(null);
+  };
+
   return (
     <Card className={classes.section}>
       <List>
@@ -90,7 +152,7 @@ export default function BlockOutForm({
                 variant="contained"
                 fullWidth
                 color="secondary"
-                onClick={() => setAdding(false)}
+                onClick={handleCancel}
               >
                 Cancel
               </Button>
@@ -121,20 +183,35 @@ export default function BlockOutForm({
               blockOuts.length > 0 &&
               blockOuts.map((bo) => (
                 <ListItem key={bo._id}>
-                  <Paper className={classes.paper} elevation={3}>
+                  <Paper
+                    className={classes.paper}
+                    elevation={3}
+                    onClick={() => editBlockOut(bo)}
+                  >
                     {/**
                      *
                      * @todo Display hours & minutes as well
                      *
                      */}
-                    {DateHelper.timestampToDate(bo.dateOut)} -{' '}
-                    {DateHelper.timestampToDate(bo.dateIn)}
+                    {DateHelper.timestampToDate(bo.dateIn)} -{' '}
+                    {DateHelper.timestampToDate(bo.dateOut)}
+                    <DeleteIcon
+                      className={'ml-2 text-red-500'}
+                      onClick={(e) => handleDelete(e, bo._id)}
+                    />
                   </Paper>
                 </ListItem>
               ))}
           </>
         )}
       </List>
+      <ConfirmationDialog
+        title="Delete BlockOut?"
+        text="Are you sure you would like to delete this block out? This cannot be undone!"
+        open={showDelete}
+        handleAccept={handleConfirmDelete}
+        handleCancel={handleCancelDelete}
+      />
     </Card>
   );
 }

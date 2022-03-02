@@ -20,7 +20,10 @@ handler.get(async (req, res) => {
     const sellerproduct = await SellerProduct.findById(req.query.id).populate([
       'images',
       // 'rentals',
-      'blockOuts',
+      {
+        path: 'blockOuts',
+        match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+      },
     ]);
 
     await db.disconnect();
