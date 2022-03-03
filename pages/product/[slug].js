@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { getTopItems } from '../../lib/items';
 import Layout from '../../components/layout/Layout';
-import Item from '../../components/products/item';
+import Item from '../../components/products/Item';
 import Product from '../../models/Product';
 import db from '../../utils/db';
 

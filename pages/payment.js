@@ -14,21 +14,16 @@ import { useSnackbar } from 'notistack';
 import React, { useContext, useEffect, useState } from 'react';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/layout/Layout';
-import { Store } from '../utils/Store';
 import useStyles from '../utils/styles';
 
 export default function Payment() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const router = useRouter();
   const [paymentMethod, setPaymentMethod] = useState('');
-  const { state, dispatch } = useContext(Store);
-  const {
-    cart: { shippingAddress },
-  } = state;
   const classes = useStyles();
 
   useEffect(() => {
-    if (!shippingAddress.address) {
+    if (!shippingAddress?.address) {
       router.push('/shipping');
     } else {
       setPaymentMethod(Cookies.get('paymentMethod') || '');
