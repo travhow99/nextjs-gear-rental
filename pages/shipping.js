@@ -12,7 +12,7 @@ import React, { useContext, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/layout/Layout';
-import { Store } from '../utils/Store';
+
 import useStyles from '../utils/styles';
 
 export default function Shipping() {
@@ -24,17 +24,13 @@ export default function Shipping() {
   } = useForm();
 
   const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+
   const { status, data: session } = useSession({
     required: true,
     onUnauthenticated() {
       signIn();
     },
   });
-
-  const {
-    cart: { shippingAddress },
-  } = state;
 
   useEffect(() => {
     setValue('fullName', shippingAddress?.fullName);

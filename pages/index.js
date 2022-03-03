@@ -1,13 +1,5 @@
-import Head from 'next/head';
 import Layout from '../components/layout/Layout';
 // import { getSortedPostsData } from "../lib/posts";
-import Link from 'next/link';
-import Date from '../components/date';
-import utilStyles from '../styles/utils.module.css';
-import itemList from '../components/products/seed';
-import Item from '../components/products/item';
-import { getTopItems } from '../lib/items';
-import { Box, SimpleGrid } from '@chakra-ui/layout';
 import HomeCallToAction from '../components/layout/Home';
 import db from '../utils/db';
 import Product from '../models/Product';
