@@ -1,9 +1,6 @@
 import { useState } from 'react';
 
-/**
- * Src https://betterprogramming.pub/clean-api-call-with-react-hooks-3bd6438a375a
- */
-export default (apiCall) => {
+export default (formHook) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,9 +9,9 @@ export default (apiCall) => {
     setLoading(true);
 
     try {
-      const result = await apiCall(...args);
+      const result = await formHook(...args);
       setData(result.data);
-    } catch (err) {
+    } catch (error) {
       setError(err.message || 'Unexpected Error!');
     } finally {
       setLoading(false);

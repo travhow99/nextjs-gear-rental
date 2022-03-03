@@ -1,5 +1,5 @@
 import nc from 'next-connect';
-import SellerProduct from '../../../models/SellerProduct';
+import Category from '../../../models/Category';
 import db from '../../../utils/db';
 
 const handler = nc();
@@ -9,11 +9,11 @@ handler.get(async (req, res) => {
 
   console.log(req.query.id);
 
-  const sellerproduct = await SellerProduct.findById(req.query.id);
-  console.log(sellerproduct);
+  const category = await Category.findById(req.query.id);
+  console.log(category);
   await db.disconnect();
 
-  res.send(sellerproduct);
+  res.send(category);
 });
 
 export default handler;

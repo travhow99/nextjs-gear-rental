@@ -1,14 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const sellerProductSchema = new mongoose.Schema(
   {
     //   id: { type: String, required: true },
-    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    product: {
+      type: String,
+      required: true,
+    } /* { type: mongoose.Schema.Types.ObjectId, ref: 'Product' } */,
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    slug: { type: String, required: true, unique: true },
+    // slug: { type: String, required: true },
     stock: { type: Number, default: 0 },
     category: { type: String, required: true },
-    rental_min: { type: Number, required: true },
+    rentalMin: { type: Number, required: true },
     title: { type: String, required: true },
     brand: { type: String, required: true },
     gender: { type: String, default: null },
@@ -16,8 +19,26 @@ const sellerProductSchema = new mongoose.Schema(
     condition: { type: String, default: null },
     price: { type: Number, required: true },
     // rating: { type: Number, required: true, default: 0 },
-    description: { type: String, required: true },
+    description: { type: String },
     keyword: { type: String },
+    images: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ProductImage',
+      },
+    ],
+    rentals: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Rental',
+      },
+    ],
+    blockOuts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'BlockOut',
+      },
+    ],
   },
   {
     timestamps: true,

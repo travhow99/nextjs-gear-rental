@@ -49,6 +49,16 @@ export default function Layout({ title, description, children, home }) {
         fontWeight: 400,
         margin: '1rem 0',
       },
+      h3: {
+        fontSize: '1.2rem',
+        fontWeight: 400,
+        margin: '.5rem 0',
+      },
+      h4: {
+        fontSize: '1rem',
+        fontWeight: 400,
+        margin: '.5rem 0',
+      },
     },
     /* palette: {
       type: darkMode ? 'dark' : 'light',

@@ -23,12 +23,10 @@ export default function LoginText() {
   const loginMenuCloseHandler = (e, redirect = null) => {
     setAnchorEl(null);
 
-    console.log(e, 'red?', redirect);
     if (redirect) router.push(redirect);
   };
 
   const loginClickHandler = async () => {
-    console.log('login click');
     signIn();
   };
 
@@ -41,8 +39,6 @@ export default function LoginText() {
     });
   };
 
-  console.log('sesh:', session);
-  console.log('anchor:', anchorEl);
   if (session) {
     return (
       <>

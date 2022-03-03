@@ -6,6 +6,8 @@ export const sellerSlice = createSlice({
     sales: [],
     requestLoading: false,
     requestError: '',
+    uploadRequestLoading: false,
+    uploadRequestError: '',
   },
   reducers: {
     sellerSalesRequest: (state) => {
@@ -21,6 +23,19 @@ export const sellerSlice = createSlice({
       state.requestError = '';
       state.sales = action.payload;
     },
+    sellerUploadRequest: (state) => {
+      state.uploadRequestLoading = true;
+      state.uploadRequestError = '';
+    },
+    sellerUploadFail: (state, action) => {
+      state.uploadRequestLoading = false;
+      state.uploadRequestError = action.payload;
+    },
+    sellerUploadSuccess: (state, action) => {
+      state.uploadRequestLoading = false;
+      state.uploadRequestError = '';
+    },
+
     // selectSeller:
   },
 });

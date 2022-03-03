@@ -11,10 +11,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import useStyles from '../../utils/styles';
 import LoginText from './LoginText';
 
-export default function Header({ darkMode, darkModeChangeHandler, cart }) {
+export default function Header({ cart }) {
   const classes = useStyles();
-
-  console.log('checked??', darkMode);
 
   const headerImg =
     'https://icons.iconarchive.com/icons/blackvariant/button-ui-system-folders-drives/1024/Generic-icon.png';
