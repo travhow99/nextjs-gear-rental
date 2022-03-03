@@ -4,7 +4,7 @@ import SellerProduct from '../../../models/SellerProduct';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
-import BlockOut from '../../../models/blockOut';
+import BlockOut from '../../../models/BlockOut';
 
 const handler = nc({
   onError,
