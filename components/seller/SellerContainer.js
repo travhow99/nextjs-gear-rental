@@ -19,9 +19,9 @@ export default function SellerContainer({ title, children }) {
       title: 'Sales',
     },
     {
-      href: '/seller/inventory',
-      selected: title === 'Inventory',
-      title: 'Inventory',
+      href: '/seller/products',
+      selected: title === 'Products',
+      title: 'Products',
     },
   ];
 

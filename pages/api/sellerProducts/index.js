@@ -8,7 +8,29 @@ const handler = nc({
   onError,
 });
 
-handler.use(isSeller); // @todo isSeller
+handler.use(isSeller);
+
+handler.get(async (req, res) => {
+  try {
+    await db.connect();
+
+    const products = await SellerProduct.find({
+      user_id: req.user._id,
+    }).populate([
+      'images',
+      // 'rentals',
+      {
+        path: 'blockOuts',
+        match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+      },
+    ]);
+
+    await db.disconnect();
+    res.status(200).send(products);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
 
 handler.post(async (req, res) => {
   await db.connect();
