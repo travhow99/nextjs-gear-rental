@@ -197,7 +197,7 @@ function SellerProduct({ params }) {
   };
 
   return status ? (
-    <SellerContainer>
+    <SellerContainer title={'Products'}>
       <Card className={classes.section}>
         {title ? (
           <List>

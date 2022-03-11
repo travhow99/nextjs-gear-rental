@@ -1,5 +1,7 @@
 import nc from 'next-connect';
 import Order from '../../../models/Order';
+import Rental from '../../../models/Rental';
+import SellerProduct from '../../../models/SellerProduct';
 import { isAuth } from '../../../utils/auth';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
@@ -11,16 +13,42 @@ const handler = nc({
 handler.use(isAuth);
 
 handler.post(async (req, res) => {
-  await db.connect();
-  const newOrder = new Order({
-    ...req.body,
-    user: req.user._id,
-  });
-  const order = await newOrder.save();
+  try {
+    await db.connect();
 
-  await db.disconnect();
+    const rentals = req.body.orderItems;
 
-  res.status(201).send(order);
+    // Add the Rentals to the db
+    const { insertedIds } = await Rental.insertMany(rentals);
+
+    console.log('got insertedids', insertedIds);
+
+    const newOrder = new Order({
+      ...req.body,
+      user: req.user._id,
+      rentals: insertedIds,
+    });
+    console.log('store new order', newOrder);
+    const order = await newOrder.save();
+
+    // Store rentals to SellerProduct
+    /**
+     * @todo need to add rentals to SellerProduct
+     */
+    /* rentals.forEach((rental) => {
+      const sellerProduct = SellerProduct.findById(rental.product);
+
+      sellerProduct.rentals.push(rental);
+
+      await sellerProduct.save();
+    }); */
+
+    await db.disconnect();
+
+    res.status(201).send(order);
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
 });
 
 export default handler;

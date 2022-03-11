@@ -3,17 +3,17 @@ import mongoose from 'mongoose';
 const rentalSchema = new mongoose.Schema(
   {
     user_id: { type: String, required: true },
-    products: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'SellerProduct',
-      },
-    ],
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'SellerProduct',
+    },
+    quantity: { type: Number, default: 0, required: true },
     dateOut: { type: Date },
     dateDue: { type: Date },
     dateReturned: { type: Date },
-    amountDue: { type: Number, required: true },
+    price: { type: Number },
     details: { type: String },
+    softDelete: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -3,14 +3,10 @@ import mongoose from 'mongoose';
 const orderSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    orderItems: [
+    rentals: [
       {
-        title: { type: String, required: true },
-        quantity: { type: Number, required: true },
-        imageUrl: { type: String, required: true },
-        imageAlt: { type: String, required: true },
-        slug: { type: String, required: true },
-        price: { type: Number, required: true },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Rental',
       },
     ],
     shippingAddress: {
@@ -28,7 +24,6 @@ const orderSchema = new mongoose.Schema(
     isPaid: { type: Boolean, required: true, default: false },
     isDelivered: { type: Boolean, required: true, default: false },
     paidAt: { type: Date },
-    deliveredAt: { type: Date },
   },
   {
     timestamps: true,
