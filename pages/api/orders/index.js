@@ -16,12 +16,15 @@ handler.post(async (req, res) => {
   try {
     await db.connect();
 
+    console.log('got request', req.body);
     const rentals = req.body.orderItems;
 
     // Add the Rentals to the db
     const { insertedIds } = await Rental.insertMany(rentals);
 
     console.log('got insertedids', insertedIds);
+
+    return;
 
     const newOrder = new Order({
       ...req.body,

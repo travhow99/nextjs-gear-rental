@@ -50,7 +50,8 @@ function Cart() {
   };
 
   const checkoutHandler = () => {
-    router.push('/shipping');
+    // router.push('/shipping');
+    router.push('/payment');
   };
 
   return (
@@ -83,10 +84,14 @@ function Cart() {
                   {cartItems.map((item) => (
                     <TableRow key={item._id}>
                       <TableCell>
-                        <NextLink href={`/product/${item.slug}`} passHref>
+                        <NextLink href={`/product/${item._id}`} passHref>
                           <Link>
                             <Image
-                              src={item.imageUrl}
+                              src={
+                                item.imageUrl || item.images.length
+                                  ? item.images[item.images.length - 1].path
+                                  : 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
+                              }
                               alt={item.name}
                               width={50}
                               height={50}
@@ -96,7 +101,7 @@ function Cart() {
                       </TableCell>
 
                       <TableCell>
-                        <NextLink href={`/product/${item.slug}`} passHref>
+                        <NextLink href={`/product/${item._id}`} passHref>
                           <Link>
                             <Typography>{item.title}</Typography>
                           </Link>

@@ -3,8 +3,11 @@ import { useRouter } from 'next/router';
 import { getTopItems } from '../../lib/items';
 import Layout from '../../components/layout/Layout';
 import Item from '../../components/products/Item';
-import Product from '../../models/Product';
 import db from '../../utils/db';
+import SellerProduct from '../../models/SellerProduct';
+import Rental from '../../models/Rental';
+import BlockOut from '../../models/BlockOut';
+import ProductImage from '../../models/ProductImage';
 
 export default function ProductPage(props) {
   const { product } = props;
@@ -26,14 +29,30 @@ export async function getServerSideProps(context) {
 
   await db.connect();
 
-  const product = await Product.findOne({ slug }).lean();
+  const product = await SellerProduct.findOne({ _id: slug })
+    .populate([
+      {
+        path: 'images',
+        model: ProductImage,
+      },
+      {
+        path: 'rentals',
+        model: Rental,
+      },
+      {
+        path: 'blockOuts',
+        match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+        model: BlockOut,
+      },
+    ])
+    .lean();
   await db.disconnect();
 
   console.log(slug, product);
 
   return {
     props: {
-      product: db.convertDocToObj(product),
+      product: JSON.parse(JSON.stringify(product)),
     },
   };
 }

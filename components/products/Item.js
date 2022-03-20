@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import Image from 'next/image';
 import {
@@ -9,6 +9,7 @@ import {
   Typography,
   Card,
   Button,
+  TextField,
 } from '@material-ui/core';
 import useStyles from '../../utils/styles';
 import axios from 'axios';
@@ -16,12 +17,21 @@ import { useRouter } from 'next/router';
 import { addItem } from '../../redux/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import DateHelper from '../../utils/DateHelper';
 
 export default function Item(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state);
   const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+
+  const todaysDate = new Date();
+
+  const today = DateHelper.getTodayForDateInput();
+  const tomorrow = DateHelper.getTomorrowForDateInput();
+
+  const [dateIn, setDateIn] = useState(today);
+  const [dateOut, setDateOut] = useState(tomorrow);
 
   const classes = useStyles();
   const product = props.product;
@@ -59,7 +69,11 @@ export default function Item(props) {
       <Grid container spacing={1}>
         <Grid item md={6} xs={12}>
           <Image
-            src={product.imageUrl}
+            src={
+              product.imageUrl || product.images.length
+                ? product.images[product.images.length - 1].path
+                : 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
+            }
             alt={product.name}
             width={640}
             height={640}
@@ -113,6 +127,27 @@ export default function Item(props) {
                     </Typography>
                   </Grid>
                 </Grid>
+              </ListItem>
+              {/**
+               *
+               * @todo use date-range picker
+               *
+               */}
+              <ListItem>
+                <TextField
+                  type={'date'}
+                  value={dateIn}
+                  onChange={(e) => setDateIn(e.target.value)}
+                  fullWidth
+                />
+              </ListItem>
+              <ListItem>
+                <TextField
+                  type={'date'}
+                  value={dateOut}
+                  onChange={(e) => setDateOut(e.target.value)}
+                  fullWidth
+                />
               </ListItem>
               <ListItem>
                 <Button

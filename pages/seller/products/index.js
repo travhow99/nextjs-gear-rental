@@ -23,6 +23,7 @@ import LoadingPage from '../../../components/pages/LoadingPage';
 import Loading from '../../../components/Loading';
 import SellerContainer from '../../../components/seller/SellerContainer';
 import SellerProductSimple from '../../../components/seller/SellerProductSimple';
+import { getError } from '../../../utils/error';
 
 function Products() {
   const [products, setProducts] = useState([]);

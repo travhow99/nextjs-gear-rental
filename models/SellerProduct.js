@@ -54,6 +54,6 @@ const sellerProductSchema = new mongoose.Schema(
  */
 
 const SellerProduct =
-  mongoose.models['SellerProduct'] ||
+  mongoose?.models['SellerProduct'] ||
   mongoose.model('SellerProduct', sellerProductSchema);
 export default SellerProduct;

@@ -22,5 +22,5 @@ const brandSchema = new mongoose.Schema(
  * Statics
  */
 
-const Brand = mongoose.models['Brand'] || mongoose.model('Brand', brandSchema);
+const Brand = mongoose?.models['Brand'] || mongoose.model('Brand', brandSchema);
 export default Brand;

@@ -38,5 +38,5 @@ const orderSchema = new mongoose.Schema(
  * Statics
  */
 
-const Order = mongoose.models['Order'] || mongoose.model('Order', orderSchema);
+const Order = mongoose?.models['Order'] || mongoose.model('Order', orderSchema);
 export default Order;

@@ -28,5 +28,5 @@ const blockOutSchema = new mongoose.Schema(
  */
 
 const BlockOut =
-  mongoose.models['BlockOut'] || mongoose.model('BlockOut', blockOutSchema);
+  mongoose?.models['BlockOut'] || mongoose.model('BlockOut', blockOutSchema);
 export default BlockOut;

@@ -24,6 +24,8 @@ export default function Layout({ title, description, children, home }) {
 
   const { cart } = useSelector((state) => state);
 
+  console.log('layout cart', cart);
+
   /**
    * @todo implement in redux theme store
    */
@@ -83,7 +85,7 @@ export default function Layout({ title, description, children, home }) {
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Learn how to build a personal website using Next.js"
+          content="Gear rental from your friendly neighbors"
         />
         <meta
           property="og:image"

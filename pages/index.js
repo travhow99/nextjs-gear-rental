@@ -2,7 +2,8 @@ import Layout from '../components/layout/Layout';
 // import { getSortedPostsData } from "../lib/posts";
 import HomeCallToAction from '../components/layout/Home';
 import db from '../utils/db';
-import Product from '../models/Product';
+import SellerProduct from '../models/SellerProduct';
+import ProductImage from '../models/ProductImage';
 
 export default function Home({ products }) {
   return (
@@ -22,12 +23,18 @@ export default function Home({ products }) {
 export async function getServerSideProps() {
   await db.connect();
 
-  const products = await Product.find({}).lean();
+  const products = await SellerProduct.find({})
+    .select('-rentals -blockOuts')
+    .populate({ path: 'images', model: ProductImage })
+    .lean();
+  console.log('got prods', products);
   await db.disconnect();
 
   return {
     props: {
-      products: products.map(db.convertDocToObj),
+      products: JSON.parse(
+        JSON.stringify(products)
+      ) /* products.map(db.convertDocToObj) */,
     },
   };
 }

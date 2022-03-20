@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, set, getDate } from 'date-fns';
 
 export default class DateHelper {
   static timestampToDate(timestamp) {
@@ -13,5 +13,13 @@ export default class DateHelper {
     )
       .toISOString()
       .slice(0, 19);
+  }
+  static getTodayForDateInput() {
+    return format(new Date(), 'yyyy-MM-dd');
+  }
+  static getTomorrowForDateInput() {
+    const today = new Date();
+    const tomorrow = set(today, { date: getDate(today) + 1 });
+    return format(tomorrow, 'yyyy-MM-dd');
   }
 }

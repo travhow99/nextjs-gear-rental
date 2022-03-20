@@ -39,5 +39,5 @@ productSchema.statics.determinePrice = function determinePrice(
 };
 
 const Product =
-  mongoose.models['Product'] || mongoose.model('Product', productSchema);
+  mongoose?.models['Product'] || mongoose.model('Product', productSchema);
 export default Product;

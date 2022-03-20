@@ -23,11 +23,12 @@ export default function Payment() {
   const classes = useStyles();
 
   useEffect(() => {
-    if (!shippingAddress?.address) {
+    /* if (!shippingAddress?.address) {
       router.push('/shipping');
     } else {
-      setPaymentMethod(Cookies.get('paymentMethod') || '');
-    }
+    } */
+
+    setPaymentMethod(Cookies.get('paymentMethod') || '');
   }, []);
 
   const submitHandler = (e) => {
