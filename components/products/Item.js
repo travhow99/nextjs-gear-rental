@@ -18,6 +18,7 @@ import { addItem } from '../../redux/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import DateHelper from '../../utils/DateHelper';
+import ServerRequestDatePicker from './ProductCalendar';
 
 export default function Item(props) {
   const router = useRouter();
@@ -148,6 +149,9 @@ export default function Item(props) {
                   onChange={(e) => setDateOut(e.target.value)}
                   fullWidth
                 />
+              </ListItem>
+              <ListItem>
+                <ServerRequestDatePicker />
               </ListItem>
               <ListItem>
                 <Button

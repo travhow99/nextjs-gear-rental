@@ -28,10 +28,7 @@ const rentalSchema = new mongoose.Schema(
  * Statics
  */
 
-console.log('fetch Rental', mongoose.models);
-
 const Rental =
   mongoose?.models['Rental'] || mongoose.model('Rental', rentalSchema);
 
-console.log('rental exportt', Rental);
 export default Rental;

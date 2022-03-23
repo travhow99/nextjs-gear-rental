@@ -136,16 +136,16 @@ export default function BlockOutForm({
             <ListItem>
               <TextField
                 type={'datetime-local'}
-                value={dateIn}
-                onChange={(e) => setDateIn(e.target.value)}
-              />
-            </ListItem>
-            <ListItem>
-              <TextField
-                type={'datetime-local'}
                 value={dateOut}
                 onChange={(e) => setDateOut(e.target.value)}
               />
+              <ListItem>
+                <TextField
+                  type={'datetime-local'}
+                  value={dateIn}
+                  onChange={(e) => setDateIn(e.target.value)}
+                />
+              </ListItem>
             </ListItem>
             <ListItem>
               <Button
@@ -193,8 +193,8 @@ export default function BlockOutForm({
                      * @todo Display hours & minutes as well
                      *
                      */}
-                    {DateHelper.timestampToDate(bo.dateIn)} -{' '}
-                    {DateHelper.timestampToDate(bo.dateOut)}
+                    {DateHelper.timestampToDate(bo.dateOut)} -{' '}
+                    {DateHelper.timestampToDate(bo.dateIn)}
                     <DeleteIcon
                       className={'ml-2 text-red-500'}
                       onClick={(e) => handleDelete(e, bo._id)}
