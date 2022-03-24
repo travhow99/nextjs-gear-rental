@@ -49,6 +49,8 @@ export default function BlockOutForm({
   };
 
   const addBlockOutHandler = async (e) => {
+    console.log('doing update');
+
     e.preventDefault();
     try {
       const formData = {
@@ -62,11 +64,12 @@ export default function BlockOutForm({
       updateBlockOuts([...blockOuts, data]);
       setAdding(false);
     } catch (error) {
-      console.log('product img err', error);
+      console.log('blockout err', error);
     }
   };
 
   const updateBlockOutHandler = async (e) => {
+    console.log('doing update');
     e.preventDefault();
     try {
       const formData = {
@@ -76,12 +79,23 @@ export default function BlockOutForm({
         product: productId,
       };
 
-      const { data } = await axios.post('/api/blockOuts', formData);
+      const { data } = await axios.put(`/api/blockOuts/${adding}`, formData);
 
-      updateBlockOuts([...blockOuts, data]);
+      console.log(data);
+
+      const newBo = data.result;
+
+      // Splice out
+      const updatedBlockOuts = blockOuts.map((bo) => {
+        if (bo._id !== newBo._id) return bo;
+
+        return newBo;
+      });
+
+      updateBlockOuts(updatedBlockOuts);
       setAdding(false);
     } catch (error) {
-      console.log('product img err', error);
+      console.log('blockout err', error);
     }
   };
 
@@ -131,7 +145,10 @@ export default function BlockOutForm({
         </ListItem>
 
         {adding ? (
-          <form onSubmit={addBlockOutHandler} className={classes.form}>
+          <form
+            onSubmit={adding ? updateBlockOutHandler : addBlockOutHandler}
+            className={classes.form}
+          >
             <ListItem>New BlockOut</ListItem>
             <ListItem>
               <TextField
@@ -139,13 +156,13 @@ export default function BlockOutForm({
                 value={dateOut}
                 onChange={(e) => setDateOut(e.target.value)}
               />
-              <ListItem>
-                <TextField
-                  type={'datetime-local'}
-                  value={dateIn}
-                  onChange={(e) => setDateIn(e.target.value)}
-                />
-              </ListItem>
+            </ListItem>
+            <ListItem>
+              <TextField
+                type={'datetime-local'}
+                value={dateIn}
+                onChange={(e) => setDateIn(e.target.value)}
+              />
             </ListItem>
             <ListItem>
               <Button
