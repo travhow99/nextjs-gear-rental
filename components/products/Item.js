@@ -134,7 +134,7 @@ export default function Item(props) {
                * @todo use date-range picker
                *
                */}
-              <ListItem>
+              {/* <ListItem>
                 <TextField
                   type={'date'}
                   value={dateIn}
@@ -149,7 +149,7 @@ export default function Item(props) {
                   onChange={(e) => setDateOut(e.target.value)}
                   fullWidth
                 />
-              </ListItem>
+              </ListItem> */}
               <ListItem>
                 <ServerRequestDatePicker />
               </ListItem>
