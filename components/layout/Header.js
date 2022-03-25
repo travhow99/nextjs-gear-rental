@@ -10,8 +10,19 @@ import {
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import useStyles from '../../utils/styles';
 import LoginText from './LoginText';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
-export default function Header({ cart }) {
+export default function Header() {
+  const { cart } = useSelector((state) => state);
+  const [cartCount, setCartCount] = useState(0);
+
+  console.log('header cart', cart, cart.cartItems.length);
+
+  useEffect(() => {
+    setCartCount(cart.cartItems.length);
+  }, []);
+
   const classes = useStyles();
 
   const headerImg =
@@ -28,7 +39,7 @@ export default function Header({ cart }) {
         <div>
           <NextLink href="/cart" passHref>
             <Link>
-              <Badge color="secondary" badgeContent={cart.cartItems.length}>
+              <Badge color="secondary" badgeContent={cartCount}>
                 <ShoppingCartIcon />
               </Badge>
             </Link>
