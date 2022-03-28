@@ -29,7 +29,7 @@ import Layout from '../../components/layout/Layout';
 import useStyles from '../../utils/styles';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { getError } from '../../utils/error';
-import ProductHelper from '../../utils/methods/product';
+import ProductHelper from '../../utils/helpers/product';
 import Loading from '../../components/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import {

@@ -22,4 +22,8 @@ export default class DateHelper {
     const tomorrow = set(today, { date: getDate(today) + 1 });
     return format(tomorrow, 'yyyy-MM-dd');
   }
+
+  /**
+   * @todo isMorning, isAfternoon, isNight methods for determining rental/drop off times
+   */
 }

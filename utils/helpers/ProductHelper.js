@@ -2,6 +2,7 @@
 
 import DateHelper from '../DateHelper';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 // export default _product;
 
@@ -59,5 +60,11 @@ export default class ProductHelper {
     }
     // dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
     // router.push('/cart');
+  };
+
+  static getCalendar = async (id) => {
+    const { data } = await axios.get(`/api/sellerProducts/${id}/calendar`);
+
+    return data;
   };
 }

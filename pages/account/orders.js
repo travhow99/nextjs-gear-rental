@@ -27,7 +27,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import useStyles from '../../utils/styles';
-import ProductHelper from '../../utils/methods/product';
+import ProductHelper from '../../utils/helpers/product';
 import { Stack } from '@mui/material';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';

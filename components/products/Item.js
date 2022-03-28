@@ -18,7 +18,7 @@ import { addItem } from '../../redux/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import DateHelper from '../../utils/DateHelper';
-import ServerRequestDatePicker from './ProductCalendar';
+import ProductCalendar from './ProductCalendar';
 
 export default function Item(props) {
   const router = useRouter();
@@ -33,6 +33,8 @@ export default function Item(props) {
 
   const [dateIn, setDateIn] = useState(today);
   const [dateOut, setDateOut] = useState(tomorrow);
+
+  const [rental, setRental] = useState([null, null]);
 
   const classes = useStyles();
   const product = props.product;
@@ -58,6 +60,7 @@ export default function Item(props) {
 
   // console.log(product.rental_min, product.stock);
   console.log('new product!!', product);
+  console.log('rental date', rental);
   return (
     <>
       <div className={classes.section}>
@@ -151,7 +154,11 @@ export default function Item(props) {
                 />
               </ListItem> */}
               <ListItem>
-                <ServerRequestDatePicker />
+                <ProductCalendar
+                  productId={product._id}
+                  rental={rental}
+                  setRental={setRental}
+                />
               </ListItem>
               <ListItem>
                 <Button
