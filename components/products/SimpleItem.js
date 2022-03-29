@@ -13,7 +13,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { addItem } from '../../redux/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import ProductHelper from '../../utils/helpers/product';
+import ProductHelper from '../../utils/helpers/ProductHelper';
 import { useSnackbar } from 'notistack';
 
 export default function SimpleItem(props) {

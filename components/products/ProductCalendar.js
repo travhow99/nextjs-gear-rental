@@ -3,10 +3,35 @@ import DateRangePicker from '@mui/lab/DateRangePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
-import { TextField } from '@material-ui/core';
-import { Stack } from '@mui/material';
+import { styled, TextField } from '@material-ui/core';
+import { Badge, Stack } from '@mui/material';
 import { PropTypes } from 'prop-types';
 import ProductHelper from '../../utils/helpers/ProductHelper';
+import { PickersDay } from '@mui/lab';
+
+import MuiDateRangePickerDay from '@mui/lab/DateRangePickerDay';
+import { isAfter, isBefore } from 'date-fns';
+
+/* const DateRangePickerDay = styled(MuiDateRangePickerDay)(
+  ({ theme, isHighlighting, isStartOfHighlighting, isEndOfHighlighting }) => ({
+    ...(isHighlighting && {
+      borderRadius: 0,
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      '&:hover, &:focus': {
+        backgroundColor: theme.palette.primary.dark,
+      },
+    }),
+    ...(isStartOfHighlighting && {
+      borderTopLeftRadius: '50%',
+      borderBottomLeftRadius: '50%',
+    }),
+    ...(isEndOfHighlighting && {
+      borderTopRightRadius: '50%',
+      borderBottomRightRadius: '50%',
+    }),
+  })
+); */
 
 const ProductCalendar = ({ productId, rental, setRental }) => {
   const [disabled, setDisabled] = useState([]);
@@ -21,14 +46,30 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
   }, []);
 
   const handleMonthChange = (date) => {
-    setLoading(true);
+    // setLoading(true);
 
     console.log('month change', date);
+  };
+
+  const renderWeekPickerDay = (date, dateRangePickerDayProps) => {
+    return <MuiDateRangePickerDay disabled {...dateRangePickerDayProps} />;
+  };
+
+  const disableBookings = (date) => {
+    console.log('disable?', date);
+    // return Math.random() > 0.5;
+    booked.map((b) => {
+      const start = new Date(b.out);
+      const end = new Date(b.in);
+
+      return isAfter(date, start) && isBefore(date, end);
+    });
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DateRangePicker
+        calendars={1}
         loading={loading}
         disablePast
         startText="Check-in"
@@ -45,21 +86,8 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
             <TextField {...endProps} />
           </Stack>
         )}
-        renderDay={(day, _value, DayComponentProps) => {
-          const isSelected =
-            !DayComponentProps.outsideCurrentMonth &&
-            highlightedDays.indexOf(day.getDate()) > 0;
-
-          return (
-            <Badge
-              key={day.toString()}
-              overlap="circular"
-              badgeContent={isSelected ? '🌚' : undefined}
-            >
-              <PickersDay {...DayComponentProps} />
-            </Badge>
-          );
-        }}
+        // renderDay={renderWeekPickerDay}
+        shouldDisableDate={disableBookings}
       />
     </LocalizationProvider>
   );

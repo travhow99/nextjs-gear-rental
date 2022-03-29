@@ -35,7 +35,7 @@ import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
 
 import { Stack } from '@mui/material';
-import ProductHelper from '../../utils/helpers/product';
+import ProductHelper from '../../utils/helpers/ProductHelper';
 import SellerContainer from '../../components/seller/SellerContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import {

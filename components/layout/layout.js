@@ -24,8 +24,6 @@ export default function Layout({ title, description, children, home }) {
 
   const { cart } = useSelector((state) => state);
 
-  console.log('layout cart', cart);
-
   /**
    * @todo implement in redux theme store
    */

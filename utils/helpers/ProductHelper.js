@@ -3,6 +3,7 @@
 import DateHelper from '../DateHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import { getMonth, setMonth } from 'date-fns';
 
 // export default _product;
 
@@ -62,9 +63,17 @@ export default class ProductHelper {
     // router.push('/cart');
   };
 
-  static getCalendar = async (id) => {
-    const { data } = await axios.get(`/api/sellerProducts/${id}/calendar`);
+  static getCalendar = async (id, month = null) => {
+    let endpoint = `/api/sellerProducts/${id}/calendar`;
+
+    if (month) endpoint += `/${month}`;
+    const { data } = await axios.get(endpoint);
 
     return data;
+  };
+
+  static getFutureMonth = (month) => {
+    const now = new Date(month);
+    return setMonth(now, getMonth(now) + 3);
   };
 }

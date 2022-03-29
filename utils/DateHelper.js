@@ -8,11 +8,12 @@ export default class DateHelper {
   static dateToDateTimeLocalFormat(date) {
     // return format(new Date(date), "yyyy-MM-dd'T'HH:mm");
     // const dateCheck = new Date(date);
-    return new Date(
-      new Date(date).getTime() + new Date().getTimezoneOffset() * -60 * 1000
-    )
+    return new Date(new Date(date).getTime() + this.getTimezoneOffset())
       .toISOString()
       .slice(0, 19);
+  }
+  static getTimezoneOffset() {
+    return new Date().getTimezoneOffset() * -60 * 1000;
   }
   static getTodayForDateInput() {
     return format(new Date(), 'yyyy-MM-dd');

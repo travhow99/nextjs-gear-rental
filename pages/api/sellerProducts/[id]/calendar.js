@@ -4,6 +4,7 @@ import Rental from '../../../../models/Rental';
 import BlockOut from '../../../../models/BlockOut';
 import { onError } from '../../../../utils/error';
 import SellerProduct from '../../../../models/SellerProduct';
+import ProductHelper from '../../../../utils/helpers/ProductHelper';
 
 const handler = nc({ onError });
 
@@ -11,7 +12,12 @@ handler.get(async (req, res) => {
   try {
     await db.connect();
 
-    console.log('query!', req);
+    // console.log('query!', req);
+
+    const now = new Date();
+    const cutoff = ProductHelper.getFutureMonth(now);
+    console.log(now);
+    console.log(cutoff);
 
     const sellerproduct = await SellerProduct.findById(req.query.id)
       .lean()
@@ -22,7 +28,8 @@ handler.get(async (req, res) => {
           match: {
             softDelete: { $ne: true },
             dateOut: {
-              $lte: new Date(),
+              $gte: now,
+              $lt: cutoff,
             },
           }, // Filter the softDeletes from view
         },
@@ -31,7 +38,8 @@ handler.get(async (req, res) => {
           match: {
             softDelete: { $ne: true },
             dateOut: {
-              $lte: new Date(),
+              $gte: now,
+              $lt: cutoff,
             },
           }, // Filter the softDeletes from view
         },

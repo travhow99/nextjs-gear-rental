@@ -25,7 +25,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import useStyles from '../utils/styles';
 import CheckoutWizard from '../components/CheckoutWizard';
-import ProductHelper from '../utils/helpers/product';
+import ProductHelper from '../utils/helpers/ProductHelper';
 import { useSnackbar } from 'notistack';
 import { getError } from '../utils/error';
 import Cookies from 'js-cookie';

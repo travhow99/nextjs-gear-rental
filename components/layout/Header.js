@@ -17,8 +17,6 @@ export default function Header() {
   const { cart } = useSelector((state) => state);
   const [cartCount, setCartCount] = useState(0);
 
-  console.log('header cart', cart, cart.cartItems.length);
-
   useEffect(() => {
     setCartCount(cart.cartItems.length);
   }, []);

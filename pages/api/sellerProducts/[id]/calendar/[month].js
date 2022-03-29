@@ -11,7 +11,7 @@ handler.get(async (req, res) => {
   try {
     await db.connect();
 
-    console.log('query!', req);
+    console.log('query!', req.query.month);
 
     /* const sellerproduct = await SellerProduct.findById(req.query.id)
       .lean()

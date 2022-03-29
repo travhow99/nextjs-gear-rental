@@ -22,14 +22,13 @@ export default function BlockOutForm({
   updateBlockOuts,
 }) {
   const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState(null);
   const [dateIn, setDateIn] = useState('');
   const [dateOut, setDateOut] = useState('');
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
   const classes = useStyles();
-
-  console.log('bo form', deleteId);
 
   const uploadHandler = async (e) => {
     try {
@@ -44,13 +43,10 @@ export default function BlockOutForm({
   };
 
   const addBlockOut = () => {
-    console.log('addinb BO');
     setAdding(true);
   };
 
   const addBlockOutHandler = async (e) => {
-    console.log('doing update');
-
     e.preventDefault();
     try {
       const formData = {
@@ -63,37 +59,41 @@ export default function BlockOutForm({
 
       updateBlockOuts([...blockOuts, data]);
       setAdding(false);
+      setEditing(false);
     } catch (error) {
       console.log('blockout err', error);
     }
   };
 
   const updateBlockOutHandler = async (e) => {
-    console.log('doing update');
     e.preventDefault();
     try {
       const formData = {
-        id: adding,
+        id: editing,
         dateIn,
         dateOut,
         product: productId,
       };
 
-      const { data } = await axios.put(`/api/blockOuts/${adding}`, formData);
-
-      console.log(data);
+      const { data } = await axios.put(`/api/blockOuts/${editing}`, formData);
 
       const newBo = data.result;
 
       // Splice out
+      /**
+       * @todo Update sort upon edit
+       */
       const updatedBlockOuts = blockOuts.map((bo) => {
         if (bo._id !== newBo._id) return bo;
 
         return newBo;
       });
 
+      updatedBlockOuts.sort;
+
       updateBlockOuts(updatedBlockOuts);
       setAdding(false);
+      setEditing(false);
     } catch (error) {
       console.log('blockout err', error);
     }
@@ -101,13 +101,13 @@ export default function BlockOutForm({
 
   const handleDelete = (e, deleteId) => {
     e.stopPropagation();
-    console.log('do delete');
 
     setShowDelete(true);
     setDeleteId(deleteId);
   };
   const handleCancel = () => {
     setAdding(false);
+    setEditing(false);
     setDateIn('');
     setDateOut('');
   };
@@ -120,7 +120,7 @@ export default function BlockOutForm({
   const editBlockOut = ({ dateIn, dateOut, _id }) => {
     setDateIn(DateHelper.dateToDateTimeLocalFormat(dateIn));
     setDateOut(DateHelper.dateToDateTimeLocalFormat(dateOut));
-    setAdding(_id);
+    setEditing(_id);
   };
 
   const handleConfirmDelete = async () => {
@@ -136,6 +136,7 @@ export default function BlockOutForm({
     setShowDelete(false);
     setDeleteId(null);
   };
+  console.log('bo id', adding);
 
   return (
     <Card className={classes.section}>
@@ -144,9 +145,9 @@ export default function BlockOutForm({
           <Typography component="p">BlockOuts</Typography>
         </ListItem>
 
-        {adding ? (
+        {adding || editing ? (
           <form
-            onSubmit={adding ? updateBlockOutHandler : addBlockOutHandler}
+            onSubmit={editing ? updateBlockOutHandler : addBlockOutHandler}
             className={classes.form}
           >
             <ListItem>New BlockOut</ListItem>
@@ -181,7 +182,7 @@ export default function BlockOutForm({
                 fullWidth
                 color="primary"
               >
-                Add
+                {adding ? 'Add' : 'Update'}
               </Button>
             </ListItem>
           </form>
