@@ -26,22 +26,22 @@ handler.get(async (req, res) => {
         {
           path: 'rentals',
           match: {
-            softDelete: { $ne: true },
+            softDelete: { $ne: true }, // Filter the softDeletes from view
             dateOut: {
               $gte: now,
               $lt: cutoff,
             },
-          }, // Filter the softDeletes from view
+          },
         },
         {
           path: 'blockOuts',
           match: {
-            softDelete: { $ne: true },
+            softDelete: { $ne: true }, // Filter the softDeletes from view
             dateOut: {
               $gte: now,
               $lt: cutoff,
             },
-          }, // Filter the softDeletes from view
+          },
         },
       ]);
 
@@ -56,11 +56,11 @@ handler.get(async (req, res) => {
 
 const buildCalendar = (data) => {
   const blockOuts = data.blockOuts.map((bo) => {
-    return { out: bo.dateOut, in: bo.dateIn };
+    return { out: bo.dateOut, in: bo.dateIn, type: 'blockOut' };
   });
 
   const rentals = data.rentals.map((bo) => {
-    return { out: bo.dateOut, in: bo.dateDue };
+    return { out: bo.dateOut, in: bo.dateDue, type: 'rental' };
   });
 
   return [...blockOuts, ...rentals];

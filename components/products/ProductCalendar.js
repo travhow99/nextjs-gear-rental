@@ -39,7 +39,7 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
   const [booked, setBooked] = useState([]);
 
   useEffect(async () => {
-    const data = await ProductHelper.getCalendar(productId);
+    const data = await ProductHelper.fetchCalendar(productId);
     console.log('got calendar', data);
     setBooked(data);
     setLoading(false);
@@ -55,15 +55,25 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
     return <MuiDateRangePickerDay disabled {...dateRangePickerDayProps} />;
   };
 
+  /**
+   * @todo turn into ProductHelper method
+   */
   const disableBookings = (date) => {
-    console.log('disable?', date);
     // return Math.random() > 0.5;
+    let disabled = false;
+
     booked.map((b) => {
       const start = new Date(b.out);
       const end = new Date(b.in);
 
-      return isAfter(date, start) && isBefore(date, end);
+      if (isAfter(date, start) && isBefore(date, end)) {
+        console.log('disable?', date, start, end);
+
+        disabled = true;
+      }
     });
+
+    return disabled;
   };
 
   return (
@@ -87,7 +97,7 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
           </Stack>
         )}
         // renderDay={renderWeekPickerDay}
-        shouldDisableDate={disableBookings}
+        shouldDisableDate={(date) => ProductHelper.getIsBooked(booked, date)}
       />
     </LocalizationProvider>
   );

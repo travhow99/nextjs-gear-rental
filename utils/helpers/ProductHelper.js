@@ -3,7 +3,7 @@
 import DateHelper from '../DateHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { getMonth, setMonth } from 'date-fns';
+import { getMonth, isAfter, isBefore, isSameDay, setMonth } from 'date-fns';
 
 // export default _product;
 
@@ -63,13 +63,42 @@ export default class ProductHelper {
     // router.push('/cart');
   };
 
-  static getCalendar = async (id, month = null) => {
+  static fetchCalendar = async (id, month = null) => {
     let endpoint = `/api/sellerProducts/${id}/calendar`;
 
     if (month) endpoint += `/${month}`;
     const { data } = await axios.get(endpoint);
 
     return data;
+  };
+
+  /**
+   * Check if a specific date is booked
+   * @param {Array} bookings
+   * @param {Date} date
+   * @param {String} type blockOut|rental|null
+   * @returns {Boolean} isBooked
+   */
+  static getIsBooked = (bookings = [], date, type = null) => {
+    if (!bookings.length) return false;
+
+    let isBooked = false;
+
+    if (type) {
+      bookings = bookings.filter((booking) => booking.type === type);
+    }
+
+    bookings.map((b) => {
+      const start = new Date(b.out);
+      const end = new Date(b.in);
+      const isBetween = isAfter(date, start) && isBefore(date, end);
+
+      if (isBetween || isSameDay(date, start) || isSameDay(date, end)) {
+        isBooked = true;
+      }
+    });
+
+    return isBooked;
   };
 
   static getFutureMonth = (month) => {
