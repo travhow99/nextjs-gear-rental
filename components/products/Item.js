@@ -71,7 +71,7 @@ export default function Item(props) {
         </NextLink>
       </div>
       <Grid container spacing={1}>
-        <Grid item md={6} xs={12}>
+        <Grid item md={4} xs={6}>
           <Image
             src={
               product.imageUrl || product.images.length
@@ -84,7 +84,7 @@ export default function Item(props) {
             layout="responsive"
           ></Image>
         </Grid>
-        <Grid item md={3} xs={12}>
+        <Grid item md={4} xs={6}>
           <List>
             <ListItem>
               <Typography component="h1" variant="h1">
@@ -107,7 +107,7 @@ export default function Item(props) {
             </ListItem>
           </List>
         </Grid>
-        <Grid item md={3} xs={12}>
+        <Grid item md={4} xs={12}>
           <Card>
             <List>
               <ListItem>
@@ -162,6 +162,7 @@ export default function Item(props) {
               </ListItem>
               <ListItem>
                 <Button
+                  disabled
                   fullWidth
                   variant="contained"
                   color="primary"

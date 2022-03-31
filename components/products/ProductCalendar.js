@@ -7,10 +7,14 @@ import { styled, TextField } from '@material-ui/core';
 import { Badge, Stack } from '@mui/material';
 import { PropTypes } from 'prop-types';
 import ProductHelper from '../../utils/helpers/ProductHelper';
-import { PickersDay } from '@mui/lab';
+import {
+  DateRangePickerDay,
+  PickersDay,
+  StaticDateRangePicker,
+} from '@mui/lab';
 
 import MuiDateRangePickerDay from '@mui/lab/DateRangePickerDay';
-import { isAfter, isBefore } from 'date-fns';
+import { isAfter, isBefore, getMonth } from 'date-fns';
 
 /* const DateRangePickerDay = styled(MuiDateRangePickerDay)(
   ({ theme, isHighlighting, isStartOfHighlighting, isEndOfHighlighting }) => ({
@@ -33,52 +37,71 @@ import { isAfter, isBefore } from 'date-fns';
   })
 ); */
 
+const generateDayClassName = (type) => {
+  console.log('gen classname for ', type);
+  switch (type) {
+    case 'blockOut':
+      return 'bg-gray-300';
+      break;
+    case 'rental':
+      return 'bg-green-300';
+
+      break;
+    default:
+      return '';
+  }
+};
+
 const ProductCalendar = ({ productId, rental, setRental }) => {
   const [disabled, setDisabled] = useState([]);
   const [loading, setLoading] = useState(true);
   const [booked, setBooked] = useState([]);
+  const [maxMonth, setMaxMonth] = useState(null);
 
   useEffect(async () => {
-    const data = await ProductHelper.fetchCalendar(productId);
-    console.log('got calendar', data);
-    setBooked(data);
+    const { bookings, startMonth, endMonth } =
+      await ProductHelper.fetchCalendar(productId);
+
+    console.log('got calendar', bookings, endMonth);
+    setBooked(bookings);
     setLoading(false);
+    setMaxMonth(endMonth);
   }, []);
 
-  const handleMonthChange = (date) => {
+  const handleMonthChange = async (date) => {
     // setLoading(true);
 
-    console.log('month change', date);
+    console.log('month change', getMonth(date));
+
+    if (getMonth(date) >= maxMonth) {
+      setLoading(true);
+      const { bookings, startMonth, endMonth } =
+        await ProductHelper.fetchCalendar(productId, maxMonth + 4);
+
+      console.log('got calendar', bookings, endMonth);
+      setBooked(bookings);
+      setLoading(false);
+      setMaxMonth(endMonth);
+    } else if (getMonth(date) === maxMonth) {
+      // Pre-fetch the future data
+      const { bookings, startMonth, endMonth } =
+        await ProductHelper.fetchCalendar(productId, maxMonth + 3);
+
+      console.log('got calendar', bookings, endMonth);
+      setBooked(bookings);
+      setLoading(false);
+      setMaxMonth(endMonth);
+    }
   };
 
   const renderWeekPickerDay = (date, dateRangePickerDayProps) => {
     return <MuiDateRangePickerDay disabled {...dateRangePickerDayProps} />;
   };
 
-  /**
-   * @todo turn into ProductHelper method
-   */
-  const disableBookings = (date) => {
-    // return Math.random() > 0.5;
-    let disabled = false;
-
-    booked.map((b) => {
-      const start = new Date(b.out);
-      const end = new Date(b.in);
-
-      if (isAfter(date, start) && isBefore(date, end)) {
-        console.log('disable?', date, start, end);
-
-        disabled = true;
-      }
-    });
-
-    return disabled;
-  };
-
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DateRangePicker
+      <StaticDateRangePicker
+        displayStaticWrapperAs="desktop"
         calendars={1}
         loading={loading}
         disablePast
@@ -97,6 +120,14 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
           </Stack>
         )}
         // renderDay={renderWeekPickerDay}
+        renderDay={(date, dateRangePickerDayProps) => (
+          <DateRangePickerDay
+            className={generateDayClassName(
+              ProductHelper.getBookingType(booked, date)
+            )}
+            {...dateRangePickerDayProps}
+          />
+        )}
         shouldDisableDate={(date) => ProductHelper.getIsBooked(booked, date)}
       />
     </LocalizationProvider>

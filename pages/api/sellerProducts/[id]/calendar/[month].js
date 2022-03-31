@@ -1,9 +1,11 @@
+import { getMonth } from 'date-fns';
 import nc from 'next-connect';
 import BlockOut from '../../../../../models/BlockOut';
 import Rental from '../../../../../models/Rental';
 import SellerProduct from '../../../../../models/SellerProduct';
 import db from '../../../../../utils/db';
 import { onError } from '../../../../../utils/error';
+import ProductHelper from '../../../../../utils/helpers/ProductHelper';
 
 const handler = nc({ onError });
 
@@ -13,7 +15,7 @@ handler.get(async (req, res) => {
 
     console.log('query!', req.query.month);
 
-    /* const sellerproduct = await SellerProduct.findById(req.query.id)
+    const sellerproduct = await SellerProduct.findById(req.query.id)
       .lean()
       .populate([
         //   'images',
@@ -35,11 +37,15 @@ handler.get(async (req, res) => {
             },
           }, // Filter the softDeletes from view
         },
-      ]); */
+      ]);
 
     await db.disconnect();
 
-    res.send('');
+    res.send({
+      bookings: ProductHelper.buildCalendar(sellerproduct),
+      startMonth: getMonth(now),
+      endMonth: getMonth(cutoff),
+    });
 
     //   res.send(buildCalendar(sellerproduct));
   } catch (error) {
@@ -47,3 +53,5 @@ handler.get(async (req, res) => {
     res.status(404).send({ message: 'product not found' });
   }
 });
+
+export default handler;

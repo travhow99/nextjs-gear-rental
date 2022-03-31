@@ -5,6 +5,7 @@ import BlockOut from '../../../../models/BlockOut';
 import { onError } from '../../../../utils/error';
 import SellerProduct from '../../../../models/SellerProduct';
 import ProductHelper from '../../../../utils/helpers/ProductHelper';
+import { getMonth } from 'date-fns';
 
 const handler = nc({ onError });
 
@@ -19,6 +20,7 @@ handler.get(async (req, res) => {
     console.log(now);
     console.log(cutoff);
 
+    // @todo Add to api methods
     const sellerproduct = await SellerProduct.findById(req.query.id)
       .lean()
       .populate([
@@ -47,23 +49,15 @@ handler.get(async (req, res) => {
 
     await db.disconnect();
 
-    res.send(buildCalendar(sellerproduct));
+    res.send({
+      bookings: ProductHelper.buildCalendar(sellerproduct),
+      startMonth: getMonth(now),
+      endMonth: getMonth(cutoff),
+    });
   } catch (error) {
     console.log('err', error);
     res.status(404).send({ message: 'product not found' });
   }
 });
-
-const buildCalendar = (data) => {
-  const blockOuts = data.blockOuts.map((bo) => {
-    return { out: bo.dateOut, in: bo.dateIn, type: 'blockOut' };
-  });
-
-  const rentals = data.rentals.map((bo) => {
-    return { out: bo.dateOut, in: bo.dateDue, type: 'rental' };
-  });
-
-  return [...blockOuts, ...rentals];
-};
 
 export default handler;

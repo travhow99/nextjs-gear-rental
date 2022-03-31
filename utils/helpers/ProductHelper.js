@@ -63,6 +63,12 @@ export default class ProductHelper {
     // router.push('/cart');
   };
 
+  /**
+   * Fetch the calendar for a specific SellerProduct
+   * @param {String} id product_id
+   * @param {Int} month a month to fetch future calendar dates for
+   * @returns data from calendar API
+   */
   static fetchCalendar = async (id, month = null) => {
     let endpoint = `/api/sellerProducts/${id}/calendar`;
 
@@ -70,6 +76,23 @@ export default class ProductHelper {
     const { data } = await axios.get(endpoint);
 
     return data;
+  };
+
+  /**
+   * Build an array of Calendar data for a specific SellerProduct
+   * @param {Object} data data object returned from
+   * @returns Array of merged BlockOut & Rental data
+   */
+  static buildCalendar = (data) => {
+    const blockOuts = data.blockOuts.map((bo) => {
+      return { out: bo.dateOut, in: bo.dateIn, type: 'blockOut' };
+    });
+
+    const rentals = data.rentals.map((bo) => {
+      return { out: bo.dateOut, in: bo.dateDue, type: 'rental' };
+    });
+
+    return [...blockOuts, ...rentals];
   };
 
   /**
@@ -101,8 +124,31 @@ export default class ProductHelper {
     return isBooked;
   };
 
+  static getBookingType = (bookings = [], date, type = null) => {
+    if (!bookings.length) return false;
+
+    let bookingType = null;
+
+    if (type) {
+      bookings = bookings.filter((booking) => booking.type === type);
+    }
+
+    bookings.map((b) => {
+      const start = new Date(b.out);
+      const end = new Date(b.in);
+      const isBetween = isAfter(date, start) && isBefore(date, end);
+
+      if (isBetween || isSameDay(date, start) || isSameDay(date, end)) {
+        bookingType = b.type;
+      }
+    });
+
+    console.log('got booking type', bookingType);
+    return bookingType;
+  };
+
   static getFutureMonth = (month) => {
-    const now = new Date(month);
-    return setMonth(now, getMonth(now) + 3);
+    const future = new Date(month);
+    return setMonth(future, getMonth(future) + 3);
   };
 }
