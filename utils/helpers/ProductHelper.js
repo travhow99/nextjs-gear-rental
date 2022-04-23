@@ -143,8 +143,21 @@ export default class ProductHelper {
       }
     });
 
-    console.log('got booking type', bookingType);
     return bookingType;
+  };
+
+  static generateCalendarDayClassName = (type) => {
+    let result = '';
+    switch (type) {
+      case 'blockOut':
+        result += 'bg-gray-300';
+        break;
+      case 'rental':
+        result += 'bg-green-300';
+        break;
+      default:
+        break;
+    }
   };
 
   static getFutureMonth = (month) => {

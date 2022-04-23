@@ -1,4 +1,4 @@
-import { format, set, getDate } from 'date-fns';
+import { format, set, getDate, getYear } from 'date-fns';
 
 export default class DateHelper {
   static timestampToDate(timestamp) {
@@ -22,6 +22,12 @@ export default class DateHelper {
     const today = new Date();
     const tomorrow = set(today, { date: getDate(today) + 1 });
     return format(tomorrow, 'yyyy-MM-dd');
+  }
+
+  static getFirstDayOfMonth(month) {
+    const currentYear = getYear(new Date());
+
+    return new Date(currentYear, month, 1);
   }
 
   /**

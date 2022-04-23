@@ -13,7 +13,7 @@ handler.get(async (req, res) => {
   try {
     await db.connect();
 
-    console.log('query!', req.query.month);
+    const cutoff = now + 3;
 
     const sellerproduct = await SellerProduct.findById(req.query.id)
       .lean()

@@ -37,21 +37,6 @@ import { isAfter, isBefore, getMonth } from 'date-fns';
   })
 ); */
 
-const generateDayClassName = (type) => {
-  console.log('gen classname for ', type);
-  switch (type) {
-    case 'blockOut':
-      return 'bg-gray-300';
-      break;
-    case 'rental':
-      return 'bg-green-300';
-
-      break;
-    default:
-      return '';
-  }
-};
-
 const ProductCalendar = ({ productId, rental, setRental }) => {
   const [disabled, setDisabled] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +107,7 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
         // renderDay={renderWeekPickerDay}
         renderDay={(date, dateRangePickerDayProps) => (
           <DateRangePickerDay
-            className={generateDayClassName(
+            className={ProductHelper.generateCalendarDayClassName(
               ProductHelper.getBookingType(booked, date)
             )}
             {...dateRangePickerDayProps}
