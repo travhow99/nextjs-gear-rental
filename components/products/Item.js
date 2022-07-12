@@ -37,6 +37,9 @@ export default function Item(props) {
 		setButtonIsDisabled(disabled);
 	}, [rental]);
 
+	/**
+	 * @todo No need to account for existing item in cart?
+	 */
 	const addToCartHandler = async () => {
 		const existingItem = cart.cartItems.find(
 			(item) => item._id === product._id
@@ -51,7 +54,7 @@ export default function Item(props) {
 			return;
 		}
 
-		dispatch(addItem({ ...product, quantity }));
+		dispatch(addItem({ ...product, quantity, rental }));
 
 		router.push('/cart');
 	};
@@ -83,6 +86,7 @@ export default function Item(props) {
 						width={640}
 						height={640}
 						layout="responsive"
+						priority={true}
 					></Image>
 				</Grid>
 				<Grid item md={4} xs={6}>
@@ -101,10 +105,17 @@ export default function Item(props) {
 							<Typography>Brand: {product.brand}</Typography>
 						</ListItem>
 						<ListItem>
-							<Typography>
-								Rating: {product.rating} stars (
-								{product.reviewCount} reviews)
-							</Typography>
+							{product.reviewCount ? (
+								<Typography>
+									Rating: {product.rating} stars (
+									{product.reviewCount} reviews)
+								</Typography>
+							) : (
+								<Typography variant="subtitle2">
+									This product has no reviews, be the first to
+									leave one!
+								</Typography>
+							)}
 						</ListItem>
 						<ListItem>
 							<Typography>

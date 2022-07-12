@@ -3,7 +3,7 @@ import DateRangePicker from '@mui/lab/DateRangePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
-import { styled, TextField } from '@material-ui/core';
+import { Button, styled, TextField } from '@material-ui/core';
 import { Badge, Stack } from '@mui/material';
 import { PropTypes } from 'prop-types';
 import ProductHelper from '../../utils/helpers/ProductHelper';
@@ -56,7 +56,7 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
 	const handleMonthChange = async (date) => {
 		// setLoading(true);
 
-		console.log('month change', getMonth(date));
+		console.log('month change', date, getMonth(date));
 
 		if (getMonth(date) >= maxMonth) {
 			setLoading(true);
@@ -79,45 +79,66 @@ const ProductCalendar = ({ productId, rental, setRental }) => {
 		}
 	};
 
+	const hadndleTodayClick = async () => {
+		// const currentMonth = new Date();
+		// console.log('today click', currentMonth);
+		// await handleMonthChange(currentMonth);
+		setCurrent(Math.random());
+	};
+
 	const renderWeekPickerDay = (date, dateRangePickerDayProps) => {
 		return <MuiDateRangePickerDay disabled {...dateRangePickerDayProps} />;
 	};
 
 	return (
-		<LocalizationProvider dateAdapter={AdapterDateFns}>
-			<StaticDateRangePicker
-				displayStaticWrapperAs="desktop"
-				calendars={1}
-				loading={loading}
-				disablePast
-				startText="Check-in"
-				endText="Check-out"
-				value={rental}
-				onChange={(newValue) => {
-					setRental(newValue);
-				}}
-				onMonthChange={handleMonthChange}
-				renderInput={(startProps, endProps) => (
-					<Stack>
-						<TextField {...startProps} />
-						<Box sx={{ my: 2 }}> to </Box>
-						<TextField {...endProps} />
-					</Stack>
-				)}
-				// renderDay={renderWeekPickerDay}
-				renderDay={(date, dateRangePickerDayProps) => (
-					<DateRangePickerDay
-						className={ProductHelper.generateCalendarDayClassName(
-							ProductHelper.getBookingType(booked, date)
-						)}
-						{...dateRangePickerDayProps}
-					/>
-				)}
-				shouldDisableDate={(date) =>
-					ProductHelper.getIsBooked(booked, date)
-				}
-			/>
-		</LocalizationProvider>
+		<Box>
+			{/* 
+			@todo switch to use https://hypeserver.github.io/react-date-range/
+			Implement today btn
+			<Button
+				color="primary"
+				variant="outlined"
+				fullWidth
+				onClick={hadndleTodayClick}
+			>
+				Today
+			</Button> */}
+			<LocalizationProvider dateAdapter={AdapterDateFns}>
+				<StaticDateRangePicker
+					displayStaticWrapperAs="desktop"
+					calendars={1}
+					// showDaysOutsideCurrentMonth={true}
+					loading={loading}
+					disablePast
+					startText="Check-in"
+					endText="Check-out"
+					value={rental}
+					onChange={(newValue) => {
+						setRental(newValue);
+					}}
+					onMonthChange={handleMonthChange}
+					renderInput={(startProps, endProps) => (
+						<Stack>
+							<TextField {...startProps} />
+							<Box sx={{ my: 2 }}> to </Box>
+							<TextField {...endProps} />
+						</Stack>
+					)}
+					// renderDay={renderWeekPickerDay}
+					renderDay={(date, dateRangePickerDayProps) => (
+						<DateRangePickerDay
+							className={ProductHelper.generateCalendarDayClassName(
+								ProductHelper.getBookingType(booked, date)
+							)}
+							{...dateRangePickerDayProps}
+						/>
+					)}
+					shouldDisableDate={(date) =>
+						ProductHelper.getIsBooked(booked, date)
+					}
+				/>
+			</LocalizationProvider>
+		</Box>
 	);
 };
 
