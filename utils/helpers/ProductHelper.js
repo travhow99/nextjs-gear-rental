@@ -1,6 +1,6 @@
 // const _product = { determineSubtotal };
 
-import DateHelper from '../DateHelper';
+import dateHelper from '../dateHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { getMonth, isAfter, isBefore, isSameDay, setMonth } from 'date-fns';
@@ -36,7 +36,7 @@ export default class ProductHelper {
 	}
 
 	static formatPurchaseDate(timestamp) {
-		return DateHelper.timestampToDate(timestamp);
+		return dateHelper.timestampToDate(timestamp);
 	}
 
 	static fetchProduct = async (id) => {

@@ -17,8 +17,11 @@ import { useRouter } from 'next/router';
 import { addItem } from '../../redux/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import DateHelper from '../../utils/DateHelper';
 import ProductCalendar from './ProductCalendar';
+import BetaProductCalendar from './BetaProductCalendar';
+
+import { getDay } from 'date-fns';
+import { getNumberOfDaysBetween } from '../../utils/dateHelper';
 
 export default function Item(props) {
 	const router = useRouter();
@@ -26,17 +29,22 @@ export default function Item(props) {
 	const { cart } = useSelector((state) => state);
 	const { closeSnackbar, enqueueSnackbar } = useSnackbar();
 
-	const [rental, setRental] = useState([null, null]);
-	const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
+	const [rental, setRental] = useState({
+		startDate: new Date(),
+		endDate: new Date(),
+		key: 'selection',
+	});
+
+	// const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
 
 	const classes = useStyles();
 	const product = props.product;
 
-	useEffect(() => {
+	/* 	useEffect(() => {
 		const disabled = buttonShouldBeDisabled();
 		setButtonIsDisabled(disabled);
 	}, [rental]);
-
+ */
 	/**
 	 * @todo No need to account for existing item in cart?
 	 */
@@ -64,6 +72,10 @@ export default function Item(props) {
 	// console.log(product.rental_min, product.stock);
 	console.log('new product!!', product);
 	console.log('rental date', rental);
+
+	if (rental[0] && rental[1]) {
+		console.log(getNumberOfDaysBetween(rental[1], rental[0]));
+	}
 
 	return (
 		<>
@@ -159,32 +171,27 @@ export default function Item(props) {
 							 * @todo use date-range picker
 							 *
 							 */}
-							{/* <ListItem>
-                <TextField
-                  type={'date'}
-                  value={dateIn}
-                  onChange={(e) => setDateIn(e.target.value)}
-                  fullWidth
-                />
-              </ListItem>
-              <ListItem>
-                <TextField
-                  type={'date'}
-                  value={dateOut}
-                  onChange={(e) => setDateOut(e.target.value)}
-                  fullWidth
-                />
-              </ListItem> */}
+							{rental[0] && (
+								<ListItem>
+									<Typography component="p">
+										{getDay(rental[0])}
+									</Typography>
+									<Typography component="p">
+										{getDay(rental[1])}
+									</Typography>
+								</ListItem>
+							)}
 							<ListItem>
-								<ProductCalendar
+								<BetaProductCalendar
 									productId={product._id}
 									rental={rental}
-									setRental={setRental}
+									setRange={setRental}
+									range={rental}
 								/>
 							</ListItem>
 							<ListItem>
 								<Button
-									disabled={buttonIsDisabled}
+									// disabled={buttonIsDisabled}
 									fullWidth
 									variant="contained"
 									color="primary"
