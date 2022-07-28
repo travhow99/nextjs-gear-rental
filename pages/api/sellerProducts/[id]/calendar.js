@@ -10,54 +10,64 @@ import { getMonth } from 'date-fns';
 const handler = nc({ onError });
 
 handler.get(async (req, res) => {
-  try {
-    await db.connect();
+	try {
+		await db.connect();
 
-    // console.log('query!', req);
+		// console.log('query!', req);
 
-    const now = new Date();
-    const cutoff = ProductHelper.getFutureMonth(now);
-    console.log(now);
-    console.log(cutoff);
+		const now = new Date();
+		const cutoff = ProductHelper.getFutureMonth(now);
+		console.log(now);
+		console.log(cutoff);
 
-    // @todo Add to api methods
-    const sellerproduct = await SellerProduct.findById(req.query.id)
-      .lean()
-      .populate([
-        //   'images',
-        {
-          path: 'rentals',
-          match: {
-            softDelete: { $ne: true }, // Filter the softDeletes from view
-            dateOut: {
-              $gte: now,
-              $lt: cutoff,
-            },
-          },
-        },
-        {
-          path: 'blockOuts',
-          match: {
-            softDelete: { $ne: true }, // Filter the softDeletes from view
-            dateOut: {
-              $gte: now,
-              $lt: cutoff,
-            },
-          },
-        },
-      ]);
+		// @todo Add to api methods
+		const sellerproduct = await SellerProduct.findById(req.query.id)
+			.lean()
+			.populate([
+				//   'images',
+				{
+					path: 'rentals',
+					match: {
+						softDelete: { $ne: true }, // Filter the softDeletes from view
+						dateOut: {
+							$gte: now,
+							$lt: cutoff,
+						},
+					},
+				},
+				{
+					path: 'blockOuts',
+					match: {
+						softDelete: { $ne: true }, // Filter the softDeletes from view
+						$or: [
+							{
+								dateOut: {
+									$gte: now,
+									$lt: cutoff,
+								},
+							},
+							{
+								dateIn: {
+									$gte: now,
+									$lt: cutoff,
+								},
+							},
+						],
+					},
+				},
+			]);
 
-    await db.disconnect();
+		await db.disconnect();
 
-    res.send({
-      bookings: ProductHelper.buildCalendar(sellerproduct),
-      startMonth: getMonth(now),
-      endMonth: getMonth(cutoff),
-    });
-  } catch (error) {
-    console.log('err', error);
-    res.status(404).send({ message: 'product not found' });
-  }
+		res.send({
+			bookings: ProductHelper.buildCalendar(sellerproduct),
+			startMonth: getMonth(now),
+			endMonth: getMonth(cutoff),
+		});
+	} catch (error) {
+		console.log('err', error);
+		res.status(404).send({ message: 'product not found' });
+	}
 });
 
 export default handler;

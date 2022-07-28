@@ -65,11 +65,14 @@ export default class ProductHelper {
 
 	/**
 	 * Fetch the calendar for a specific SellerProduct
-	 * @param {String} id product_id
-	 * @param {Int} month a month to fetch future calendar dates for
+	 * @param {string} id product_id
+	 * @param {number} month a month to fetch future calendar dates for
 	 * @returns data from calendar API
 	 */
-	static fetchCalendar = async (id, month = null) => {
+	static fetchCalendar = async (
+		id: string,
+		month: number = null
+	): Promise<any> => {
 		let endpoint = `/api/sellerProducts/${id}/calendar`;
 
 		if (month) endpoint += `/${month}`;
@@ -84,15 +87,46 @@ export default class ProductHelper {
 	 * @returns Array of merged BlockOut & Rental data
 	 */
 	static buildCalendar = (data) => {
-		const blockOuts = data.blockOuts.map((bo) => {
+		// const blockOuts = [];
+		/* data.blockOuts.map((bo) => {
 			return { out: bo.dateOut, in: bo.dateIn, type: 'blockOut' };
+		}); */
+
+		const test = data.blockOuts.map((bo) => {
+			// console.log(typeof this.getDaysArray); //(bo.dateOut, bo.dateIn));
+			return ProductHelper.getDaysArray(bo.dateOut, bo.dateIn);
 		});
+
+		/**
+		 * @latest
+		 * @todo not concatenating to single array
+		 */
+		/* test.forEach((element) => {
+			console.log('el:', element);
+			blockOuts.push([...element]);
+		}); */
+
+		const blockOuts = test.flatMap((bo) => bo);
+
+		console.log('teste', test);
+		console.log('blockOuts', blockOuts);
 
 		const rentals = data.rentals.map((bo) => {
 			return { out: bo.dateOut, in: bo.dateDue, type: 'rental' };
 		});
 
 		return [...blockOuts, ...rentals];
+	};
+
+	static getDaysArray = function (s, e) {
+		for (
+			var a = [], d = new Date(s);
+			d <= new Date(e);
+			d.setDate(d.getDate() + 1)
+		) {
+			a.push(new Date(d));
+		}
+		return a;
 	};
 
 	/**

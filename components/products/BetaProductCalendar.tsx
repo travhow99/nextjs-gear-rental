@@ -1,14 +1,43 @@
 import { addDays } from 'date-fns';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { DateRange, Range } from 'react-date-range';
+import ProductHelper from '../../utils/helpers/ProductHelper';
 
 export default function BetaProductCalendaer({
 	range,
 	setRange,
+	productId,
 }: {
 	range: Range;
-	setRange: any;
-}) {
+	setRange: Dispatch<SetStateAction<Range>>;
+	productId: string;
+}): JSX.Element {
+	const [disabled, setDisabled] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [booked, setBooked] = useState([]);
+	const [maxMonth, setMaxMonth] = useState(null);
+
+	useEffect(() => {
+		const fetchCalendar = async () => {
+			const { bookings, startMonth, endMonth } =
+				await ProductHelper.fetchCalendar(productId);
+
+			console.log('got calendar', bookings, endMonth);
+			setBooked(bookings.map((booking) => new Date(booking)));
+			setLoading(false);
+			setMaxMonth(endMonth);
+		};
+
+		fetchCalendar();
+	}, []);
+
+	const handleMonthChange = async (date: Date) => {
+		console.log('month change,', date);
+	};
+
+	// console.log(booked[0]?.in, new Date(booked[0]?.in));
+	console.log('bookings:', booked);
+
 	return (
 		<DateRange
 			editableDateInputs={true}
@@ -22,6 +51,8 @@ export default function BetaProductCalendaer({
 			endDatePlaceholder={'Return'}
 			showMonthAndYearPickers={true}
 			minDate={new Date()}
+			onShownDateChange={handleMonthChange}
+			disabledDates={booked}
 		/>
 	);
 }

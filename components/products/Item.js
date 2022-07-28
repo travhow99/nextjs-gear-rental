@@ -21,7 +21,7 @@ import ProductCalendar from './ProductCalendar';
 import BetaProductCalendar from './BetaProductCalendar';
 
 import { getDay } from 'date-fns';
-import { getNumberOfDaysBetween } from '../../utils/dateHelper';
+import dateHelper from '../../utils/dateHelper';
 
 export default function Item(props) {
 	const router = useRouter();
@@ -71,10 +71,12 @@ export default function Item(props) {
 
 	// console.log(product.rental_min, product.stock);
 	console.log('new product!!', product);
-	console.log('rental date', rental);
+	console.log('rental date', rental, rental.startDate, rental.endDate);
 
-	if (rental[0] && rental[1]) {
-		console.log(getNumberOfDaysBetween(rental[1], rental[0]));
+	if (rental.startDate && rental.endDate) {
+		console.log(
+			dateHelper.getNumberOfDaysBetween(rental.endDate, rental.startDate)
+		);
 	}
 
 	return (
@@ -166,18 +168,13 @@ export default function Item(props) {
 									</Grid>
 								</Grid>
 							</ListItem>
-							{/**
-							 *
-							 * @todo use date-range picker
-							 *
-							 */}
-							{rental[0] && (
+							{rental.startDate && (
 								<ListItem>
 									<Typography component="p">
-										{getDay(rental[0])}
-									</Typography>
-									<Typography component="p">
-										{getDay(rental[1])}
+										{dateHelper.getNumberOfDaysBetween(
+											rental.endDate,
+											rental.startDate
+										)}
 									</Typography>
 								</ListItem>
 							)}

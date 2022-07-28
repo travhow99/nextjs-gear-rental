@@ -38,7 +38,8 @@ const dateHelper = {
 	},
 
 	getNumberOfDaysBetween(date1: number | Date, date2: number | Date): string {
-		return formatDistance(date2, date1);
+		const days = formatDistance(date2, date1);
+		return days === 'less than a minute' ? '1 day' : days;
 	},
 
 	/**
