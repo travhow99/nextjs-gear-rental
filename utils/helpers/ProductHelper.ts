@@ -92,23 +92,10 @@ export default class ProductHelper {
 			return { out: bo.dateOut, in: bo.dateIn, type: 'blockOut' };
 		}); */
 
-		const test = data.blockOuts.map((bo) => {
-			// console.log(typeof this.getDaysArray); //(bo.dateOut, bo.dateIn));
-			return ProductHelper.getDaysArray(bo.dateOut, bo.dateIn);
-		});
+		const blockOuts = data.blockOuts
+			.map((bo) => ProductHelper.getDaysArray(bo.dateOut, bo.dateIn))
+			.flatMap((bo) => bo);
 
-		/**
-		 * @latest
-		 * @todo not concatenating to single array
-		 */
-		/* test.forEach((element) => {
-			console.log('el:', element);
-			blockOuts.push([...element]);
-		}); */
-
-		const blockOuts = test.flatMap((bo) => bo);
-
-		console.log('teste', test);
 		console.log('blockOuts', blockOuts);
 
 		const rentals = data.rentals.map((bo) => {
@@ -118,10 +105,13 @@ export default class ProductHelper {
 		return [...blockOuts, ...rentals];
 	};
 
-	static getDaysArray = function (s, e) {
+	static getDaysArray = (
+		start: string | number | Date,
+		end: string | number | Date
+	) => {
 		for (
-			var a = [], d = new Date(s);
-			d <= new Date(e);
+			var a = [], d = new Date(start);
+			d <= new Date(end);
 			d.setDate(d.getDate() + 1)
 		) {
 			a.push(new Date(d));
@@ -136,7 +126,11 @@ export default class ProductHelper {
 	 * @param {String} type blockOut|rental|null
 	 * @returns {Boolean} isBooked
 	 */
-	static getIsBooked = (bookings = [], date, type = null) => {
+	static getIsBooked = (
+		bookings: Array<any> = [],
+		date: Date,
+		type: string = null
+	): boolean => {
 		if (!bookings.length) return false;
 
 		let isBooked = false;

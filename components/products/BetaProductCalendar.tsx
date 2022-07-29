@@ -1,4 +1,3 @@
-import { addDays } from 'date-fns';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { DateRange, Range } from 'react-date-range';
 import ProductHelper from '../../utils/helpers/ProductHelper';
@@ -23,7 +22,11 @@ export default function BetaProductCalendaer({
 				await ProductHelper.fetchCalendar(productId);
 
 			console.log('got calendar', bookings, endMonth);
-			setBooked(bookings.map((booking) => new Date(booking)));
+			setBooked(
+				bookings.map(
+					(booking: string | number | Date) => new Date(booking)
+				)
+			);
 			setLoading(false);
 			setMaxMonth(endMonth);
 		};

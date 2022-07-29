@@ -22,6 +22,7 @@ import BetaProductCalendar from './BetaProductCalendar';
 
 import { getDay } from 'date-fns';
 import dateHelper from '../../utils/dateHelper';
+import ProductHelper from '../../utils/helpers/ProductHelper';
 
 export default function Item(props) {
 	const router = useRouter();
@@ -35,16 +36,16 @@ export default function Item(props) {
 		key: 'selection',
 	});
 
-	// const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
+	const [buttonIsDisabled, setButtonIsDisabled] = useState(true);
 
 	const classes = useStyles();
 	const product = props.product;
 
-	/* 	useEffect(() => {
+	useEffect(() => {
 		const disabled = buttonShouldBeDisabled();
 		setButtonIsDisabled(disabled);
 	}, [rental]);
- */
+
 	/**
 	 * @todo No need to account for existing item in cart?
 	 */
@@ -67,17 +68,22 @@ export default function Item(props) {
 		router.push('/cart');
 	};
 
-	const buttonShouldBeDisabled = () => rental.filter((r) => r).length !== 2;
+	const booked = ProductHelper.buildCalendar(product);
+	const startIsBooked = ProductHelper.getIsBooked(booked, rental.startDate);
+	const endIsBooked = ProductHelper.getIsBooked(booked, rental.endDate);
+
+	console.log('booked?', booked, startIsBooked, endIsBooked);
+	/**
+	 * @todo also should ensure both dates are not in
+	 */
+	const buttonShouldBeDisabled = () =>
+		!Boolean(rental.startDate && rental.endDate) &&
+		startIsBooked &&
+		endIsBooked;
 
 	// console.log(product.rental_min, product.stock);
 	console.log('new product!!', product);
 	console.log('rental date', rental, rental.startDate, rental.endDate);
-
-	if (rental.startDate && rental.endDate) {
-		console.log(
-			dateHelper.getNumberOfDaysBetween(rental.endDate, rental.startDate)
-		);
-	}
 
 	return (
 		<>
@@ -188,7 +194,7 @@ export default function Item(props) {
 							</ListItem>
 							<ListItem>
 								<Button
-									// disabled={buttonIsDisabled}
+									disabled={buttonIsDisabled}
 									fullWidth
 									variant="contained"
 									color="primary"
