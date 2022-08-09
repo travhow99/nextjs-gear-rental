@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type OrdersOrderItems {
+  id       String @map("_id") @db.ObjectId
+  imageAlt String
+  imageUrl String
+  price    Int
+  quantity Int
+  slug     String
+  title    String
+}
+
+type OrdersPaymentResult {
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  email_address Json?
+  id            String
+  status        String
+}
+
+type OrdersShippingAddress {
+  address    String
+  city       String
+  country    String
+  fullName   String
+  postalCode String
+}
+
+model accounts {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  access_token      String
+  expires_at        Int
+  id_token          String
+  provider          String
+  providerAccountId String
+  scope             String
+  token_type        String
+  type              String
+  userId            String @db.ObjectId
+}
+
+model blockouts {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  v          Int      @map("__v")
+  count      Int
+  createdAt  DateTime @db.Date
+  dateIn     DateTime @db.Date
+  dateOut    DateTime @db.Date
+  product    String   @db.ObjectId
+  softDelete Boolean?
+  updatedAt  DateTime @db.Date
+  user_id    String
+}
+
+model brands {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  category   String
+  descripion String
+  logoUrl    String
+  title      String
+  url        String
+}
+
+model categories {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  createdAt DateTime @db.Date
+  name      String
+  updatedAt DateTime @db.Date
+}
+
+model orders {
+  id              String                @id @default(auto()) @map("_id") @db.ObjectId
+  v               Int                   @map("__v")
+  createdAt       DateTime              @db.Date
+  isDelivered     Boolean
+  isPaid          Boolean
+  itemsPrice      Int
+  orderItems      OrdersOrderItems[]
+  paidAt          DateTime?             @db.Date
+  paymentMethod   String
+  paymentResult   OrdersPaymentResult?
+  shippingAddress OrdersShippingAddress
+  taxPrice        Float
+  /// Multiple data types found: Float: 90%, Int: 10% out of 10 sampled entries
+  totalPrice      Json
+  updatedAt       DateTime              @db.Date
+  user            String                @db.ObjectId
+}
+
+model productimages {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  category  String
+  createdAt DateTime @db.Date
+  path      String
+  product   String   @db.ObjectId
+  updatedAt DateTime @db.Date
+  user      String   @db.ObjectId
+}
+
+model products {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  v           Int      @map("__v")
+  brand       String
+  category    String
+  createdAt   DateTime @db.Date
+  description String
+  gender      String?
+  imageAlt    String
+  imageUrl    String
+  price       Int
+  /// Multiple data types found: Float: 83.3%, Int: 16.7% out of 6 sampled entries
+  rating      Json
+  rental_min  Int
+  size        String?
+  slug        String   @unique(map: "slug_1")
+  stock       Int
+  title       String
+  updatedAt   DateTime @db.Date
+}
+
+model rentals {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model sellerproducts {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  v           Int      @map("__v")
+  blockOuts   String[] @db.ObjectId
+  brand       String
+  category    String
+  condition   String?
+  createdAt   DateTime @db.Date
+  description String
+  gender      String?
+  images      String[] @db.ObjectId
+  price       Int
+  product     String
+  rentalMin   Int
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  rentals     Json?
+  size        String?
+  stock       Int
+  title       String
+  updatedAt   DateTime @db.Date
+  user        String   @db.ObjectId
+}
+
+model sessions {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  expires      DateTime @db.Date
+  sessionToken String
+  userId       String   @db.ObjectId
+}
+
+model users {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email         String
+  emailVerified Boolean
+  image         String
+  name          String
+  role          String?
+  seller        Boolean?
+}
