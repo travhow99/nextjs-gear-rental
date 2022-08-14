@@ -57,13 +57,17 @@ export default function Item(props) {
 
 		const { data } = await axios.get(`/api/products/${product._id}`);
 		if (data.stock < quantity) {
-			enqueueSnackbar('OUT OF STOCK', { variant: 'error' });
+			enqueueSnackbar('Product Unavailable', { variant: 'error' });
 
-			alert('OUT OF STOCK');
 			return;
 		}
 
-		dispatch(addItem({ ...product, quantity, rental }));
+		const storeRental = {
+			startDate: rental.startDate.toISOString(),
+			endDate: rental.endDate.toISOString(),
+		};
+
+		dispatch(addItem({ ...product, quantity, rental: storeRental }));
 
 		router.push('/cart');
 	};

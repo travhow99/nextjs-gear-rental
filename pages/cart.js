@@ -24,6 +24,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem } from '../redux/cart/cartSlice';
+import dateHelper from '../utils/dateHelper';
 
 function Cart() {
 	const router = useRouter();
@@ -73,8 +74,8 @@ function Cart() {
 							<Table>
 								<TableHead>
 									<TableRow>
-										<TableCell>Image</TableCell>
-										<TableCell>Name</TableCell>
+										<TableCell></TableCell>
+										<TableCell>Item</TableCell>
 										<TableCell align="right">
 											Quantity
 										</TableCell>
@@ -82,7 +83,10 @@ function Cart() {
 											Price
 										</TableCell>
 										<TableCell align="right">
-											Action
+											Dates
+										</TableCell>
+										<TableCell align="right">
+											{/* Action */}
 										</TableCell>
 									</TableRow>
 								</TableHead>
@@ -91,7 +95,7 @@ function Cart() {
 										<TableRow key={item._id}>
 											<TableCell>
 												<NextLink
-													href={`/product/${item._id}`}
+													href={`/product/${item.slug}`}
 													passHref
 												>
 													<Link>
@@ -119,7 +123,7 @@ function Cart() {
 
 											<TableCell>
 												<NextLink
-													href={`/product/${item._id}`}
+													href={`/product/${item.slug}`}
 													passHref
 												>
 													<Link>
@@ -131,7 +135,11 @@ function Cart() {
 											</TableCell>
 
 											<TableCell align="right">
-												<Select
+												<Typography>
+													{item.quantity}
+												</Typography>
+
+												{/* <Select
 													value={item.quantity}
 													onChange={(e) =>
 														updateCartHandler(
@@ -152,11 +160,19 @@ function Cart() {
 															{x + 1}
 														</MenuItem>
 													))}
-												</Select>
+												</Select> */}
 											</TableCell>
 
 											<TableCell align="right">
 												${item.price}
+											</TableCell>
+
+											<TableCell align="right">
+												{/* @todo format date range method */}
+												{dateHelper.getHumanReadableDateRangeText(
+													item.rental.startDate,
+													item.rental.endDate
+												)}
 											</TableCell>
 
 											<TableCell align="right">

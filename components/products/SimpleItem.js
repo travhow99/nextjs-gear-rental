@@ -20,13 +20,12 @@ export default function SimpleItem(props) {
 	const router = useRouter();
 	// const cart = useSelector();
 	const dispatch = useDispatch();
-	const { cart } = useSelector((state) => state);
 	const { closeSnackbar, enqueueSnackbar } = useSnackbar();
 
-	console.log('cart', cart, props);
 	const product = props.product;
 
 	/**
+	 * @deprecated
 	 * @todo implement useApi hook
 	 * ../../utils/hooks/useApi.js
 	 */
@@ -48,6 +47,13 @@ export default function SimpleItem(props) {
 
 		router.push('/cart');
 	};
+
+	/**
+	 *
+	 * @todo
+	 * @param {*} product
+	 */
+	const quickLookModalHandler = (product) => {};
 
 	return (
 		<Card>
@@ -72,9 +78,9 @@ export default function SimpleItem(props) {
 				<Button
 					size="small"
 					color="primary"
-					onClick={() => addToCartHandler(product)}
+					// onClick={() => addToCartHandler(product)}
 				>
-					Add to cart
+					Quick Look
 				</Button>
 			</CardActions>
 		</Card>

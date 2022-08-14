@@ -1,4 +1,12 @@
-import { format, set, getDate, getYear, formatDistance } from 'date-fns';
+import {
+	format,
+	set,
+	getDate,
+	getYear,
+	formatDistance,
+	isSameYear,
+	isSameMonth,
+} from 'date-fns';
 
 type timestamp = string | number | Date;
 
@@ -40,6 +48,20 @@ const dateHelper = {
 	getNumberOfDaysBetween(date1: number | Date, date2: number | Date): string {
 		const days = formatDistance(date2, date1);
 		return days === 'less than a minute' ? '1 day' : days;
+	},
+
+	getHumanReadableDateRangeText(date1: number | Date, date2: number | Date) {
+		let text: string;
+
+		// const sameYear = isSameYear(date1, date2);
+		// const sameMonth = isSameMonth(date1, date2);
+
+		text =
+			new Date(date1).toDateString() +
+			' - ' +
+			new Date(date2).toDateString();
+
+		return text;
 	},
 
 	/**

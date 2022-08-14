@@ -246,8 +246,6 @@ function SellerProduct({ params }) {
 								value={title || ''}
 								variant="outlined"
 								onChange={(e, newValue) => {
-									console.log('onchange', e, e.target.value);
-
 									setTitle(e.target.value);
 								}}
 								onBlur={handleBlur}

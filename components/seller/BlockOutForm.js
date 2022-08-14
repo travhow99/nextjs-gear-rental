@@ -139,7 +139,6 @@ export default function BlockOutForm({
 		setShowDelete(false);
 		setDeleteId(null);
 	};
-	console.log('bo id', adding);
 
 	return (
 		<Card className={classes.section}>
