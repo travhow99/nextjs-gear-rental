@@ -1,52 +1,58 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
+import CartHelper from '../../utils/helpers/CartHelper';
 
 export const cartSlice = createSlice({
-  name: 'cart',
-  initialState: {
-    cartItems: Cookies.get('cartItems')
-      ? JSON.parse(Cookies.get('cartItems'))
-      : [],
-  },
-  reducers: {
-    addItem: (state, action) => {
-      console.log('recd additem action', action);
-      const newItem = action.payload;
+	name: 'cart',
+	initialState: {
+		cartItems: Cookies.get('cartItems')
+			? JSON.parse(Cookies.get('cartItems'))
+			: [],
+	},
+	reducers: {
+		/**
+		 * @todo add uuid for unique?
+		 */
+		addItem: (state, action) => {
+			console.log('recd additem action', action);
+			const newProduct = action.payload;
 
-      const itemAlreadyExists = state.cartItems.find(
-        (item) => item._id === newItem._id
-      );
+			const cartCopy = [...state.cartItems];
 
-      const cartItems = itemAlreadyExists
-        ? state.cartItems.map((item) =>
-            item.title === itemAlreadyExists.title ? newItem : item
-          )
-        : [...state.cartItems, newItem];
+			console.log('pre methodo', cartCopy);
+			const { cartItems, status } = CartHelper.addProductToCart(
+				cartCopy,
+				newProduct
+			);
 
-      console.log('updating cart', newItem, cartItems);
+			console.log('got add2cart response:', cartItems, status);
 
-      state.cartItems = cartItems;
+			debugger;
 
-      Cookies.set('cartItems', JSON.stringify(cartItems));
-    },
-    removeItem: (state, action) => {
-      const cartItems = state.cartItems.filter(
-        (item) => item._id !== action.payload._id
-      );
+			console.log('updating cart', newProduct, cartItems);
 
-      console.log('rmv', action, cartItems);
+			state.cartItems = cartItems;
 
-      state.cartItems = cartItems;
+			Cookies.set('cartItems', JSON.stringify(cartItems));
+		},
+		removeItem: (state, action) => {
+			const cartItems = state.cartItems.filter(
+				(item) => item._id !== action.payload._id
+			);
 
-      Cookies.set('cartItems', JSON.stringify(cartItems));
-    },
-    clearCart: (state) => {
-      state.cartItems = [];
+			console.log('rmv', action, cartItems);
 
-      Cookies.remove('cartItems');
-    },
-    // selectCart:
-  },
+			state.cartItems = cartItems;
+
+			Cookies.set('cartItems', JSON.stringify(cartItems));
+		},
+		clearCart: (state) => {
+			state.cartItems = [];
+
+			Cookies.remove('cartItems');
+		},
+		// selectCart:
+	},
 });
 
 export const { addItem, removeItem, clearCart } = cartSlice.actions;

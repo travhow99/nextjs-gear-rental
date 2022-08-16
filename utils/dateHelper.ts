@@ -6,9 +6,17 @@ import {
 	formatDistance,
 	isSameYear,
 	isSameMonth,
+	isSameDay,
+	isAfter,
+	isBefore,
 } from 'date-fns';
 
 type timestamp = string | number | Date;
+
+type RentalDate = {
+	startDate: string;
+	endDate: string;
+};
 
 const dateHelper = {
 	timestampToDate(timestamp: timestamp) {
@@ -19,7 +27,9 @@ const dateHelper = {
 	dateToDateTimeLocalFormat(date: timestamp) {
 		// return format(new Date(date), "yyyy-MM-dd'T'HH:mm");
 		// const dateCheck = new Date(date);
-		return new Date(new Date(date).getTime() + this.getTimezoneOffset())
+		return new Date(
+			new Date(date).getTime() + dateHelper.getTimezoneOffset()
+		)
 			.toISOString()
 			.slice(0, 19);
 	},
@@ -50,18 +60,47 @@ const dateHelper = {
 		return days === 'less than a minute' ? '1 day' : days;
 	},
 
-	getHumanReadableDateRangeText(date1: number | Date, date2: number | Date) {
+	getHumanReadableDateRangeText(date1: Date, date2: Date) {
 		let text: string;
 
 		// const sameYear = isSameYear(date1, date2);
 		// const sameMonth = isSameMonth(date1, date2);
 
-		text =
-			new Date(date1).toDateString() +
-			' - ' +
-			new Date(date2).toDateString();
+		text = date1.toDateString();
+
+		if (!isSameDay(date1, date2)) text += ' - ' + date2.toDateString();
 
 		return text;
+	},
+
+	dateRangesOverlap(rentalDate1: RentalDate, rentalDate2: RentalDate) {
+		const startDate1 = new Date(rentalDate1.startDate);
+		const endDate1 = new Date(rentalDate1.endDate);
+		const startDate2 = new Date(rentalDate2.startDate);
+		const endDate2 = new Date(rentalDate2.endDate);
+
+		// (StartDate1 <= EndDate2) and (StartDate2 <= EndDate1)
+
+		console.log(
+			startDate1,
+			startDate2,
+			endDate1,
+			endDate2,
+			isSameDay(startDate1, endDate2),
+			isAfter(startDate1, endDate2),
+			isSameDay(startDate2, endDate1),
+			isBefore(startDate2, endDate1)
+		);
+		if (
+			isSameDay(startDate1, endDate2) ||
+			isAfter(startDate1, endDate2) ||
+			isSameDay(startDate2, endDate1) ||
+			isBefore(startDate2, endDate1)
+		) {
+			return true;
+		}
+
+		return false;
 	},
 
 	/**

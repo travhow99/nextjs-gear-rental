@@ -39,14 +39,14 @@ export default class ProductHelper {
 		return dateHelper.timestampToDate(timestamp);
 	}
 
-	static fetchProduct = async (id) => {
+	static fetchProduct = async (id: string) => {
 		const { data } = await axios.get(`/api/products/${id}`);
 		return data;
 	};
 
 	static addProductToCart = async (product) => {
 		const dispatch = useDispatch();
-		const { cart } = useSelector((state) => state);
+		const { cart } = useSelector((state: any) => state);
 
 		console.log('prod method add to cart', product);
 		const existingItem = cart.cartItems.find(

@@ -170,8 +170,12 @@ function Cart() {
 											<TableCell align="right">
 												{/* @todo format date range method */}
 												{dateHelper.getHumanReadableDateRangeText(
-													item.rental.startDate,
-													item.rental.endDate
+													new Date(
+														item.rental.startDate
+													),
+													new Date(
+														item.rental.endDate
+													)
 												)}
 											</TableCell>
 

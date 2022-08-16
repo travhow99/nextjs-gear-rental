@@ -23,6 +23,7 @@ import BetaProductCalendar from './BetaProductCalendar';
 import { getDay } from 'date-fns';
 import dateHelper from '../../utils/dateHelper';
 import ProductHelper from '../../utils/helpers/ProductHelper';
+import CartHelper from '../../utils/helpers/CartHelper';
 
 export default function Item(props) {
 	const router = useRouter();
@@ -67,9 +68,20 @@ export default function Item(props) {
 			endDate: rental.endDate.toISOString(),
 		};
 
-		dispatch(addItem({ ...product, quantity, rental: storeRental }));
-
-		router.push('/cart');
+		if (
+			CartHelper.productCanBeAddedToCart(cart.cartItems, {
+				...product,
+				rental: storeRental,
+			})
+		) {
+			dispatch(addItem({ ...product, rental: storeRental }));
+			router.push('/cart');
+		} else {
+			enqueueSnackbar('Product Unavailable', {
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
+		}
 	};
 
 	const booked = ProductHelper.buildCalendar(product);
