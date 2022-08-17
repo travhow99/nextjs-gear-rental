@@ -8,6 +8,7 @@ export const cartSlice = createSlice({
 		cartItems: Cookies.get('cartItems')
 			? JSON.parse(Cookies.get('cartItems'))
 			: [],
+		paymentMethod: '',
 	},
 	reducers: {
 		/**
@@ -26,8 +27,6 @@ export const cartSlice = createSlice({
 			);
 
 			console.log('got add2cart response:', cartItems, status);
-
-			debugger;
 
 			console.log('updating cart', newProduct, cartItems);
 
@@ -52,9 +51,17 @@ export const cartSlice = createSlice({
 			Cookies.remove('cartItems');
 		},
 		// selectCart:
+		setPaymentMethod: (state, action) => {
+			state.paymentMethod = action.payload;
+
+			console.log('set state!', action.payload);
+
+			Cookies.set('paymentMethod', action.payload);
+		},
 	},
 });
 
-export const { addItem, removeItem, clearCart } = cartSlice.actions;
+export const { addItem, removeItem, clearCart, setPaymentMethod } =
+	cartSlice.actions;
 
 export default cartSlice.reducer;

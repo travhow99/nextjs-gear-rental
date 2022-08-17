@@ -4,6 +4,7 @@ import dateHelper from '../dateHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { getMonth, isAfter, isBefore, isSameDay, setMonth } from 'date-fns';
+import Product from '../../types/Product';
 
 // export default _product;
 
@@ -39,22 +40,25 @@ export default class ProductHelper {
 		return dateHelper.timestampToDate(timestamp);
 	}
 
-	static fetchProduct = async (id: string) => {
+	static fetchProduct = async (id: string): Promise<Product> => {
 		const { data } = await axios.get(`/api/products/${id}`);
 		return data;
 	};
 
+	/**
+	 * @deprecated
+	 */
 	static addProductToCart = async (product) => {
 		const dispatch = useDispatch();
 		const { cart } = useSelector((state: any) => state);
 
 		console.log('prod method add to cart', product);
 		const existingItem = cart.cartItems.find(
-			(item) => item._id === product._id
+			(item: Product) => item._id === product._id
 		);
 		const quantity = existingItem ? existingItem.quantity + 1 : 1;
 
-		const data = this.fetchProduct(product._id);
+		const data = await this.fetchProduct(product._id);
 		if (data.stock < quantity) {
 			alert('OUT OF STOCK');
 			return;

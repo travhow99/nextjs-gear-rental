@@ -91,8 +91,8 @@ function Cart() {
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{cartItems.map((item) => (
-										<TableRow key={item._id}>
+									{cartItems.map((item, index) => (
+										<TableRow key={index}>
 											<TableCell>
 												<NextLink
 													href={`/product/${item.slug}`}
@@ -201,14 +201,9 @@ function Cart() {
 							<List>
 								<ListItem>
 									<Typography variant="h2">
-										Subtotal (
+										Subtotal ({cartItems.length} items) : ${' '}
 										{cartItems.reduce(
-											(a, c) => a + c.quantity,
-											0
-										)}{' '}
-										items) : ${' '}
-										{cartItems.reduce(
-											(a, c) => a + c.quantity * c.price,
+											(a, c) => a + c.price,
 											0
 										)}
 									</Typography>
