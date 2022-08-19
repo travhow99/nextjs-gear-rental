@@ -8,7 +8,7 @@ export const cartSlice = createSlice({
 		cartItems: Cookies.get('cartItems')
 			? JSON.parse(Cookies.get('cartItems'))
 			: [],
-		paymentMethod: '',
+		paymentMethod: Cookies.get('paymentMethod') || '',
 	},
 	reducers: {
 		/**

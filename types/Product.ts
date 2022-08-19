@@ -11,7 +11,7 @@ type Product = {
 	gender: string;
 	size: string;
 	condition: string;
-	price: Number;
+	price: number;
 	description: string;
 	keyword: string;
 	slug: string;

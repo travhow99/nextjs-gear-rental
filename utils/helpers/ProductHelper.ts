@@ -12,8 +12,8 @@ export default class ProductHelper {
 	/**
 	 * @todo Calculate with # of days for rental
 	 */
-	static determineSubtotal(cartItems) {
-		const total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
+	static determineSubtotal(cartItems: Array<Product>) {
+		const total = cartItems.reduce((a, c) => a + c.price, 0);
 		return this.roundToPenny(total);
 	}
 

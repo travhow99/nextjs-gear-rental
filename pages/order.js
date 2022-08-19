@@ -48,8 +48,8 @@ function Order() {
 	});
 
 	/*  const {
-    cart: { shippingAddress, paymentMethod },
-  } = state; */
+		cart: { shippingAddress, paymentMethod },
+	} = state; */
 
 	const { cart } = useSelector((state) => state);
 	const { cartItems, paymentMethod } = cart;
@@ -111,20 +111,20 @@ function Order() {
 
 			<Grid container spacing={1}>
 				<Grid item md={9} xs={12}>
-					<Card className={classes.section}>
-						<List>
-							<ListItem>
+					{/* <Card className={classes.section}>
+						 <List>
+							 <ListItem>
 								<Typography component="h2" variant="h2">
 									Shipping Address
 								</Typography>
 							</ListItem>
-							{/* <ListItem>
-                {shippingAddress.fullName}, {shippingAddress.address},{' '}
-                {shippingAddress.city}, {shippingAddress.postalCode},{' '}
-                {shippingAddress.country}
-              </ListItem> */}
-						</List>
-					</Card>
+							<ListItem>
+								{shippingAddress.fullName}, {shippingAddress.address},{' '}
+								{shippingAddress.city}, {shippingAddress.postalCode},{' '}
+								{shippingAddress.country}
+							</ListItem> 
+						</List> 
+					</Card> */}
 					<Card className={classes.section}>
 						<List>
 							<ListItem>
@@ -133,6 +133,18 @@ function Order() {
 								</Typography>
 							</ListItem>
 							<ListItem>{paymentMethod}</ListItem>
+							<ListItem>
+								<NextLink href="/payment" passHref>
+									<Link>
+										<Typography
+											component="subtitle2"
+											variant="subtitle2"
+										>
+											Change Payment Method
+										</Typography>
+									</Link>
+								</NextLink>
+							</ListItem>
 						</List>
 					</Card>
 

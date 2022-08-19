@@ -21,7 +21,8 @@ import useStyles from '../utils/styles';
 export default function Payment() {
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const router = useRouter();
-	const { paymentMethod } = useSelector((state) => state);
+	const { cart } = useSelector((state) => state);
+	const { paymentMethod } = cart;
 
 	const dispatch = useDispatch();
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
@@ -32,8 +33,9 @@ export default function Payment() {
       router.push('/shipping');
     } else {
     } */
+		console.log('pmt mthd', paymentMethod);
 
-		setSelectedPaymentMethod(Cookies.get('paymentMethod') || '');
+		if (paymentMethod) setSelectedPaymentMethod(paymentMethod);
 	}, []);
 
 	console.log('pmt', selectedPaymentMethod);
@@ -45,6 +47,8 @@ export default function Payment() {
 				variant: 'error',
 			});
 		} else {
+			console.log('selected', selectedPaymentMethod, paymentMethod);
+			debugger;
 			dispatch(setPaymentMethod(selectedPaymentMethod));
 			router.push('/order');
 		}
