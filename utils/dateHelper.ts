@@ -9,14 +9,11 @@ import {
 	isSameDay,
 	isAfter,
 	isBefore,
+	subDays,
 } from 'date-fns';
+import { RentalDate } from '../types/RentalDate';
 
 type timestamp = string | number | Date;
-
-type RentalDate = {
-	startDate: string;
-	endDate: string;
-};
 
 const dateHelper = {
 	timestampToDate(timestamp: timestamp) {
@@ -55,9 +52,21 @@ const dateHelper = {
 		return new Date(currentYear, month, 1);
 	},
 
-	getNumberOfDaysBetween(date1: number | Date, date2: number | Date): string {
+	getReadableNumberOfDaysBetween(
+		date1: number | Date,
+		date2: number | Date
+	): string {
 		const days = formatDistance(date2, date1);
+		console.log('d:', days, parseInt(days, 10));
+
 		return days === 'less than a minute' ? '1 day' : days;
+	},
+
+	getNumberOfDaysBetween(date1: number | Date, date2: number | Date): number {
+		const days = formatDistance(date2, date1);
+		console.log('d:', days, parseInt(days, 10));
+
+		return days === 'less than a minute' ? 1 : parseInt(days, 10);
 	},
 
 	getHumanReadableDateRangeText(date1: Date, date2: Date) {

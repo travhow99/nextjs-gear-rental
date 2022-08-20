@@ -25,6 +25,8 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem } from '../redux/cart/cartSlice';
 import dateHelper from '../utils/dateHelper';
+import ProductHelper from '../utils/helpers/ProductHelper';
+import CartHelper from '../utils/helpers/CartHelper';
 
 function Cart() {
 	const router = useRouter();
@@ -77,10 +79,13 @@ function Cart() {
 										<TableCell></TableCell>
 										<TableCell>Item</TableCell>
 										<TableCell align="right">
-											Quantity
+											Days
 										</TableCell>
 										<TableCell align="right">
-											Price
+											Price / day
+										</TableCell>
+										<TableCell align="right">
+											Total Price
 										</TableCell>
 										<TableCell align="right">
 											Dates
@@ -136,47 +141,45 @@ function Cart() {
 
 											<TableCell align="right">
 												<Typography>
-													{item.quantity}
-												</Typography>
-
-												{/* <Select
-													value={item.quantity}
-													onChange={(e) =>
-														updateCartHandler(
-															item,
-															e.target.value
+													{dateHelper.getReadableNumberOfDaysBetween(
+														new Date(
+															item.rental.startDate
+														),
+														new Date(
+															item.rental.endDate
 														)
-													}
-												>
-													{[
-														...Array(
-															item.stock
-														).keys(),
-													].map((x) => (
-														<MenuItem
-															key={x + 1}
-															value={x + 1}
-														>
-															{x + 1}
-														</MenuItem>
-													))}
-												</Select> */}
+													)}
+												</Typography>
 											</TableCell>
 
 											<TableCell align="right">
-												${item.price}
+												<Typography>
+													${item.price}
+												</Typography>
 											</TableCell>
 
 											<TableCell align="right">
-												{/* @todo format date range method */}
-												{dateHelper.getHumanReadableDateRangeText(
-													new Date(
-														item.rental.startDate
-													),
-													new Date(
-														item.rental.endDate
-													)
-												)}
+												<Typography>
+													$
+													{ProductHelper.getProductTotalPrice(
+														item.price,
+														item.rental
+													)}
+												</Typography>
+											</TableCell>
+
+											<TableCell align="right">
+												<Typography>
+													{/* @todo format date range method */}
+													{dateHelper.getHumanReadableDateRangeText(
+														new Date(
+															item.rental.startDate
+														),
+														new Date(
+															item.rental.endDate
+														)
+													)}
+												</Typography>
 											</TableCell>
 
 											<TableCell align="right">
@@ -202,9 +205,8 @@ function Cart() {
 								<ListItem>
 									<Typography variant="h2">
 										Subtotal ({cartItems.length} items) : ${' '}
-										{cartItems.reduce(
-											(a, c) => a + c.price,
-											0
+										{CartHelper.getCartTotalPrice(
+											cartItems
 										)}
 									</Typography>
 								</ListItem>

@@ -1,5 +1,6 @@
 import Product from '../../types/Product';
 import dateHelper from '../dateHelper';
+import ProductHelper from './ProductHelper';
 
 type Result = 'success' | 'conflict' | 'error';
 
@@ -73,5 +74,17 @@ export default class CartHelper {
 		}
 
 		return true;
+	}
+
+	static getCartTotalPrice(cartItems: Array<Product>) {
+		const totalPrice = cartItems.reduce((a, c) => {
+			console.log('a:', a);
+			console.log(ProductHelper.getProductTotalPrice(c.price, c.rental));
+			return a + ProductHelper.getProductTotalPrice(c.price, c.rental);
+		}, 0);
+
+		console.log('total cart:', totalPrice);
+
+		return totalPrice;
 	}
 }

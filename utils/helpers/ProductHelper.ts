@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { getMonth, isAfter, isBefore, isSameDay, setMonth } from 'date-fns';
 import Product from '../../types/Product';
+import { RentalDate } from '../../types/RentalDate';
 
 // export default _product;
 
@@ -195,8 +196,18 @@ export default class ProductHelper {
 		return result;
 	};
 
-	static getFutureMonth = (month) => {
+	static getFutureMonth = (month: string | number | Date) => {
 		const future = new Date(month);
 		return setMonth(future, getMonth(future) + 3);
+	};
+
+	static getProductTotalPrice = (price: number, dates: RentalDate) => {
+		return (
+			price *
+			dateHelper.getNumberOfDaysBetween(
+				new Date(dates.startDate),
+				new Date(dates.endDate)
+			)
+		);
 	};
 }
