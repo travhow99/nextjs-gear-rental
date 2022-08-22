@@ -79,8 +79,13 @@ export default class CartHelper {
 	static getCartTotalPrice(cartItems: Array<Product>) {
 		const totalPrice = cartItems.reduce((a, c) => {
 			console.log('a:', a);
-			console.log(ProductHelper.getProductTotalPrice(c.price, c.rental));
-			return a + ProductHelper.getProductTotalPrice(c.price, c.rental);
+			return (
+				a +
+				ProductHelper.getProductTotalPrice(c.price, {
+					startDate: c.dateOut,
+					endDate: c.dateDue,
+				})
+			);
 		}, 0);
 
 		console.log('total cart:', totalPrice);

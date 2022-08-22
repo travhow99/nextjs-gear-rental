@@ -58,6 +58,9 @@ function Order() {
 	console.log('pmt?', paymentMethod);
 
 	const subtotal = ProductHelper.determineSubtotal(cartItems);
+	/**
+	 * @todo generate local tax amount
+	 */
 	const taxPrice = 0.075;
 	const taxTotal = ProductHelper.determineTax(subtotal, taxPrice);
 	const totalPrice = ProductHelper.determineTotal(subtotal, taxTotal);
@@ -137,8 +140,8 @@ function Order() {
 								<NextLink href="/payment" passHref>
 									<Link>
 										<Typography
-											component="subtitle2"
-											variant="subtitle2"
+											component="caption"
+											variant="caption"
 										>
 											Change Payment Method
 										</Typography>

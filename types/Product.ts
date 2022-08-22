@@ -21,6 +21,8 @@ type Product = {
 		startDate: string;
 		endDate: string;
 	};
+	dateOut?: string;
+	dateDue?: string;
 	blockOuts: Array<object>;
 };
 

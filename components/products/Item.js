@@ -74,7 +74,13 @@ export default function Item(props) {
 				rental: storeRental,
 			})
 		) {
-			dispatch(addItem({ ...product, rental: storeRental }));
+			dispatch(
+				addItem({
+					...product,
+					dateOut: storeRental.startDate,
+					dateDue: storeRental.endDate,
+				})
+			);
 			router.push('/cart');
 		} else {
 			enqueueSnackbar('Product Unavailable', {

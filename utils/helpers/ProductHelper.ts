@@ -202,6 +202,7 @@ export default class ProductHelper {
 	};
 
 	static getProductTotalPrice = (price: number, dates: RentalDate) => {
+		console.log(price, dates);
 		return (
 			price *
 			dateHelper.getNumberOfDaysBetween(

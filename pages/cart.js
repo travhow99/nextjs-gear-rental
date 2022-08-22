@@ -142,12 +142,8 @@ function Cart() {
 											<TableCell align="right">
 												<Typography>
 													{dateHelper.getReadableNumberOfDaysBetween(
-														new Date(
-															item.rental.startDate
-														),
-														new Date(
-															item.rental.endDate
-														)
+														new Date(item.dateOut),
+														new Date(item.dateDue)
 													)}
 												</Typography>
 											</TableCell>
@@ -161,9 +157,18 @@ function Cart() {
 											<TableCell align="right">
 												<Typography>
 													$
+													{console.log({
+														startDate: item.dateOut,
+														endDate: item.dateDue,
+													})}
 													{ProductHelper.getProductTotalPrice(
 														item.price,
-														item.rental
+														{
+															startDate:
+																item.dateOut,
+															endDate:
+																item.dateDue,
+														}
 													)}
 												</Typography>
 											</TableCell>
@@ -172,12 +177,8 @@ function Cart() {
 												<Typography>
 													{/* @todo format date range method */}
 													{dateHelper.getHumanReadableDateRangeText(
-														new Date(
-															item.rental.startDate
-														),
-														new Date(
-															item.rental.endDate
-														)
+														new Date(item.dateOut),
+														new Date(item.dateDue)
 													)}
 												</Typography>
 											</TableCell>
