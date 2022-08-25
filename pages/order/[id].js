@@ -39,6 +39,7 @@ import {
 } from '../../redux/orders/ordersSlice';
 import { payFail, payRequest, paySucces } from '../../redux/paypal/payPalSlice';
 import NotFound from '../../components/pages/NotFound';
+import ItemsTable from '../../components/products/ItemsTable';
 
 function Order({ params }) {
 	const orderId = params.id;
@@ -112,6 +113,7 @@ function Order({ params }) {
 		isDelivered,
 		deliveredAt,
 	} = order;
+	console.log('R', rentals);
 
 	const { paySuccess, payLoading, payError } = paypal;
 
@@ -230,7 +232,16 @@ function Order({ params }) {
 									</Typography>
 								</ListItem>
 								<ListItem>
-									<TableContainer>
+									<ItemsTable
+										items={rentals.map((r) => {
+											return {
+												...r.product,
+												dateOut: r.dateOut,
+												dateDue: r.dateDue,
+											};
+										})}
+									/>
+									{/* <TableContainer>
 										<Table>
 											<TableHead>
 												<TableRow>
@@ -317,7 +328,7 @@ function Order({ params }) {
 												))}
 											</TableBody>
 										</Table>
-									</TableContainer>
+									</TableContainer> */}
 								</ListItem>
 							</List>
 						</Card>

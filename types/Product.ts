@@ -1,3 +1,5 @@
+import ProductImage from './ProductImage';
+
 type Product = {
 	_id: string;
 	product: string;
@@ -15,7 +17,7 @@ type Product = {
 	description: string;
 	keyword: string;
 	slug: string;
-	images: Array<object>;
+	images: Array<ProductImage>;
 	rentals: Array<object>;
 	rental?: {
 		startDate: string;
