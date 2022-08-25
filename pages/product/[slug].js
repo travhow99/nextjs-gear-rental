@@ -8,12 +8,20 @@ import SellerProduct from '../../models/SellerProduct';
 import Rental from '../../models/Rental';
 import BlockOut from '../../models/BlockOut';
 import ProductImage from '../../models/ProductImage';
+import NotFound from '../../components/pages/NotFound';
+import { Typography } from '@material-ui/core';
 
 export default function ProductPage(props) {
 	const { product } = props;
 
 	if (!product) {
-		return <div>Product Not Found</div>;
+		return (
+			<NotFound>
+				<Typography component={'h1'} variant={'h1'}>
+					Product Not Found
+				</Typography>
+			</NotFound>
+		);
 	}
 
 	return (

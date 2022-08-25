@@ -38,6 +38,7 @@ import {
 	orderFail,
 } from '../../redux/orders/ordersSlice';
 import { payFail, payRequest, paySucces } from '../../redux/paypal/payPalSlice';
+import NotFound from '../../components/pages/NotFound';
 
 function Order({ params }) {
 	const orderId = params.id;
@@ -55,29 +56,15 @@ function Order({ params }) {
 
 	console.log('orders?', orders);
 
-	const order = orders.orders.find((o) => o._id === orderId) || {};
-
-	console.log(order);
-	const {
-		// shippingAddress,
-		paymentMethod,
-		orderItems,
-		itemsPrice,
-		taxPrice,
-		// shippingPrice,
-		totalPrice,
-		isPaid,
-		paidAt,
-		isDelivered,
-		deliveredAt,
-	} = order;
-
-	const { paySuccess, payLoading, payError } = paypal;
-
-	const taxTotal = ProductHelper.determineTax(itemsPrice, taxPrice);
+	const order = orders.orders.find((o) => o._id === orderId);
 
 	useEffect(() => {
-		if (!order._id || paySuccess || (order._id && order._id !== orderId)) {
+		if (
+			!order ||
+			!order._id ||
+			paySuccess ||
+			(order._id && order._id !== orderId)
+		) {
 			fetchOrder();
 			if (paySuccess) {
 				dispatch(payReset());
@@ -100,6 +87,35 @@ function Order({ params }) {
 			dispatch(orderFail(error));
 		}
 	};
+
+	if (!order) {
+		return (
+			<NotFound>
+				<Typography component={'h1'} variant={'h1'}>
+					Order not found
+				</Typography>
+			</NotFound>
+		);
+	}
+
+	console.log(order);
+	const {
+		// shippingAddress,
+		paymentMethod,
+		rentals,
+		itemsPrice,
+		taxPrice,
+		// shippingPrice,
+		totalPrice,
+		isPaid,
+		paidAt,
+		isDelivered,
+		deliveredAt,
+	} = order;
+
+	const { paySuccess, payLoading, payError } = paypal;
+
+	const taxTotal = ProductHelper.determineTax(itemsPrice, taxPrice);
 
 	const loadPayPalScript = async () => {
 		console.log('paypal');
@@ -229,20 +245,36 @@ function Order({ params }) {
 												</TableRow>
 											</TableHead>
 											<TableBody>
-												{orderItems.map((item) => (
+												{rentals.map((item) => (
 													<TableRow key={item._id}>
 														<TableCell>
 															<NextLink
-																href={`/product/${item.slug}`}
+																href={`/product/${item.product.slug}`}
 																passHref
 															>
 																<Link>
 																	<Image
 																		src={
-																			item.imageUrl
+																			item
+																				.product
+																				.images
+																				.length
+																				? item
+																						.product
+																						.images[
+																						item
+																							.product
+																							.images
+																							.length -
+																							1
+																				  ]
+																						.path
+																				: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 																		}
 																		alt={
-																			item.name
+																			item
+																				.product
+																				.title
 																		}
 																		width={
 																			50
@@ -257,13 +289,15 @@ function Order({ params }) {
 
 														<TableCell>
 															<NextLink
-																href={`/product/${item.slug}`}
+																href={`/product/${item.product.slug}`}
 																passHref
 															>
 																<Link>
 																	<Typography>
 																		{
-																			item.title
+																			item
+																				.product
+																				.title
 																		}
 																	</Typography>
 																</Link>

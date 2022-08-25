@@ -1,21 +1,31 @@
 import nc from 'next-connect';
 import Order from '../../../models/Order';
+import ProductImage from '../../../models/ProductImage';
 import { isAuth } from '../../../utils/auth';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 
 const handler = nc({
-  onError,
+	onError,
 });
 
 handler.use(isAuth);
 
 handler.get(async (req, res) => {
-  await db.connect();
-  const orders = await Order.find({ user: req.user._id });
+	await db.connect();
+	const orders = await Order.find({ user: req.user._id }).populate({
+		path: 'rentals',
+		populate: {
+			path: 'product',
+			populate: {
+				path: 'images',
+				model: ProductImage,
+			},
+		},
+	});
 
-  await db.disconnect();
-  res.send(orders);
+	await db.disconnect();
+	res.send(orders);
 });
 
 export default handler;

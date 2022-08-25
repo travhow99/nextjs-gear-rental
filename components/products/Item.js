@@ -199,7 +199,7 @@ export default function Item(props) {
 							{rental.startDate && (
 								<ListItem>
 									<Typography component="p">
-										{dateHelper.getNumberOfDaysBetween(
+										{dateHelper.getReadableNumberOfDaysBetween(
 											rental.endDate,
 											rental.startDate
 										)}
