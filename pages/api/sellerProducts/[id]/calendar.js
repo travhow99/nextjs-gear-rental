@@ -5,7 +5,7 @@ import BlockOut from '../../../../models/BlockOut';
 import { onError } from '../../../../utils/error';
 import SellerProduct from '../../../../models/SellerProduct';
 import ProductHelper from '../../../../utils/helpers/ProductHelper';
-import { getMonth } from 'date-fns';
+import { getMonth, startOfToday } from 'date-fns';
 
 const handler = nc({ onError });
 
@@ -15,9 +15,9 @@ handler.get(async (req, res) => {
 
 		// console.log('query!', req);
 
-		const now = new Date();
-		const cutoff = ProductHelper.getFutureMonth(now);
-		console.log(now);
+		const today = startOfToday();
+		const cutoff = ProductHelper.getFutureMonth(today);
+		console.log(today);
 		console.log(cutoff);
 
 		// @todo Add to api methods
@@ -30,7 +30,7 @@ handler.get(async (req, res) => {
 					match: {
 						softDelete: { $ne: true }, // Filter the softDeletes from view
 						dateOut: {
-							$gte: now,
+							$gte: today,
 							$lt: cutoff,
 						},
 					},
@@ -42,13 +42,13 @@ handler.get(async (req, res) => {
 						$or: [
 							{
 								dateOut: {
-									$gte: now,
+									$gte: today,
 									$lt: cutoff,
 								},
 							},
 							{
 								dateIn: {
-									$gte: now,
+									$gte: today,
 									$lt: cutoff,
 								},
 							},
@@ -61,7 +61,7 @@ handler.get(async (req, res) => {
 
 		res.send({
 			bookings: ProductHelper.buildCalendar(sellerproduct),
-			startMonth: getMonth(now),
+			startMonth: getMonth(today),
 			endMonth: getMonth(cutoff),
 		});
 	} catch (error) {

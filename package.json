@@ -46,10 +46,12 @@
     "remark": "^14.0.1",
     "remark-html": "^15.0.0",
     "streamifier": "^0.1.1",
-    "tailwindcss": "^2.2.19"
+    "tailwindcss": "^2.2.19",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/react-date-range": "^1.4.4",
+    "@types/uuid": "^8.3.4",
     "autoprefixer": "^10.4.2",
     "typescript": "^4.7.4"
   }

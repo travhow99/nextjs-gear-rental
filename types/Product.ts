@@ -3,8 +3,8 @@ import ProductImage from './ProductImage';
 type Product = {
 	_id: string;
 	product: string;
-	// user: User
-
+	user?: any;
+	uuid?: any;
 	stock: number;
 	category: string;
 	rentalMin: number;

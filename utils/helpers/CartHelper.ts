@@ -1,6 +1,7 @@
 import Product from '../../types/Product';
 import dateHelper from '../dateHelper';
 import ProductHelper from './ProductHelper';
+import { v4 as uuidv4 } from 'uuid';
 
 type Result = 'success' | 'conflict' | 'error';
 
@@ -11,9 +12,12 @@ type CartActionResult = {
 
 export default class CartHelper {
 	static productIsInCart(cartItems: Array<Product>, newItemId: string) {
-		return Boolean(
+		const result = Boolean(
 			cartItems.find((item: { _id: string }) => item._id === newItemId)
 		);
+
+		console.log('p in cart?', result);
+		return result;
 	}
 
 	static productHasConflictingDate(
@@ -26,11 +30,15 @@ export default class CartHelper {
 			(item: { _id: string }) => item._id === product._id
 		);
 
-		console.log('exst product', existingProduct.rental, product.rental);
-
 		return dateHelper.dateRangesOverlap(
-			existingProduct.rental,
-			product.rental
+			{
+				startDate: existingProduct.dateOut,
+				endDate: existingProduct.dateDue,
+			},
+			{
+				startDate: product.dateOut,
+				endDate: product.dateDue,
+			}
 		);
 	}
 
@@ -55,17 +63,23 @@ export default class CartHelper {
 			result.cartItems = cartItems;
 			result.status = 'conflict';
 		} else {
-			result.cartItems = [...cartItems, product];
+			result.cartItems = [...cartItems, { ...product, uuid: uuidv4() }];
 			result.status = 'success';
 		}
 
 		return result;
 	}
 
+	/**
+	 * @todo allow for purchases from multiple sellers in the future
+	 */
 	static productCanBeAddedToCart(
 		cartItems: Array<Product>,
 		product: Product
 	): boolean {
+		console.log('product compare', cartItems, product);
+		if (cartItems.length && product.user !== cartItems[0].user)
+			return false;
 		if (
 			this.productIsInCart(cartItems, product._id) &&
 			this.productHasConflictingDate(cartItems, product)

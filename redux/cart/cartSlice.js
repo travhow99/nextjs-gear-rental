@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 import CartHelper from '../../utils/helpers/CartHelper';
 
@@ -15,7 +15,12 @@ export const cartSlice = createSlice({
 		 * @todo add uuid for unique?
 		 */
 		addItem: (state, action) => {
-			console.log('recd additem action', action);
+			console.log(
+				'recd additem action',
+				action,
+				'current:',
+				current(state)
+			);
 			const newProduct = action.payload;
 
 			const cartCopy = [...state.cartItems];
@@ -32,18 +37,29 @@ export const cartSlice = createSlice({
 
 			state.cartItems = cartItems;
 
-			Cookies.set('cartItems', JSON.stringify(cartItems));
+			if (
+				!Cookies.get('cartItems') ||
+				JSON.stringify(cartItems) !==
+					JSON.parse(Cookies.get('cartItems'))
+			) {
+				Cookies.set('cartItems', JSON.stringify(cartItems));
+			}
 		},
 		removeItem: (state, action) => {
 			const cartItems = state.cartItems.filter(
-				(item) => item._id !== action.payload._id
+				(item) => item.uuid !== action.payload.uuid
 			);
 
 			console.log('rmv', action, cartItems);
 
 			state.cartItems = cartItems;
 
-			Cookies.set('cartItems', JSON.stringify(cartItems));
+			if (
+				JSON.stringify(cartItems) !==
+				JSON.parse(Cookies.get('cartItems'))
+			) {
+				Cookies.set('cartItems', JSON.stringify(cartItems));
+			}
 		},
 		clearCart: (state) => {
 			state.cartItems = [];

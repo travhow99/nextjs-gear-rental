@@ -140,7 +140,7 @@ function Order() {
 								<NextLink href="/payment" passHref>
 									<Link>
 										<Typography
-											component="caption"
+											component="p"
 											variant="caption"
 										>
 											Change Payment Method

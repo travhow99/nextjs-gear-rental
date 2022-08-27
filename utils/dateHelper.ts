@@ -102,7 +102,9 @@ const dateHelper = {
 		);
 		if (
 			isSameDay(startDate1, endDate2) ||
+			isSameDay(startDate1, startDate2) ||
 			isAfter(startDate1, endDate2) ||
+			// isSameDay(startDate1, endDate1) ||
 			isSameDay(startDate2, endDate1) ||
 			isBefore(startDate2, endDate1)
 		) {

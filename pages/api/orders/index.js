@@ -44,13 +44,13 @@ handler.post(async (req, res) => {
 		/**
 		 * @todo need to add rentals to SellerProduct
 		 */
-		/* rentals.forEach((rental) => {
-      const sellerProduct = SellerProduct.findById(rental.product);
+		rentals.map(async (rental) => {
+			const sellerProduct = SellerProduct.findById(rental.product);
 
-      sellerProduct.rentals.push(rental);
+			sellerProduct.rentals.push(rental);
 
-      await sellerProduct.save();
-    }); */
+			await sellerProduct.save();
+		});
 
 		await db.disconnect();
 

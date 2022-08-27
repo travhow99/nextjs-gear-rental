@@ -101,8 +101,6 @@ export default class ProductHelper {
 			.map((bo) => ProductHelper.getDaysArray(bo.dateOut, bo.dateIn))
 			.flatMap((bo) => bo);
 
-		console.log('blockOuts', blockOuts);
-
 		const rentals = data.rentals.map((bo) => {
 			return { out: bo.dateOut, in: bo.dateDue, type: 'rental' };
 		});

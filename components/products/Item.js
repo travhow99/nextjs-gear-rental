@@ -47,6 +47,8 @@ export default function Item(props) {
 		setButtonIsDisabled(disabled);
 	}, [rental]);
 
+	console.log('C:', cart.cartItems);
+
 	/**
 	 * @todo No need to account for existing item in cart?
 	 */
@@ -54,29 +56,35 @@ export default function Item(props) {
 		const existingItem = cart.cartItems.find(
 			(item) => item._id === product._id
 		);
-		const quantity = existingItem ? existingItem.quantity + 1 : 1;
-
-		const { data } = await axios.get(`/api/products/${product._id}`);
-		if (data.stock < quantity) {
-			enqueueSnackbar('Product Unavailable', { variant: 'error' });
-
-			return;
-		}
 
 		const storeRental = {
 			startDate: rental.startDate.toISOString(),
 			endDate: rental.endDate.toISOString(),
 		};
 
+		console.log(cart.cartItems, {
+			...product,
+			rental: storeRental,
+		});
 		if (
 			CartHelper.productCanBeAddedToCart(cart.cartItems, {
 				...product,
-				rental: storeRental,
+				dateOut: storeRental.startDate,
+				dateDue: storeRental.endDate,
 			})
 		) {
 			dispatch(
+				/**
+				 * @todo should be able to store just product._id & generate rest serverside
+				 */
 				addItem({
-					...product,
+					_id: product._id,
+					product: product.product,
+					slug: product.slug,
+					title: product.title,
+					user: product.user,
+					price: product.price,
+					images: [product.images[product.images.length - 1]],
 					dateOut: storeRental.startDate,
 					dateDue: storeRental.endDate,
 				})
@@ -94,7 +102,7 @@ export default function Item(props) {
 	const startIsBooked = ProductHelper.getIsBooked(booked, rental.startDate);
 	const endIsBooked = ProductHelper.getIsBooked(booked, rental.endDate);
 
-	console.log('booked?', booked, startIsBooked, endIsBooked);
+	// console.log('booked?', booked, startIsBooked, endIsBooked);
 	/**
 	 * @todo also should ensure both dates are not in
 	 */
@@ -105,7 +113,7 @@ export default function Item(props) {
 
 	// console.log(product.rental_min, product.stock);
 	console.log('new product!!', product);
-	console.log('rental date', rental, rental.startDate, rental.endDate);
+	// console.log('rental date', rental, rental.startDate, rental.endDate);
 
 	return (
 		<>
