@@ -7,6 +7,11 @@ const orderSchema = new mongoose.Schema(
 			ref: 'User',
 			required: true,
 		},
+		storeId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
+			required: true,
+		},
 		rentals: [
 			{
 				type: mongoose.Schema.Types.ObjectId,

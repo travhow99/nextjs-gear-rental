@@ -35,17 +35,20 @@ handler.post(async (req, res) => {
 		const newOrder = new Order({
 			...req.body,
 			user: req.user._id,
+			storeId: rentals[0].user,
 			rentals: result.map((rental) => rental._id),
 		});
 		console.log('store new order', newOrder);
 		const order = await newOrder.save();
 
 		// Store rentals to SellerProduct
-		/**
-		 * @todo need to add rentals to SellerProduct
-		 */
-		rentals.map(async (rental) => {
-			const sellerProduct = SellerProduct.findById(rental.product);
+		result.map(async (rental) => {
+			// const ObjectId = require('mongoose').Types.ObjectId;
+
+			// const productId = new ObjectId(rental.product);
+			const productId = rental.product;
+			const sellerProduct = await SellerProduct.findById(productId);
+
 
 			sellerProduct.rentals.push(rental);
 
