@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { DateRange, Range } from 'react-date-range';
+import { Booking } from '../../types/Booking';
 import ProductHelper from '../../utils/helpers/ProductHelper';
 
 export default function BetaProductCalendaer({
@@ -22,10 +23,15 @@ export default function BetaProductCalendaer({
 				await ProductHelper.fetchCalendar(productId);
 
 			console.log('got calendar', bookings, endMonth);
+
+			/**
+			 * @todo get days between, or serverside function?
+			 */
 			setBooked(
-				bookings.map(
-					(booking: string | number | Date) => new Date(booking)
-				)
+				bookings.flatMap((booking: Booking) => [
+					new Date(booking.in),
+					new Date(booking.out),
+				])
 			);
 			setLoading(false);
 			setMaxMonth(endMonth);

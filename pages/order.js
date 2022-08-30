@@ -83,8 +83,7 @@ function Order() {
 				email: session.user.email,
 			});
 
-			// dispatch({ type: 'CART_CLEAR' });
-			dispatch(clearCart);
+			dispatch(clearCart());
 			Cookies.remove('cartItems');
 			setLoading(false);
 

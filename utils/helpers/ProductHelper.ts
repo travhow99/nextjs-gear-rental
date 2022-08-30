@@ -6,6 +6,7 @@ import axios from 'axios';
 import { getMonth, isAfter, isBefore, isSameDay, setMonth } from 'date-fns';
 import Product from '../../types/Product';
 import { RentalDate } from '../../types/RentalDate';
+import { Booking } from '../../types/Booking';
 
 // export default _product;
 
@@ -77,7 +78,11 @@ export default class ProductHelper {
 	static fetchCalendar = async (
 		id: string,
 		month: number = null
-	): Promise<any> => {
+	): Promise<{
+		bookings: Array<Booking>;
+		startMonth: number;
+		endMonth: number;
+	}> => {
 		let endpoint = `/api/sellerProducts/${id}/calendar`;
 
 		if (month) endpoint += `/${month}`;
