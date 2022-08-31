@@ -14,12 +14,12 @@ import {
 } from '@material-ui/core';
 import Header from './Header';
 import useStyles from '../../utils/styles';
-import { ReactChildren } from 'react';
+import { ReactNode } from 'react';
 
 type LayoutProps = {
 	title: string;
 	description?: string;
-	children: ReactChildren;
+	children: ReactNode;
 	// home: boolean
 };
 

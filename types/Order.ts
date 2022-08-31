@@ -1,4 +1,5 @@
 type Order = {
+	_id?: string;
 	user: string;
 	storeId: string;
 	rentals: Array<any>;
