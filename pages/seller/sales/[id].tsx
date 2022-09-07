@@ -24,6 +24,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 	await db.connect();
 
+	/**
+	 * @todo Resolve with mongoose or migrate to Prisma?
+	 */
+	// @ts-ignore
 	const sale: OrderType = await Order.findById(id).lean(); //.exec();
 
 	console.log('sale:', sale);
