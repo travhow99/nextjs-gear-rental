@@ -3,18 +3,36 @@ import Order from '../../../models/Order';
 import db from '../../../utils/db';
 import OrderType from '../../../types/Order';
 import Layout from '../../../components/layout/Layout';
-import { Children, Fragment } from 'react';
+import { Children, Fragment, useEffect } from 'react';
 import { Typography } from '@material-ui/core';
+import NotFound from '../../../components/pages/NotFound';
+import Sale from '../../../components/seller/Sale';
+import SellerContainer from '../../../components/seller/SellerContainer';
+import SellerPage from '../../../components/seller/SellerPage';
+import Rental from '../../../models/Rental';
+import ProductImage from '../../../models/ProductImage';
 
-export default function Sale({ sale }: { sale: OrderType }) {
+function SalePage({ sale }: { sale: OrderType }) {
 	console.log('got props:', sale);
 
+	useEffect(() => {}, [sale]);
+
+	const pageTitle = `Order #${sale._id}`;
+
+	if (!sale) {
+		return (
+			<NotFound title={pageTitle}>
+				<Typography component={'h1'} variant={'h1'}>
+					Product Not Found
+				</Typography>
+			</NotFound>
+		);
+	}
+
 	return (
-		<Layout title={sale._id}>
-			<Typography component={'h1'} variant={'h1'}>
-				Test
-			</Typography>
-		</Layout>
+		<SellerPage title={pageTitle}>
+			<Sale sale={sale} />
+		</SellerPage>
 	);
 }
 
@@ -28,7 +46,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	 * @todo Resolve with mongoose or migrate to Prisma?
 	 */
 	// @ts-ignore
-	const sale: OrderType = await Order.findById(id).lean(); //.exec();
+	const sale: OrderType = await Order.findById(id)
+		.populate({
+			path: 'rentals',
+			model: Rental,
+			populate: {
+				path: 'product',
+				populate: {
+					path: 'images',
+					model: ProductImage,
+				},
+			},
+		})
+		.lean(); //.exec();
 
 	console.log('sale:', sale);
 
@@ -40,3 +70,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		},
 	};
 };
+
+SalePage.auth = SellerPage.auth;
+
+export default SalePage;

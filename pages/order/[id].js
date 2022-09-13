@@ -429,6 +429,9 @@ function Order({ params }) {
 	);
 }
 
+/**
+ * @todo can be SSR
+ */
 export async function getServerSideProps({ params }) {
 	return { props: { params } };
 }
