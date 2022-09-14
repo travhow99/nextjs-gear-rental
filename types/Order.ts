@@ -1,15 +1,18 @@
+import User from './User';
+
 type Order = {
-	_id?: string;
-	user: string;
-	storeId: string;
+	_id?: String;
+	user: User;
+	storeId: String;
 	rentals: Array<any>;
-	paymentMethod: string;
-	paymentResult: string;
-	itemsPrice: number;
-	taxPrice: number;
-	totalPrice: number;
-	isPaid: boolean;
+	paymentMethod: String;
+	paymentResult: String;
+	itemsPrice: Number;
+	taxPrice: Number;
+	totalPrice: Number;
+	isPaid: Boolean;
 	paidAt: Date;
+	createdAt: Date;
 };
 
 export default Order;

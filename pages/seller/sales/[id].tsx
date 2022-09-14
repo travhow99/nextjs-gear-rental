@@ -11,6 +11,8 @@ import SellerContainer from '../../../components/seller/SellerContainer';
 import SellerPage from '../../../components/seller/SellerPage';
 import Rental from '../../../models/Rental';
 import ProductImage from '../../../models/ProductImage';
+import SellerProduct from '../../../models/SellerProduct';
+import User from '../../../models/User';
 
 function SalePage({ sale }: { sale: OrderType }) {
 	console.log('got props:', sale);
@@ -47,17 +49,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	 */
 	// @ts-ignore
 	const sale: OrderType = await Order.findById(id)
-		.populate({
-			path: 'rentals',
-			model: Rental,
-			populate: {
-				path: 'product',
+		.populate([
+			{
+				path: 'rentals',
+				model: Rental,
 				populate: {
-					path: 'images',
-					model: ProductImage,
+					path: 'product',
+					model: SellerProduct,
+					populate: {
+						path: 'images',
+						model: ProductImage,
+					},
 				},
 			},
-		})
+			{
+				path: 'user',
+				model: User,
+				select: 'name email',
+			},
+		])
 		.lean(); //.exec();
 
 	console.log('sale:', sale);

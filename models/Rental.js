@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 
 const rentalSchema = new mongoose.Schema(
 	{
-		user: { type: String, required: true },
+		user: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
+		},
 		product: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'SellerProduct',
