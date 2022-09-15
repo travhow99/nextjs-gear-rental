@@ -21,27 +21,34 @@ export default function Sale({ sale }: { sale: Order }) {
 	return (
 		<Card className={classes.section}>
 			<Grid
-				className={`${classes.primary} ${classes.textWhite} p-2`}
+				className={`${classes.bgSecondary} ${classes.textWhite} p-2 text-center`}
 				container
 				spacing={2}
 			>
 				<Grid item xs={4}>
-					<Typography variant="overline" display="block" gutterBottom>
+					<Typography variant="overline" display="block">
 						Order Placed{' '}
 					</Typography>
-					{dateHelper.timestampToDate(sale.createdAt)}
+					<Typography variant="caption" display="block" gutterBottom>
+						{dateHelper.timestampToDate(sale.createdAt)}
+					</Typography>
 				</Grid>
 				<Grid item xs={4}>
-					<Typography variant="overline" display="block" gutterBottom>
+					<Typography variant="overline" display="block">
 						Total
 					</Typography>
-					${sale.totalPrice}
+					<Typography variant="caption" display="block" gutterBottom>
+						${sale.totalPrice}
+					</Typography>
 				</Grid>
 				<Grid item xs={4}>
-					<Typography variant="overline" display="block" gutterBottom>
+					<Typography variant="overline" display="block">
 						Rented by
 					</Typography>
-					{sale.user.name}
+					<Typography variant="caption" display="block" gutterBottom>
+						{sale.user.name}
+						{/* @todo User contact button */}
+					</Typography>
 				</Grid>
 			</Grid>
 			<CardContent>

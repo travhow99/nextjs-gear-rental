@@ -1,5 +1,7 @@
 import { makeStyles } from '@material-ui/styles';
 
+const secondary = '#859fb9';
+
 /**
  * Add classes here.
  */
@@ -66,6 +68,9 @@ const useStyles = makeStyles({
 	},
 	primary: {
 		backgroundColor: '#203040',
+	},
+	bgSecondary: {
+		backgroundColor: secondary,
 	},
 	textWhite: {
 		color: '#ffffff',
