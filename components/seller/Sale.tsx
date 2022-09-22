@@ -1,6 +1,8 @@
 import {
 	Box,
+	Button,
 	Card,
+	CardActions,
 	CardContent,
 	CardHeader,
 	Grid,
@@ -21,33 +23,45 @@ export default function Sale({ sale }: { sale: Order }) {
 	return (
 		<Card className={classes.section}>
 			<Grid
-				className={`${classes.bgSecondary} ${classes.textWhite} p-2 text-center`}
+				className={`${classes.bgSecondary} ${classes.textWhite} px-2 text-center`}
 				container
 				spacing={2}
 			>
-				<Grid item xs={4}>
+				<Grid item xs={3}>
 					<Typography variant="overline" display="block">
 						Order Placed{' '}
 					</Typography>
-					<Typography variant="caption" display="block" gutterBottom>
+					<Typography variant="caption" display="block">
 						{dateHelper.timestampToDate(sale.createdAt)}
 					</Typography>
 				</Grid>
-				<Grid item xs={4}>
+				<Grid item xs={3}>
 					<Typography variant="overline" display="block">
 						Total
 					</Typography>
-					<Typography variant="caption" display="block" gutterBottom>
+					<Typography variant="caption" display="block">
 						${sale.totalPrice}
 					</Typography>
 				</Grid>
-				<Grid item xs={4}>
+				<Grid item xs={3}>
 					<Typography variant="overline" display="block">
 						Rented by
 					</Typography>
-					<Typography variant="caption" display="block" gutterBottom>
+					<Typography variant="caption" display="block">
 						{sale.user.name}
 						{/* @todo User contact button */}
+					</Typography>
+				</Grid>
+				<Grid item xs={3}>
+					<Typography variant="overline" display="block">
+						Status
+					</Typography>
+					<Typography variant="caption" display="block">
+						{sale.isPaid && sale.paidAt
+							? `Paid ${dateHelper.dateToDateTimeLocalFormat(
+									sale.paidAt
+							  )}`
+							: 'Not Paid'}
 					</Typography>
 				</Grid>
 			</Grid>
@@ -65,6 +79,9 @@ export default function Sale({ sale }: { sale: Order }) {
 					/>
 				</ListItem>
 			</CardContent>
+			<CardActions>
+				{/* <Button size="small">Archive Order</Button> */}
+			</CardActions>
 		</Card>
 	);
 }

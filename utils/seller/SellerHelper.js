@@ -2,11 +2,11 @@ import axios from 'axios';
 import { useContext } from 'react';
 
 export default class SellerHelper {
-  /**
-   * @todo
-   */
-  static async fetchOrders() {
-    /* const { state, dispatch } = useContext(SellerStore);
+	/**
+	 * @todo
+	 */
+	static async fetchOrders() {
+		/* const { state, dispatch } = useContext(SellerStore);
     try {
       const { data } = await axios.get('/api/Seller/orders');
       console.log('got orders', data);
@@ -15,29 +15,36 @@ export default class SellerHelper {
       console.log('fetch erro', error);
       dispatch({ type: 'FETCH_FAIL' });
     } */
-  }
+	}
 
-  /**
-   *
-   * @returns arr brands
-   */
-  static fetchBrands = async () => {
-    try {
-      const { data } = await axios.get('/api/brands');
-      console.log('got brands', data);
+	/**
+	 *
+	 * @returns arr brands
+	 */
+	static fetchBrands = async () => {
+		try {
+			const { data } = await axios.get('/api/brands');
+			console.log('got brands', data);
 
-      return data;
-    } catch (error) {
-      console.log('fetch err', error);
-      throw error;
-    }
-  };
+			return data;
+		} catch (error) {
+			console.log('fetch err', error);
+			throw error;
+		}
+	};
 
-  static fetchCategories = async () => {
-    const { data } = await axios.get('/api/categories');
+	static fetchCategories = async () => {
+		const { data } = await axios.get('/api/categories');
 
-    console.log('got categories', data);
+		console.log('got categories', data);
 
-    return data;
-  };
+		return data;
+	};
+
+	/**
+	 * Archive the order
+	 * @todo
+	 * @param {String} id Order _id
+	 */
+	static archiveOrder = async (id) => {};
 }
