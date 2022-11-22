@@ -40,28 +40,43 @@ import SellerHelper from '../../../utils/seller/SellerHelper';
 
 import useStyles from '../../../utils/styles';
 
+const initialProduct = {
+	category: '',
+	stock: 1,
+	rentalMin: 1,
+	title: '',
+	brand: '',
+	gender: '',
+	size: '',
+	condition: '',
+	price: '',
+	description: '',
+	keyword: '',
+	images: [],
+};
+
 function SellerProduct({ params }) {
 	const sellerProductId = params.id;
 	const [loading, setLoading] = useState(false);
 
-	const [category, setCategory] = useState(false);
-	const [stock, setStock] = useState(false);
-	const [rentalMin, setRentalMin] = useState(false);
-	const [title, setTitle] = useState(false);
-	const [brand, setBrand] = useState(false);
+	// const [category, setCategory] = useState(false);
+	// const [stock, setStock] = useState(false);
+	// const [rentalMin, setRentalMin] = useState(false);
+	// const [title, setTitle] = useState(false);
+	// const [brand, setBrand] = useState(false);
 	const [brandInputValue, setBrandInputValue] = useState('');
 	const [categoryInputValue, setCategoryInputValue] = useState('');
-	const [gender, setGender] = useState(false);
-	const [size, setSize] = useState(false);
-	const [condition, setCondition] = useState(false);
-	const [price, setPrice] = useState(false);
-	const [description, setDescription] = useState(false);
-	const [keyword, setKeyword] = useState(false);
-	const [images, setImages] = useState(false);
+	// const [gender, setGender] = useState(false);
+	// const [size, setSize] = useState(false);
+	// const [condition, setCondition] = useState(false);
+	// const [price, setPrice] = useState(false);
+	// const [description, setDescription] = useState(false);
+	// const [keyword, setKeyword] = useState(false);
+	// const [images, setImages] = useState(false);
 	const [blockOuts, setBlockOuts] = useState(false);
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-	const [product, setProduct] = useState({});
+	const [product, setProduct] = useState(initialProduct);
 
 	const classes = useStyles();
 
@@ -76,10 +91,14 @@ function SellerProduct({ params }) {
 		required: true,
 	});
 
+	console.log('ID', 'load');
+	debugger;
+
 	useEffect(() => {
 		setLoading(true);
 		if (!brands.length) fetchBrands();
 		if (!categories.length) fetchCategories();
+		debugger;
 		fetchSellerProduct();
 	}, [brands, categories]);
 
@@ -95,18 +114,18 @@ function SellerProduct({ params }) {
 			 * @todo this should use useReducer or all one state
 			 * Currently re-rendering for each setState call
 			 */
-			setCategory(data.category);
-			setStock(data.stock);
-			setRentalMin(data.rentalMin);
-			setTitle(data.title);
-			setBrand(data.brand);
-			setGender(data.gender);
-			setSize(data.size);
-			setCondition(data.condition);
-			setPrice(data.price);
-			setDescription(data.description);
-			setKeyword(data.keyword);
-			setImages(data.images);
+			// setCategory(data.category);
+			// setStock(data.stock);
+			// setRentalMin(data.rentalMin);
+			// setTitle(data.title);
+			// setBrand(data.brand);
+			// setGender(data.gender);
+			// setSize(data.size);
+			// setCondition(data.condition);
+			// setPrice(data.price);
+			// setDescription(data.description);
+			// setKeyword(data.keyword);
+			// setImages(data.images);
 			setBlockOuts(data.blockOuts);
 
 			setProduct({
@@ -186,15 +205,15 @@ function SellerProduct({ params }) {
 
 			console.log('blur data', data);
 		} catch (error) {
-			console.log('got err!', err);
-			enqueueSnackbar(getError(err), { variant: 'error' });
+			console.log('got err!', error);
+			enqueueSnackbar(getError(error), { variant: 'error' });
 		}
 	};
 
 	const onImageUpload = (data) => {
 		console.log('img upload data', data);
 
-		const updatedImages = [...images, data];
+		const updatedImages = [...product.images, data];
 		setImages(updatedImages);
 	};
 
@@ -202,14 +221,27 @@ function SellerProduct({ params }) {
 		return val != product[name];
 	};
 
+	const handleInputChange = (e) => {
+		//const name = e.target.name
+		//const value = e.target.value
+		const { name, value } = e.target;
+
+		// console.log('update', name, value);
+
+		setProduct({
+			...product,
+			[name]: value,
+		});
+	};
+
 	return status ? (
 		<SellerContainer title={'Products'}>
 			<Card className={classes.section}>
-				{title ? (
+				{product.title ? (
 					<List>
 						<ListItem>
 							<Typography component="h1" variant="h1">
-								{title}
+								{product.title}
 							</Typography>
 						</ListItem>
 						<ListItem>
@@ -218,10 +250,11 @@ function SellerProduct({ params }) {
 								 * @todo upgrade to using image list
 								 * https://mui.com/components/image-list/
 								 */}
-								{images?.length >= 1 &&
-									images.map((image) => (
+								{product.images?.length >= 1 &&
+									product.images.map((image) => (
 										<Grid key={image._id} item xs={3}>
 											<Image
+												priority
 												src={image.path}
 												alt={''}
 												width={640}
@@ -243,11 +276,12 @@ function SellerProduct({ params }) {
 								id="title"
 								name="title"
 								label="Title"
-								value={title || ''}
+								defaultValue={product.title || ''}
 								variant="outlined"
-								onChange={(e, newValue) => {
-									setTitle(e.target.value);
-								}}
+								// onChange={handleInputChange}
+								// onChange={(e, newValue) => {
+								// setTitle(e.target.value);
+								// }}
 								onBlur={handleBlur}
 							/>
 						</ListItem>
@@ -260,18 +294,10 @@ function SellerProduct({ params }) {
 										id="stock"
 										name="stock"
 										label="Stock"
-										value={stock || ''}
+										defaultValue={product.stock || ''}
 										type={'number'}
 										variant="outlined"
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setStock(e.target.value);
-										}}
+										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -281,18 +307,10 @@ function SellerProduct({ params }) {
 										id="rentalMin"
 										name="rentalMin"
 										label="Rental Min"
-										value={rentalMin || ''}
+										defaultValue={product.rentalMin || ''}
 										type={'number'}
 										variant="outlined"
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setRentalMin(e.target.value);
-										}}
+										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -307,21 +325,13 @@ function SellerProduct({ params }) {
 										options={brands.map(
 											(brand) => brand.title
 										)}
-										value={brand || null}
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setBrand(newValue);
-										}}
+										defaultValue={product.brand || null}
+										// onChange={handleInputChange}
 										inputValue={brandInputValue}
 										onInputChange={(e, newValue) => {
 											setBrandInputValue(newValue);
 											console.log(
-												'onchange input',
+												// 'onchange input',
 												e,
 												newValue
 											);
@@ -353,20 +363,13 @@ function SellerProduct({ params }) {
 										options={categories.map(
 											(category) => category.name
 										)}
-										value={category || null}
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-											setCategory(newValue);
-										}}
+										defaultValue={product.category || null}
+										// onChange={handleInputChange}
 										inputValue={categoryInputValue}
 										onInputChange={(e, newValue) => {
 											setCategoryInputValue(newValue);
 											console.log(
-												'onchange input',
+												// 'onchange input',
 												e,
 												newValue
 											);
@@ -399,17 +402,9 @@ function SellerProduct({ params }) {
 										id="gender"
 										name="gender"
 										label="Gender"
-										value={gender || ''}
+										defaultValue={product.gender || ''}
 										variant="outlined"
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setGender(e.target.value);
-										}}
+										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -419,18 +414,10 @@ function SellerProduct({ params }) {
 										id="size"
 										name="size"
 										label="Size"
-										value={size || ''}
+										defaultValue={product.size || ''}
 										type={'number'}
 										variant="outlined"
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setSize(e.target.value);
-										}}
+										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -440,17 +427,9 @@ function SellerProduct({ params }) {
 										id="condition"
 										name="condition"
 										label="Condition"
-										value={condition || ''}
+										defaultValue={product.condition || ''}
 										variant="outlined"
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setCondition(e.target.value);
-										}}
+										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -464,18 +443,10 @@ function SellerProduct({ params }) {
 										id="price"
 										name="price"
 										label="Price"
-										value={price || ''}
+										defaultValue={product.price || ''}
 										type={'number'}
 										variant="outlined"
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setPrice(e.target.value);
-										}}
+										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -485,17 +456,9 @@ function SellerProduct({ params }) {
 										id="keyword"
 										name="keyword"
 										label="Keyword"
-										value={keyword || ''}
+										defaultValue={product.keyword || ''}
 										variant="outlined"
-										onChange={(e, newValue) => {
-											console.log(
-												'onchange',
-												e,
-												newValue
-											);
-
-											setKeyword(e.target.value);
-										}}
+										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -509,10 +472,8 @@ function SellerProduct({ params }) {
 								id="sellerProductDescription"
 								// labelId="sellerProductDescription"
 								label="Description"
-								value={description || ''}
-								onChange={(e, newValue) => {
-									setDescription(e.target.value);
-								}}
+								defaultValue={product.description || ''}
+								// onChange={handleInputChange}
 								onBlur={handleBlur}
 								multiline
 								maxRows={4}

@@ -1,10 +1,10 @@
 type User = {
-	_id?: String;
-	name: String;
-	email: String;
-	image?: String;
-	role?: String;
-	seller?: Boolean;
+	_id?: string;
+	name: string;
+	email: string;
+	image?: string;
+	role?: string;
+	seller?: boolean;
 	createdAt?: Date;
 };
 

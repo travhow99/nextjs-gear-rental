@@ -6,53 +6,65 @@ import BlockOut from '../../../models/BlockOut';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
+// import { sellerOwnsProduct } from '../../../utils/middleware/sellerOwnsProduct';
 
 const handler = nc({
-  onError,
+	onError,
 });
 
-handler.use(isSeller);
+// handler.use(isSeller).use(sellerOwnsProduct);
 
 handler.get(async (req, res) => {
-  try {
-    await db.connect();
+	try {
+		await db.connect();
 
-    const sellerproduct = await SellerProduct.findById(req.query.id).populate([
-      'images',
-      // 'rentals',
-      {
-        path: 'blockOuts',
-        match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
-      },
-    ]);
+		const sellerproduct = await SellerProduct.findById(
+			req.query.id
+		).populate([
+			'images',
+			'rentals',
+			{
+				path: 'blockOuts',
+				match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+			},
+		]);
 
-    await db.disconnect();
+		await db.disconnect();
 
-    res.send(sellerproduct);
-  } catch (error) {
-    console.log('err', error);
-    res.status(404).send({ message: 'product not found' });
-  }
+		res.send(sellerproduct);
+	} catch (error) {
+		console.log('err', error);
+		res.status(404).send({ message: 'product not found' });
+	}
 });
 
 handler.put(async (req, res) => {
-  await db.connect();
+	try {
+		await db.connect();
 
-  SellerProduct.findByIdAndUpdate(
-    req.query.id,
-    req.body,
-    { new: true },
-    async (err, result) => {
-      await db.disconnect();
+		SellerProduct.findByIdAndUpdate(req.query.id, req.body, { new: true })
+			.populate([
+				'images',
+				'rentals',
+				{
+					path: 'blockOuts',
+					match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+				},
+			])
+			.exec(async (err, result) => {
+				await db.disconnect();
 
-      if (err) {
-        console.log('err', err);
-        res.status(404).send({ message: 'product not found' });
-      } else {
-        res.send({ message: 'product updated', result });
-      }
-    }
-  );
+				if (err) {
+					console.log('err', err);
+					res.status(404).send({ message: 'product not found' });
+				} else {
+					res.send({ message: 'product updated', result });
+				}
+			});
+	} catch (error) {
+		console.log('err', error);
+		res.status(404).send({ message: 'product not found' });
+	}
 });
 
 export default handler;

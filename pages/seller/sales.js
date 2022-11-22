@@ -54,13 +54,10 @@ function SellerSales() {
 		required: true,
 	});
 
-	console.log('session?', session);
 	const isUser = !!session?.user;
 
 	const isSeller =
 		isUser && (session.user.seller || session.user.role === 'admin');
-
-	console.log('is seller?', isSeller);
 
 	useEffect(() => {
 		fetchOrders();
