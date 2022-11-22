@@ -47,19 +47,4 @@ export default class SellerHelper {
 	 * @param {string} id Order _id
 	 */
 	static archiveOrder = async (id) => {};
-
-	/**
-	 * Verify the seller owns the SellerProduct.
-	 * @param {string} userId User _id
-	 * @param {string|string[]} productId SellerProduct _id
-	 * @returns {Boolean}
-	 */
-	static sellerOwnsProduct = async (userId, productId) => {
-		/* return await SellerProduct.exists({
-			user: userId,
-			product: productId,
-		}); */
-
-		return false;
-	};
 }

@@ -60,8 +60,21 @@ const sellerProductSchema = new mongoose.Schema(
 /**
  * Statics
  */
+sellerProductSchema.statics.sellerOwnsProduct =
+	async function sellerOwnsProduct(userId, productId) {
+		console.log('STATIC SOWNSP', productId, userId);
+		const userOwnsProduct = await SellerProduct.exists({
+			_id: productId,
+			user: userId,
+		});
+
+		console.log('STATIC SOWNSP RES', userOwnsProduct);
+
+		return userOwnsProduct;
+	};
 
 const SellerProduct =
 	mongoose?.models['SellerProduct'] ||
 	mongoose.model('SellerProduct', sellerProductSchema);
+
 export default SellerProduct;

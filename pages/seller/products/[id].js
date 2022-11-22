@@ -17,6 +17,7 @@ import { Autocomplete, TextField as MuiTextField } from '@mui/material';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,21 +59,10 @@ const initialProduct = {
 function SellerProduct({ params }) {
 	const sellerProductId = params.id;
 	const [loading, setLoading] = useState(false);
+	const router = useRouter();
 
-	// const [category, setCategory] = useState(false);
-	// const [stock, setStock] = useState(false);
-	// const [rentalMin, setRentalMin] = useState(false);
-	// const [title, setTitle] = useState(false);
-	// const [brand, setBrand] = useState(false);
 	const [brandInputValue, setBrandInputValue] = useState('');
 	const [categoryInputValue, setCategoryInputValue] = useState('');
-	// const [gender, setGender] = useState(false);
-	// const [size, setSize] = useState(false);
-	// const [condition, setCondition] = useState(false);
-	// const [price, setPrice] = useState(false);
-	// const [description, setDescription] = useState(false);
-	// const [keyword, setKeyword] = useState(false);
-	// const [images, setImages] = useState(false);
 	const [blockOuts, setBlockOuts] = useState(false);
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -91,8 +81,6 @@ function SellerProduct({ params }) {
 		required: true,
 	});
 
-	console.log('ID', 'load');
-
 	useEffect(() => {
 		setLoading(true);
 		if (!brands.length) fetchBrands();
@@ -108,22 +96,6 @@ function SellerProduct({ params }) {
 
 			console.log('got data', data);
 
-			/**
-			 * @todo this should use useReducer or all one state
-			 * Currently re-rendering for each setState call
-			 */
-			// setCategory(data.category);
-			// setStock(data.stock);
-			// setRentalMin(data.rentalMin);
-			// setTitle(data.title);
-			// setBrand(data.brand);
-			// setGender(data.gender);
-			// setSize(data.size);
-			// setCondition(data.condition);
-			// setPrice(data.price);
-			// setDescription(data.description);
-			// setKeyword(data.keyword);
-			// setImages(data.images);
 			setBlockOuts(data.blockOuts);
 
 			setProduct({
@@ -144,6 +116,8 @@ function SellerProduct({ params }) {
 			setLoading(false);
 		} catch (err) {
 			console.log('got err!', err);
+
+			router.push('/seller/products');
 		}
 	};
 
