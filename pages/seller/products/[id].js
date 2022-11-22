@@ -92,13 +92,11 @@ function SellerProduct({ params }) {
 	});
 
 	console.log('ID', 'load');
-	debugger;
 
 	useEffect(() => {
 		setLoading(true);
 		if (!brands.length) fetchBrands();
 		if (!categories.length) fetchCategories();
-		debugger;
 		fetchSellerProduct();
 	}, [brands, categories]);
 

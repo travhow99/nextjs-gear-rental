@@ -1,10 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import slug from 'mongoose-slug-generator';
 
-console.log('M', mongoose, 'S', slug);
-console.log(mongoose.models);
-console.log(mongoose.plugin);
-debugger;
 mongoose.plugin(slug);
 
 const sellerProductSchema = new mongoose.Schema(

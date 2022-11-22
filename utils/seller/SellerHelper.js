@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { useContext } from 'react';
-import SellerProduct from '../../models/SellerProduct';
 
 export default class SellerHelper {
 	/**
