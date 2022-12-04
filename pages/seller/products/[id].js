@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
 import LoadingPage from '../../../components/pages/LoadingPage';
 import BlockOutForm from '../../../components/seller/BlockOutForm';
+import RentalForm from '../../../components/seller/RentalForm';
 import ImageUpload from '../../../components/seller/ImageUpload';
 import SellerContainer from '../../../components/seller/SellerContainer';
 import {
@@ -111,6 +112,7 @@ function SellerProduct({ params }) {
 				description: data.description,
 				keyword: data.keyword,
 				images: data.images,
+				rentals: data.rentals,
 			});
 
 			setLoading(false);
@@ -468,7 +470,12 @@ function SellerProduct({ params }) {
 						blockOuts={blockOuts}
 					/>
 				</Grid>
-				<Grid item xs></Grid>
+				<Grid item xs>
+					<RentalForm
+						rentals={product.rentals}
+						productId={sellerProductId}
+					/>
+				</Grid>
 			</Grid>
 		</SellerContainer>
 	) : (

@@ -70,7 +70,7 @@ sellerProductSchema.statics.sellerOwnsProduct =
 
 		console.log('STATIC SOWNSP RES', userOwnsProduct);
 
-		return userOwnsProduct;
+		return Boolean(userOwnsProduct);
 	};
 
 const SellerProduct =
