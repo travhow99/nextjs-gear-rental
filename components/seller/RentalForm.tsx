@@ -69,7 +69,7 @@ export default function RentalForm({ productId, rentals, updateBlockOuts }) {
 						isAdmin={true}
 					/> */}
 
-					<RentalTable />
+					<RentalTable rentals={rentals} />
 				</ListItem>
 			</List>
 			<ConfirmationDialog

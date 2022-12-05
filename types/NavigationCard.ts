@@ -1,6 +1,8 @@
+import React from 'react';
+
 export interface NavigationCardTab {
 	title?: string;
-	text: string;
+	content: string | React.ReactNode;
 	actionText?: string;
 	action?: Function;
 }

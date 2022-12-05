@@ -25,11 +25,7 @@ function TabPanel(props: TabPanelProps) {
 			aria-labelledby={`simple-tab-${index}`}
 			{...other}
 		>
-			{value === index && (
-				<Box sx={{ p: 3 }}>
-					<Typography>{children}</Typography>
-				</Box>
-			)}
+			{value === index && <Box sx={{ p: 3 }}>{children}</Box>}
 		</div>
 	);
 }
@@ -54,10 +50,11 @@ export default function NavigationCard(props: NavigationCardProps) {
 				<Tabs
 					value={value}
 					onChange={handleChange}
-					aria-label="basic tabs example"
+					aria-label="navigation tabs"
 				>
 					{props.tabs.map((tab: NavigationCardTab, index: number) => (
 						<Tab
+							key={index}
 							label={tab.title || `Item ${index}`}
 							{...a11yProps(index)}
 						/>
@@ -65,14 +62,14 @@ export default function NavigationCard(props: NavigationCardProps) {
 				</Tabs>
 			</Box>
 			{props.tabs.map((tab: NavigationCardTab, index: number) => (
-				<TabPanel value={value} index={index}>
+				<TabPanel key={index} value={value} index={index}>
 					{tab.title && (
 						<Typography variant="h6" sx={{ marginBottom: 2 }}>
 							{tab.title}
 						</Typography>
 					)}
 					<Typography variant="body2" sx={{ marginBottom: 4 }}>
-						{tab.text}
+						{tab.content}
 					</Typography>
 					{/**
 					 * @todo handle tab.action (click, Link, etc.)

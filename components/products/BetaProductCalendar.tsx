@@ -73,7 +73,7 @@ export default function BetaProductCalendar({
 	};
 
 	return isAdmin ? (
-		<Calendar className={styles.sellerCalendar} {...customProps} />
+		<Calendar {...customProps} />
 	) : (
 		<DateRange {...customProps} />
 	);

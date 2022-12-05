@@ -55,6 +55,7 @@ const initialProduct = {
 	description: '',
 	keyword: '',
 	images: [],
+	rentals: [],
 };
 
 function SellerProduct({ params }) {
@@ -463,14 +464,14 @@ function SellerProduct({ params }) {
 				)}
 			</Card>
 			<Grid container spacing={1}>
-				<Grid item xs>
+				<Grid item xs className={'w-1/2'}>
 					<BlockOutForm
 						updateBlockOuts={setBlockOuts}
 						productId={sellerProductId}
 						blockOuts={blockOuts}
 					/>
 				</Grid>
-				<Grid item xs>
+				<Grid item xs className={'w-1/2'}>
 					<RentalForm
 						rentals={product.rentals}
 						productId={sellerProductId}
