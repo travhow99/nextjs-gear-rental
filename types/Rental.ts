@@ -3,6 +3,7 @@ import User from './User';
 
 type Rental = {
 	_id?: string;
+	orderId?: string;
 	user: User;
 	product: Product;
 	quantity?: Number;

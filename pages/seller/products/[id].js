@@ -463,21 +463,13 @@ function SellerProduct({ params }) {
 					<CircularProgress />
 				)}
 			</Card>
-			<Grid container spacing={1}>
-				<Grid item xs className={'w-1/2'}>
-					<BlockOutForm
-						updateBlockOuts={setBlockOuts}
-						productId={sellerProductId}
-						blockOuts={blockOuts}
-					/>
-				</Grid>
-				<Grid item xs className={'w-1/2'}>
-					<RentalForm
-						rentals={product.rentals}
-						productId={sellerProductId}
-					/>
-				</Grid>
-			</Grid>
+
+			<RentalForm rentals={product.rentals} productId={sellerProductId} />
+			<BlockOutForm
+				updateBlockOuts={setBlockOuts}
+				productId={sellerProductId}
+				blockOuts={blockOuts}
+			/>
 		</SellerContainer>
 	) : (
 		<Loading />

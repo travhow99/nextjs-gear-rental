@@ -68,9 +68,7 @@ export default function NavigationCard(props: NavigationCardProps) {
 							{tab.title}
 						</Typography>
 					)}
-					<Typography variant="body2" sx={{ marginBottom: 4 }}>
-						{tab.content}
-					</Typography>
+					<Box sx={{ marginBottom: 4 }}>{tab.content}</Box>
 					{/**
 					 * @todo handle tab.action (click, Link, etc.)
 					 */}

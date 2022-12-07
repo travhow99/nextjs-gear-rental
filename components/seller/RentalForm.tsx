@@ -72,13 +72,6 @@ export default function RentalForm({ productId, rentals, updateBlockOuts }) {
 					<RentalTable rentals={rentals} />
 				</ListItem>
 			</List>
-			<ConfirmationDialog
-				title="Delete BlockOut?"
-				text="Are you sure you would like to delete this block out? This cannot be undone!"
-				open={showDelete}
-				handleAccept={handleConfirmDelete}
-				handleCancel={handleCancelDelete}
-			/>
 		</Card>
 	);
 }

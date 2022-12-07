@@ -1,5 +1,6 @@
 import nc from 'next-connect';
 import SellerProduct from '../../../models/SellerProduct';
+import Order from '../../../models/Order';
 import ProductImage from '../../../models/ProductImage';
 import Rental from '../../../models/Rental';
 import BlockOut from '../../../models/BlockOut';
@@ -34,9 +35,27 @@ handler.get(async (req, res) => {
 				},
 			]);
 
+			// Casted to object to allow for data manipulation
+			const sellerProductObject = sellerproduct.toObject();
+
+			await Promise.all(
+				sellerproduct.rentals.map(async (r, index) => {
+					try {
+						const rentalId = await Order.findOne({
+							rentals: r._id,
+						});
+
+						sellerProductObject.rentals[index].orderId =
+							rentalId._id;
+					} catch (error) {
+						console.log('caought err:', error);
+					}
+				})
+			);
+
 			await db.disconnect();
 
-			res.send(sellerproduct);
+			res.send(sellerProductObject);
 		} else {
 			await db.disconnect();
 
