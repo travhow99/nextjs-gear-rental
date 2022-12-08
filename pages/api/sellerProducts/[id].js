@@ -2,7 +2,7 @@ import nc from 'next-connect';
 import SellerProduct from '../../../models/SellerProduct';
 import Order from '../../../models/Order';
 import ProductImage from '../../../models/ProductImage';
-import Rental from '../../../models/Rental';
+import User from '../../../models/User';
 import BlockOut from '../../../models/BlockOut';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
@@ -28,7 +28,14 @@ handler.get(async (req, res) => {
 				req.query.id
 			).populate([
 				'images',
-				'rentals',
+				{
+					path: 'rentals',
+					populate: {
+						path: 'user',
+						model: User,
+						select: 'name email',
+					},
+				},
 				{
 					path: 'blockOuts',
 					match: { softDelete: { $ne: true } }, // Filter the softDeletes from view

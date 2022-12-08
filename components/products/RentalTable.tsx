@@ -16,6 +16,8 @@ import {
 } from '@material-ui/core';
 import dateHelper from '../../utils/dateHelper';
 import NextLink from 'next/link';
+import FormModal from '../@core/modals/formModal';
+import UserContactForm from '../utilities/dialogs/UserContactForm';
 
 const organizeRentals = (rentals: Array<Rental>) => {
 	const past = rentals.filter((r) =>
@@ -26,8 +28,6 @@ const organizeRentals = (rentals: Array<Rental>) => {
 		isAfter(new Date(r.dateDue), new Date())
 	);
 
-	console.log('got org', past, upcoming);
-
 	return {
 		past,
 		upcoming,
@@ -35,12 +35,12 @@ const organizeRentals = (rentals: Array<Rental>) => {
 };
 
 const generateRentalComponent = (rentals: Array<Rental>) => {
-	return (
+	return rentals.length ? (
 		<TableContainer>
 			<Table /* sx={{ minWidth: 650 }} */ /* aria-label="simple table" */>
 				<TableHead>
 					<TableRow>
-						{/* <TableCell align="right"></TableCell> */}
+						<TableCell align="right">Renter</TableCell>
 						<TableCell align="right">Date Out</TableCell>
 						<TableCell align="right">Date Due</TableCell>
 						<TableCell align="right">Status</TableCell>
@@ -56,7 +56,9 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 								},
 							}} */
 						>
-							{/* <TableCell component="th" scope="row"></TableCell> */}
+							<TableCell align="right">
+								<UserContactForm user={rental.user} />
+							</TableCell>
 							<TableCell align="right">
 								{dateHelper.timestampToDate(rental.dateOut)}
 							</TableCell>
@@ -84,6 +86,8 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 				</TableBody>
 			</Table>
 		</TableContainer>
+	) : (
+		<Typography>No rentals exist</Typography>
 	);
 };
 

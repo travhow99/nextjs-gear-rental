@@ -87,8 +87,8 @@ function SellerProduct({ params }) {
 		setLoading(true);
 		if (!brands.length) fetchBrands();
 		if (!categories.length) fetchCategories();
-		fetchSellerProduct();
-	}, [brands, categories]);
+		if (!product.title) fetchSellerProduct();
+	}, []);
 
 	const fetchSellerProduct = async () => {
 		try {
