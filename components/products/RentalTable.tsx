@@ -57,7 +57,14 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 							}} */
 						>
 							<TableCell align="right">
-								<UserContactForm user={rental.user} />
+								<UserContactForm
+									user={rental.user}
+									productId={
+										typeof rental.product === 'string'
+											? rental.product
+											: rental.product._id
+									}
+								/>
 							</TableCell>
 							<TableCell align="right">
 								{dateHelper.timestampToDate(rental.dateOut)}

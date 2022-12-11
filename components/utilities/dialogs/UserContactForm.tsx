@@ -1,17 +1,25 @@
 import User from '../../../types/User';
 import FormModal from '../../@core/modals/formModal';
 import { useSnackbar } from 'notistack';
+import userHelper from '../../../utils/userHelper';
 
 interface UserContactFormProps {
 	children?: React.ReactNode;
 	user: User;
+	productId?: string;
 }
 
 export default function UserContactForm(props: UserContactFormProps) {
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-	const handleSubmit = (textValue: string) => {
+	const handleSubmit = async (textValue: string) => {
 		console.log('my fake handleSubmit', textValue);
+
+		await userHelper.sendMessageToUser(
+			props.user,
+			textValue,
+			props.productId
+		);
 
 		enqueueSnackbar('Message Sent!', {
 			variant: 'success',

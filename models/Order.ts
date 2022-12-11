@@ -4,11 +4,11 @@ interface IOrder extends Document {
 	user: Types.ObjectId;
 	storeId: Types.ObjectId;
 	rentals: Array<Types.ObjectId>;
-	paymentMethod: String;
+	paymentMethod: string;
 	paymentResult?: {
-		id: String;
-		status: String;
-		email_address: String;
+		id: string;
+		status: string;
+		email_address: string;
 	};
 	itemsPrice: Number;
 	taxPrice: Number;
