@@ -11,7 +11,7 @@ interface FormModalProps {
 	openText: string;
 	openTextVariant?: 'text' | 'outlined' | 'contained';
 	dialogTitle: string;
-	dialogContentText?: string;
+	dialogContentText?: string | React.ReactNode;
 	closeText?: string;
 	submitText?: string;
 	textFieldLabel: string;
@@ -29,7 +29,6 @@ export default function FormModal(props: FormModalProps) {
 	};
 
 	const handleClose = (e?: {}, reason?: string) => {
-		console.log('r reason:', reason);
 		if (reason !== 'backdropClick') {
 			setOpen(false);
 		}

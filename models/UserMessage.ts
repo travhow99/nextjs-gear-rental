@@ -4,6 +4,7 @@ interface IUserMessage extends Document {
 	sentBy: Types.ObjectId;
 	sentTo: Types.ObjectId;
 	product: Types.ObjectId;
+	rental: Types.ObjectId;
 	message: string;
 	// Stored by default timestamps
 	// sentAt?: Date;
@@ -25,6 +26,10 @@ const userMessageSchema = new Schema<IUserMessage>(
 		product: {
 			type: Schema.Types.ObjectId,
 			ref: 'SellerProduct',
+		},
+		rental: {
+			type: Schema.Types.ObjectId,
+			ref: 'Rental',
 		},
 		message: { type: String, required: true },
 		readAt: { type: Date },

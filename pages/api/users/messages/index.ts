@@ -10,6 +10,17 @@ const handler = nc({
 
 handler.use(isAuth);
 
+handler.get(async (req, res) => {
+	try {
+		await db.connect();
+
+		console.log('GOT REQ', req.body, req.user);
+	} catch (error) {
+		console.log('err', error);
+		res.status(404).send({ message: 'message not found' });
+	}
+});
+
 handler.post(async (req, res) => {
 	try {
 		await db.connect();
@@ -21,6 +32,7 @@ handler.post(async (req, res) => {
 			sentTo: req.body.sentTo,
 			message: req.body.message,
 			product: req.body.product,
+			rental: req.body.rental,
 		});
 
 		await userMessage.save();

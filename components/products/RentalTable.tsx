@@ -64,6 +64,7 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 											? rental.product
 											: rental.product._id
 									}
+									rentalId={rental._id}
 								/>
 							</TableCell>
 							<TableCell align="right">

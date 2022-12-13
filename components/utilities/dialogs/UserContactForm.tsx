@@ -7,18 +7,18 @@ interface UserContactFormProps {
 	children?: React.ReactNode;
 	user: User;
 	productId?: string;
+	rentalId?: string;
 }
 
 export default function UserContactForm(props: UserContactFormProps) {
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 	const handleSubmit = async (textValue: string) => {
-		console.log('my fake handleSubmit', textValue);
-
 		await userHelper.sendMessageToUser(
 			props.user,
 			textValue,
-			props.productId
+			props.productId,
+			props.rentalId
 		);
 
 		enqueueSnackbar('Message Sent!', {
