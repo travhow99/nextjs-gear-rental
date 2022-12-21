@@ -115,7 +115,8 @@ function Cart() {
 																				.images
 																				.length -
 																				1
-																	  ].path
+																	  ]?.path ||
+																	  'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 																	: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 															}
 															alt={item.name}

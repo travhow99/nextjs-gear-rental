@@ -70,11 +70,13 @@ export default function Sale({ sale }: { sale: Order }) {
 					<ItemsTable
 						isCartPage={false}
 						items={sale.rentals.map((r) => {
-							return {
-								...r.product,
-								dateOut: r.dateOut,
-								dateDue: r.dateDue,
-							};
+							if (typeof r.product === 'object') {
+								return {
+									...r.product,
+									dateOut: r.dateOut,
+									dateDue: r.dateDue,
+								};
+							}
 						})}
 					/>
 				</ListItem>
