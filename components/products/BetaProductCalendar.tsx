@@ -58,7 +58,7 @@ export default function BetaProductCalendar({
 			? null
 			: (item) => {
 					const selection = item.selection;
-					debugger;
+					// debugger;
 					console.log(selection);
 					setRange(selection);
 			  },

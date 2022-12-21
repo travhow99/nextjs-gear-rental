@@ -6,20 +6,19 @@ import { onError } from '../../../../utils/error';
 import SellerProduct from '../../../../models/SellerProduct';
 import ProductHelper from '../../../../utils/helpers/ProductHelper';
 import { addDays, getMonth, startOfDay, startOfToday } from 'date-fns';
-import { isAuth } from '../../../../utils/auth';
+import { authCheck } from '../../../../utils/authCheck';
 
 const handler = nc({ onError });
 
-handler.use(isAuth);
+handler.use(authCheck);
 
 handler.get(async (req, res) => {
 	try {
 		await db.connect();
 
-		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
-			req.user._id,
-			req.query.id
-		);
+		const sellerOwnsProduct = req.user
+			? await SellerProduct.sellerOwnsProduct(req.user._id, req.query.id)
+			: false;
 
 		console.log('s owns p?', sellerOwnsProduct);
 

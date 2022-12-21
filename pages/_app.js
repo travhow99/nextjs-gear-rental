@@ -24,8 +24,6 @@ export default function App({
 		}
 	}, []);
 
-	console.log('redux store', reduxStore);
-
 	return (
 		<SnackbarProvider
 			anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
