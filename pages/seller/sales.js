@@ -43,6 +43,7 @@ import {
 	sellerSalesRequest,
 	sellerSalesSuccess,
 } from '../../redux/seller/sellerSlice';
+import OrdersTable from '../../components/seller/OrdersTable';
 
 function SellerSales() {
 	const dispatch = useDispatch();
@@ -102,52 +103,7 @@ function SellerSales() {
 			<Card className={classes.section}>
 				<List>
 					{sales.length ? (
-						<TableContainer>
-							<Table>
-								<TableHead>
-									<TableRow>
-										<TableCell>Order Placed</TableCell>
-										<TableCell>Total</TableCell>
-										<TableCell>Order #</TableCell>
-										<TableCell>Status</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{sales.map((order) => (
-										<TableRow key={order._id}>
-											<TableCell>
-												{ProductHelper.formatPurchaseDate(
-													order.createdAt
-												)}
-											</TableCell>
-											<TableCell>
-												$
-												{ProductHelper.roundToPenny(
-													order.totalPrice
-												)}
-											</TableCell>
-											<TableCell>
-												<NextLink
-													href={`/seller/sales/${order._id}`}
-													passHref
-												>
-													<Link>
-														<Typography>
-															{order._id}
-														</Typography>
-													</Link>
-												</NextLink>
-											</TableCell>
-											<TableCell>
-												{order.isPaid
-													? 'Paid'
-													: 'Not Paid'}
-											</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							</Table>
-						</TableContainer>
+						<OrdersTable sales={sales} />
 					) : (
 						<ListItem>No orders found.</ListItem>
 					)}
