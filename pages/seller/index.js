@@ -14,6 +14,7 @@ import {
 	TextField,
 	CircularProgress,
 	Box,
+	CardContent,
 } from '@material-ui/core';
 import { getError } from '../../utils/error';
 import useStyles from '../../utils/styles';
@@ -27,7 +28,9 @@ import Loading from '../../components/Loading';
 import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
 import SellerContainer from '../../components/seller/SellerContainer';
-import BasicCard from '../../components/@core/cards/basicCard';
+import TotalProductsWidget from '../../components/seller/widgets/totalProductsWidget';
+import RecentOrdersWidget from '../../components/seller/widgets/RecentOrdersWidget';
+import TotalOrdersWidget from '../../components/seller/widgets/TotalOrdersWidget';
 import OrdersTable from '../../components/seller/OrdersTable';
 
 function Seller() {
@@ -53,57 +56,55 @@ function Seller() {
 	const classes = useStyles();
 	//   const { userInfo } = state;
 
+	/**
+	 * @todo Resolve styling with new non-card display, needs margin/padding
+	 */
 	return status ? (
 		<SellerContainer title={'Seller'}>
-			<Card className={classes.section}>
-				<Box sx={{ padding: 2 }}>
-					<Box>
-						<Typography component="h1" variant="h1">
-							Seller
-						</Typography>
-					</Box>
-					<Box>
-						<Typography component="p" variant="subtitle1">
-							Welcome to the Seller Portal!
-						</Typography>
-					</Box>
+			{/* <Card className={classes.section}> */}
+			<Box mb={2} sx={{ padding: 2 }}>
+				<Box>
+					<Typography component="h1" variant="h1">
+						Seller
+					</Typography>
+				</Box>
+				<Box>
+					<Typography component="p" variant="subtitle1">
+						Welcome to the Seller Portal!
+					</Typography>
+				</Box>
+			</Box>
 
-					<Grid container spacing={6} sx={{ marginBottom: 2 }}>
-						<Grid item xs={12} sm={6} md={4}>
-							<BasicCard
-								headerText="Total Products"
-								content={String(
-									Math.floor(Math.random() * 100)
-								)}
-							/>
-						</Grid>
-						<Grid item xs={12} sm={6} md={4}>
-							<BasicCard
-								headerText="Total Orders"
-								content={String(
-									Math.floor(Math.random() * 100)
-								)}
-							/>
-						</Grid>
-						<Grid item xs={12} sm={6} md={4}>
-							<BasicCard
-								headerText="Recent Orders"
-								content={String(
-									Math.floor(Math.random() * 100)
-								)}
-							/>
-						</Grid>
-					</Grid>
-					<Grid container spacing={6}>
-						<Grid item xs={12} sx={{ paddingBottom: 4 }}>
-							<Typography variant="h5">Recent Orders</Typography>
-						</Grid>
+			<Grid container spacing={6} alignItems="stretch">
+				<Grid item xs={12} sm={6} md={4}>
+					{/**
+					 * @todo Convert to external components to fetch their own data
+					 */}
+					<TotalProductsWidget />
+				</Grid>
+				<Grid item xs={12} sm={6} md={4}>
+					<TotalOrdersWidget />
+				</Grid>
+				<Grid item xs={12} sm={6} md={4}>
+					<RecentOrdersWidget />
+				</Grid>
+			</Grid>
+
+			<Box mt={2}>
+				<Card sx={{ width: '100%' }}>
+					<CardContent>
+						{/* <Grid container spacing={6}> */}
+						{/* <Grid item xs={12} sx={{ paddingBottom: 4 }}> */}
+						<Typography variant="h5">Recent Orders</Typography>
+						{/* </Grid> */}
 						<Grid item xs={12} sx={{ paddingBottom: 4 }}>
 							<OrdersTable sales={[]} />
 						</Grid>
-					</Grid>
-				</Box>
-			</Card>
+					</CardContent>
+					{/* </Grid> */}
+				</Card>
+			</Box>
+			{/* </Card> */}
 		</SellerContainer>
 	) : (
 		<Loading />

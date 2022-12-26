@@ -1,11 +1,6 @@
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import React from 'react';
-
-interface BasicCardProps {
-	headerText?: string;
-	content: string | React.ReactNode;
-	mediaURL?: string;
-}
+import { BasicCardProps } from '../../../../types/BasicCard';
 
 export default function BasicCard(props: BasicCardProps) {
 	const { headerText, content, mediaURL } = props;
