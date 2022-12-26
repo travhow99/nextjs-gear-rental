@@ -32,8 +32,10 @@ import TotalProductsWidget from '../../components/seller/widgets/totalProductsWi
 import RecentOrdersWidget from '../../components/seller/widgets/recentOrdersWidget';
 import TotalOrdersWidget from '../../components/seller/widgets/totalOrdersWidget';
 import OrdersTable from '../../components/seller/OrdersTable';
+import useOrders from '../../utils/hooks/useOrders';
 
 function Seller() {
+	const { orders, isLoading, isError } = useOrders();
 	const { data: session, status } = useSession({
 		required: true,
 	});
@@ -56,9 +58,6 @@ function Seller() {
 	const classes = useStyles();
 	//   const { userInfo } = state;
 
-	/**
-	 * @todo Resolve styling with new non-card display, needs margin/padding
-	 */
 	return status ? (
 		<SellerContainer title={'Seller'}>
 			{/* <Card className={classes.section}> */}
@@ -77,9 +76,6 @@ function Seller() {
 
 			<Grid container spacing={6} alignItems="stretch">
 				<Grid item xs={12} sm={6} md={4}>
-					{/**
-					 * @todo Convert to external components to fetch their own data
-					 */}
 					<TotalProductsWidget />
 				</Grid>
 				<Grid item xs={12} sm={6} md={4}>
@@ -98,7 +94,7 @@ function Seller() {
 						<Typography variant="h5">Recent Orders</Typography>
 						{/* </Grid> */}
 						<Grid item xs={12} sx={{ paddingBottom: 4 }}>
-							<OrdersTable sales={[]} />
+							<OrdersTable sales={isLoading ? [] : orders} />
 						</Grid>
 					</CardContent>
 					{/* </Grid> */}
