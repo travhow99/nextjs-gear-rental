@@ -29,8 +29,8 @@ import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
 import SellerContainer from '../../components/seller/SellerContainer';
 import TotalProductsWidget from '../../components/seller/widgets/totalProductsWidget';
-import RecentOrdersWidget from '../../components/seller/widgets/RecentOrdersWidget';
-import TotalOrdersWidget from '../../components/seller/widgets/TotalOrdersWidget';
+import RecentOrdersWidget from '../../components/seller/widgets/recentOrdersWidget';
+import TotalOrdersWidget from '../../components/seller/widgets/totalOrdersWidget';
 import OrdersTable from '../../components/seller/OrdersTable';
 
 function Seller() {
