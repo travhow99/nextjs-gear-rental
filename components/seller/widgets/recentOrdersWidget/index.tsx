@@ -1,20 +1,32 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import DataCard from '../../../@core/cards/dataCard';
 
-export default function RecentOrdersWidget() {
-	const [data, setData] = useState(false);
+const fetcher = async (url: string) =>
+	await axios.get(url).then((res) => res.data);
 
-	useEffect(() => {
-		setTimeout(() => {
-			setData(true);
-		}, 1000);
-	}, []);
+function useRecentOrders() {
+	const { data, error, isLoading } = useSWR(
+		`/api/seller/orders/recentOrders`,
+		fetcher
+	);
+
+	return {
+		orders: data,
+		isLoading,
+		isError: error,
+	};
+}
+
+export default function RecentOrdersWidget() {
+	const { orders, isError, isLoading } = useRecentOrders();
 
 	return (
 		<DataCard
 			headerText="Recent Orders"
-			content={String(Math.floor(Math.random() * 100))}
-			fetchedData={data}
+			content={!isLoading ? String(orders) : null}
+			fetchedData={!isLoading}
 		/>
 	);
 }

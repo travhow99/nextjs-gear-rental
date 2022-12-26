@@ -1,20 +1,32 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import DataCard from '../../../@core/cards/dataCard';
+import useSWR from 'swr';
+
+const fetcher = async (url: string) =>
+	await axios.get(url).then((res) => res.data);
+
+function useTotalOrders() {
+	const { data, error, isLoading } = useSWR(
+		`/api/seller/orders/totalOrders`,
+		fetcher
+	);
+
+	return {
+		orders: data,
+		isLoading,
+		isError: error,
+	};
+}
 
 export default function TotalOrdersWidget() {
-	const [data, setData] = useState(false);
-
-	useEffect(() => {
-		setTimeout(() => {
-			setData(true);
-		}, 1000);
-	}, []);
+	const { orders, isError, isLoading } = useTotalOrders();
 
 	return (
 		<DataCard
 			headerText="Total Orders"
-			content={String(Math.floor(Math.random() * 100))}
-			fetchedData={data}
+			content={!isLoading ? String(orders) : null}
+			fetchedData={!isLoading}
 		/>
 	);
 }
