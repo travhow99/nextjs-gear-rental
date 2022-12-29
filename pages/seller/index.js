@@ -56,11 +56,9 @@ function Seller() {
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const router = useRouter();
 	const classes = useStyles();
-	//   const { userInfo } = state;
 
 	return status ? (
 		<SellerContainer title={'Seller'}>
-			{/* <Card className={classes.section}> */}
 			<Box mb={2} sx={{ padding: 2 }}>
 				<Box>
 					<Typography component="h1" variant="h1">
@@ -89,18 +87,13 @@ function Seller() {
 			<Box mt={2}>
 				<Card sx={{ width: '100%' }}>
 					<CardContent>
-						{/* <Grid container spacing={6}> */}
-						{/* <Grid item xs={12} sx={{ paddingBottom: 4 }}> */}
 						<Typography variant="h5">Recent Orders</Typography>
-						{/* </Grid> */}
 						<Grid item xs={12} sx={{ paddingBottom: 4 }}>
 							<OrdersTable sales={isLoading ? [] : orders} />
 						</Grid>
 					</CardContent>
-					{/* </Grid> */}
 				</Card>
 			</Box>
-			{/* </Card> */}
 		</SellerContainer>
 	) : (
 		<Loading />
