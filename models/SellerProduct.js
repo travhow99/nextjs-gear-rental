@@ -47,6 +47,7 @@ const sellerProductSchema = new mongoose.Schema(
 				ref: 'BlockOut',
 			},
 		],
+		softDelete: { type: Boolean, default: 0 },
 	},
 	{
 		timestamps: true,

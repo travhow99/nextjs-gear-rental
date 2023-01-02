@@ -20,6 +20,7 @@ handler.get(async (req, res) => {
 		// @ts-ignore
 		const products = await SellerProduct.find({
 			user: req.user._id,
+			softDelete: { $ne: true },
 		}).lean();
 
 		await db.disconnect();

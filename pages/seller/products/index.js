@@ -25,8 +25,13 @@ import SellerContainer from '../../../components/seller/SellerContainer';
 import SellerProductListItem from '../../../components/seller/SellerProductListItem';
 import { getError } from '../../../utils/error';
 
+/**
+ * @todo useSWR
+ */
 function Products() {
 	const [products, setProducts] = useState([]);
+	const [fetchedProducts, setFetchedProducts] = useState(false);
+
 	const { data: session, status } = useSession({
 		required: true,
 	});
@@ -43,7 +48,9 @@ function Products() {
 	//   const { userInfo } = state;
 
 	useEffect(() => {
-		if (!products.length) fetchProducts();
+		if (!fetchedProducts) {
+			fetchProducts();
+		}
 	}, [products]);
 
 	const fetchProducts = async () => {
@@ -52,6 +59,8 @@ function Products() {
 
 			console.log('got sp data', data);
 			setProducts(data);
+
+			setFetchedProducts(true);
 		} catch (err) {
 			console.log('got err!', err);
 			enqueueSnackbar(getError(err), { variant: 'error' });
@@ -84,6 +93,7 @@ function Products() {
 											image={product.images[0]?.path}
 											title={product.title}
 											price={product.price}
+											reRender={fetchProducts}
 										/>
 									</Grid>
 								))}

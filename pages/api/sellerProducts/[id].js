@@ -112,6 +112,38 @@ handler.put(async (req, res) => {
 			res.status(404).send({ message: 'product not found' });
 		}
 	} catch (error) {
+		await db.disconnect();
+
+		console.log('err', error);
+		res.status(404).send({ message: 'product not found' });
+	}
+});
+
+handler.delete(async (req, res) => {
+	try {
+		await db.connect();
+
+		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
+			req.user._id,
+			req.query.id
+		);
+
+		if (Boolean(sellerOwnsProduct)) {
+			const r = await SellerProduct.findByIdAndUpdate(req.query.id, {
+				softDelete: true,
+			});
+
+			console.log('owns p,', r);
+
+			res.send({ message: 'product deleted' });
+		} else {
+			await db.disconnect();
+
+			res.status(404).send({ message: 'product not found' });
+		}
+	} catch (error) {
+		await db.disconnect();
+
 		console.log('err', error);
 		res.status(404).send({ message: 'product not found' });
 	}

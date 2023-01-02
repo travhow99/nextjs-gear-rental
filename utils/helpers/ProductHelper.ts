@@ -214,4 +214,11 @@ export default class ProductHelper {
 			)
 		);
 	};
+
+	/**
+	 * Admin Helpers
+	 */
+	static deleteSellerProduct = async (id: string) => {
+		await axios.delete(`/api/sellerProducts/${id}`);
+	};
 }
