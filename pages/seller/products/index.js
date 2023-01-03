@@ -24,13 +24,16 @@ import Loading from '../../../components/Loading';
 import SellerContainer from '../../../components/seller/SellerContainer';
 import SellerProductListItem from '../../../components/seller/SellerProductListItem';
 import { getError } from '../../../utils/error';
+import useSellerProducts from '../../../utils/hooks/useSellerProducts';
 
 /**
  * @todo useSWR
  */
 function Products() {
-	const [products, setProducts] = useState([]);
-	const [fetchedProducts, setFetchedProducts] = useState(false);
+	const { products, isLoading, isError, mutate } = useSellerProducts();
+
+	// const [products, setProducts] = useState([]);
+	// const [fetchedProducts, setFetchedProducts] = useState(false);
 
 	const { data: session, status } = useSession({
 		required: true,
@@ -47,13 +50,13 @@ function Products() {
 	const classes = useStyles();
 	//   const { userInfo } = state;
 
-	useEffect(() => {
+	/* useEffect(() => {
 		if (!fetchedProducts) {
 			fetchProducts();
 		}
-	}, [products]);
+	}, [products]); */
 
-	const fetchProducts = async () => {
+	/* 	const fetchProducts = async () => {
 		try {
 			const { data } = await axios.get('/api/sellerProducts');
 
@@ -65,7 +68,7 @@ function Products() {
 			console.log('got err!', err);
 			enqueueSnackbar(getError(err), { variant: 'error' });
 		}
-	};
+	}; */
 
 	return status ? (
 		<SellerContainer title={'Products'}>
@@ -93,7 +96,7 @@ function Products() {
 											image={product.images[0]?.path}
 											title={product.title}
 											price={product.price}
-											reRender={fetchProducts}
+											reRender={mutate}
 										/>
 									</Grid>
 								))}

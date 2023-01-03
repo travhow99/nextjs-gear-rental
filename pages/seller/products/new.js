@@ -275,9 +275,18 @@ function AddProduct() {
 			<Card className={classes.section}>
 				<List>
 					<ListItem>
-						<Typography component="h1" variant="h1">
+						<Typography
+							component="h1"
+							variant="h1"
+							className="flex-auto"
+						>
 							Add Product
 						</Typography>
+						<Button variant="outlined" color="primary">
+							<Link href="/seller/products">
+								Back to Products
+							</Link>
+						</Button>
 					</ListItem>
 					<ListItem>
 						<form onSubmit={submitHandler} className={classes.form}>

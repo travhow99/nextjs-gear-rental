@@ -41,6 +41,7 @@ import { sellerUploadRequest } from '../../../redux/seller/sellerSlice';
 import SellerHelper from '../../../utils/seller/SellerHelper';
 
 import useStyles from '../../../utils/styles';
+import Link from 'next/link';
 
 const initialProduct = {
 	category: '',
@@ -215,9 +216,18 @@ function SellerProduct({ params }) {
 				{product.title ? (
 					<List>
 						<ListItem>
-							<Typography component="h1" variant="h1">
+							<Typography
+								component="h1"
+								variant="h1"
+								className="flex-auto"
+							>
 								{product.title}
 							</Typography>
+							<Button variant="outlined" color="primary">
+								<Link href="/seller/products">
+									Back to Products
+								</Link>
+							</Button>
 						</ListItem>
 						<ListItem>
 							<Grid container spacing={1}>
