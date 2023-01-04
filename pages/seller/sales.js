@@ -44,12 +44,15 @@ import {
 	sellerSalesSuccess,
 } from '../../redux/seller/sellerSlice';
 import OrdersTable from '../../components/seller/OrdersTable';
+import useOrders from '../../utils/hooks/useOrders';
 
 function SellerSales() {
-	const dispatch = useDispatch();
+	const { orders, isLoading, isError } = useOrders();
+
+	/* const dispatch = useDispatch();
 	const {
 		seller: { sales },
-	} = useSelector((state) => state);
+	} = useSelector((state) => state); */
 
 	const { data: session, status } = useSession({
 		required: true,
@@ -60,7 +63,7 @@ function SellerSales() {
 	const isSeller =
 		isUser && (session.user.seller || session.user.role === 'admin');
 
-	useEffect(() => {
+	/* useEffect(() => {
 		fetchOrders();
 	}, []);
 
@@ -77,7 +80,7 @@ function SellerSales() {
 			// dispatch({ type: 'FETCH_FAIL' });
 			dispatch(sellerSalesFail(error));
 		}
-	};
+	}; */
 
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const router = useRouter();
@@ -102,8 +105,8 @@ function SellerSales() {
 			</Card>
 			<Card className={classes.section}>
 				<List>
-					{sales.length ? (
-						<OrdersTable sales={sales} />
+					{orders ? (
+						<OrdersTable sales={orders} />
 					) : (
 						<ListItem>No orders found.</ListItem>
 					)}

@@ -47,6 +47,7 @@ export default function OrdersTable(props: OrdersTableProps) {
 									passHref
 								>
 									<Link>
+										{/* @todo Why is this underlined, but not components/products/RentalTable.tsx? */}
 										<Typography>{order._id}</Typography>
 									</Link>
 								</NextLink>

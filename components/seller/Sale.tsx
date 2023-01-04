@@ -16,6 +16,7 @@ import Order from '../../types/Order';
 import dateHelper from '../../utils/dateHelper';
 import useStyles from '../../utils/styles';
 import ItemsTable from '../products/ItemsTable';
+import UserContactForm from '../utilities/dialogs/UserContactForm';
 
 export default function Sale({ sale }: { sale: Order }) {
 	const classes = useStyles();
@@ -81,8 +82,9 @@ export default function Sale({ sale }: { sale: Order }) {
 					/>
 				</ListItem>
 			</CardContent>
-			<CardActions>
+			<CardActions className="justify-center">
 				{/* <Button size="small">Archive Order</Button> */}
+				<UserContactForm user={sale.user} rentalId={sale._id} />
 			</CardActions>
 		</Card>
 	);

@@ -2,16 +2,16 @@ import Rental from './Rental';
 import User from './User';
 
 type Order = {
-	_id?: String;
+	_id?: string;
 	user: User;
-	storeId: String;
+	storeId: string;
 	rentals: Array<Rental>;
-	paymentMethod: String;
-	paymentResult: String;
-	itemsPrice: Number;
-	taxPrice: Number;
-	totalPrice: Number;
-	isPaid: Boolean;
+	paymentMethod: string;
+	paymentResult: string;
+	itemsPrice: number;
+	taxPrice: number;
+	totalPrice: number;
+	isPaid: boolean;
 	paidAt?: Date;
 	createdAt: Date;
 };

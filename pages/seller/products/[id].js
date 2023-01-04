@@ -43,6 +43,7 @@ import SellerHelper from '../../../utils/seller/SellerHelper';
 import useStyles from '../../../utils/styles';
 import Link from 'next/link';
 import useSellerProduct from '../../../utils/hooks/useSellerProduct';
+import { mutate } from 'swr';
 
 const initialProduct = {
 	category: '',
@@ -63,7 +64,8 @@ const initialProduct = {
 function SellerProduct({ params }) {
 	const sellerProductId = params.id;
 
-	const { product, isLoading, isError } = useSellerProduct(sellerProductId);
+	const { product, isLoading, isError, mutate } =
+		useSellerProduct(sellerProductId);
 
 	const router = useRouter();
 	if (isError) {
@@ -145,7 +147,8 @@ function SellerProduct({ params }) {
 				}
 			);
 
-			setProduct(data.result);
+			// setProduct(data.result);
+			mutate();
 
 			enqueueSnackbar('Product updated successfully', {
 				variant: 'success',
@@ -222,10 +225,6 @@ function SellerProduct({ params }) {
 								label="Title"
 								defaultValue={product.title || ''}
 								variant="outlined"
-								// onChange={handleInputChange}
-								// onChange={(e, newValue) => {
-								// setTitle(e.target.value);
-								// }}
 								onBlur={handleBlur}
 							/>
 						</ListItem>
@@ -241,7 +240,6 @@ function SellerProduct({ params }) {
 										defaultValue={product.stock || ''}
 										type={'number'}
 										variant="outlined"
-										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -254,7 +252,6 @@ function SellerProduct({ params }) {
 										defaultValue={product.rentalMin || ''}
 										type={'number'}
 										variant="outlined"
-										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -270,15 +267,10 @@ function SellerProduct({ params }) {
 											(brand) => brand.title
 										)}
 										defaultValue={product.brand || null}
-										// onChange={handleInputChange}
 										inputValue={brandInputValue}
 										onInputChange={(e, newValue) => {
 											setBrandInputValue(newValue);
-											console.log(
-												// 'onchange input',
-												e,
-												newValue
-											);
+											console.log(e, newValue);
 										}}
 										onBlur={handleBlur}
 										disableClearable
@@ -288,13 +280,6 @@ function SellerProduct({ params }) {
 												{...params}
 												label="Brand"
 												// error={Boolean(errors.brand)}
-												/* helperText={
-                      errors.brand
-                        ? errors.brand.type === 'minLength'
-                          ? 'Brand length is more than 1'
-                          : 'Brand is required'
-                        : ''
-                    } */
 											/>
 										)}
 									/>
@@ -312,25 +297,13 @@ function SellerProduct({ params }) {
 										inputValue={categoryInputValue}
 										onInputChange={(e, newValue) => {
 											setCategoryInputValue(newValue);
-											console.log(
-												// 'onchange input',
-												e,
-												newValue
-											);
+											console.log(e, newValue);
 										}}
 										onBlur={handleBlur}
 										renderInput={(params) => (
 											<MuiTextField
 												{...params}
 												label="Category"
-												/* error={Boolean(errors.category)}
-                      helperText={
-                        errors.category
-                          ? errors.category.type === 'minLength'
-                            ? 'Category length is more than 1'
-                            : 'Category is required'
-                          : ''
-                      } */
 											/>
 										)}
 									/>
@@ -348,7 +321,6 @@ function SellerProduct({ params }) {
 										label="Gender"
 										defaultValue={product.gender || ''}
 										variant="outlined"
-										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -373,7 +345,6 @@ function SellerProduct({ params }) {
 										label="Condition"
 										defaultValue={product.condition || ''}
 										variant="outlined"
-										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -390,7 +361,6 @@ function SellerProduct({ params }) {
 										defaultValue={product.price || ''}
 										type={'number'}
 										variant="outlined"
-										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -402,7 +372,6 @@ function SellerProduct({ params }) {
 										label="Keyword"
 										defaultValue={product.keyword || ''}
 										variant="outlined"
-										// onChange={handleInputChange}
 										onBlur={handleBlur}
 									/>
 								</Grid>
@@ -414,17 +383,11 @@ function SellerProduct({ params }) {
 								variant="outlined"
 								fullWidth
 								id="sellerProductDescription"
-								// labelId="sellerProductDescription"
 								label="Description"
 								defaultValue={product.description || ''}
-								// onChange={handleInputChange}
 								onBlur={handleBlur}
 								multiline
 								maxRows={4}
-								/* error={Boolean(errors.description)}
-                    helperText={
-                      errors.description ? 'Description is required' : ''
-                    } */
 							/>
 						</ListItem>
 					</List>
