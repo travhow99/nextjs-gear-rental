@@ -14,10 +14,23 @@ handler.get(async (req, res) => {
 	try {
 		await db.connect();
 
-		console.log('GOT REQ', req.body, req.user);
+		// @todo TS error
+		// @ts-ignore
+		/* const messages = await UserMessage.find({
+			$and: [
+				{ rental: req.body.rental },
+				{ $or: [{ sentBy: req.user._id }, { sentTo: req.user._id }] },
+			],
+		}); */
+
+		await db.disconnect();
+
+		res.send([]);
 	} catch (error) {
+		await db.disconnect();
+
 		console.log('err', error);
-		res.status(404).send({ message: 'message not found' });
+		res.status(404).send({ message: 'messages not found' });
 	}
 });
 

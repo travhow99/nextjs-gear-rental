@@ -21,6 +21,11 @@ const dateHelper = {
 		return result;
 	},
 
+	timestampToDateTime(timestamp: timestamp) {
+		const result = format(new Date(timestamp), 'MM-dd-yyyy, hh:ii');
+		return result;
+	},
+
 	dateToDateTimeLocalFormat(date: timestamp) {
 		// return format(new Date(date), "yyyy-MM-dd'T'HH:mm");
 		// const dateCheck = new Date(date);
