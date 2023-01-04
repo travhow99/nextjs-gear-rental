@@ -48,27 +48,6 @@ function Products() {
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const router = useRouter();
 	const classes = useStyles();
-	//   const { userInfo } = state;
-
-	/* useEffect(() => {
-		if (!fetchedProducts) {
-			fetchProducts();
-		}
-	}, [products]); */
-
-	/* 	const fetchProducts = async () => {
-		try {
-			const { data } = await axios.get('/api/sellerProducts');
-
-			console.log('got sp data', data);
-			setProducts(data);
-
-			setFetchedProducts(true);
-		} catch (err) {
-			console.log('got err!', err);
-			enqueueSnackbar(getError(err), { variant: 'error' });
-		}
-	}; */
 
 	return status ? (
 		<SellerContainer title={'Products'}>

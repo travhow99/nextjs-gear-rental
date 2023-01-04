@@ -42,6 +42,7 @@ import SellerHelper from '../../../utils/seller/SellerHelper';
 
 import useStyles from '../../../utils/styles';
 import Link from 'next/link';
+import useSellerProduct from '../../../utils/hooks/useSellerProduct';
 
 const initialProduct = {
 	category: '',
@@ -61,15 +62,18 @@ const initialProduct = {
 
 function SellerProduct({ params }) {
 	const sellerProductId = params.id;
-	const [loading, setLoading] = useState(false);
+
+	const { product, isLoading, isError } = useSellerProduct(sellerProductId);
+
 	const router = useRouter();
+	if (isError) {
+		router.push('/seller/products');
+	}
 
 	const [brandInputValue, setBrandInputValue] = useState('');
 	const [categoryInputValue, setCategoryInputValue] = useState('');
 	const [blockOuts, setBlockOuts] = useState(false);
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
-	const [product, setProduct] = useState(initialProduct);
 
 	const classes = useStyles();
 
@@ -84,46 +88,14 @@ function SellerProduct({ params }) {
 		required: true,
 	});
 
+	/**
+	 * @todo convert to SWR & move away from redux
+	 */
 	useEffect(() => {
-		setLoading(true);
 		if (!brands.length) fetchBrands();
 		if (!categories.length) fetchCategories();
-		if (!product.title) fetchSellerProduct();
+		// if (!product.title) fetchSellerProduct();
 	}, []);
-
-	const fetchSellerProduct = async () => {
-		try {
-			const { data } = await axios.get(
-				`/api/sellerProducts/${sellerProductId}`
-			);
-
-			console.log('got data', data);
-
-			setBlockOuts(data.blockOuts);
-
-			setProduct({
-				category: data.category,
-				stock: data.stock,
-				rentalMin: data.rentalMin,
-				title: data.title,
-				brand: data.brand,
-				gender: data.gender,
-				size: data.size,
-				condition: data.condition,
-				price: data.price,
-				description: data.description,
-				keyword: data.keyword,
-				images: data.images,
-				rentals: data.rentals,
-			});
-
-			setLoading(false);
-		} catch (err) {
-			console.log('got err!', err);
-
-			router.push('/seller/products');
-		}
-	};
 
 	const fetchBrands = async () => {
 		try {
@@ -197,23 +169,10 @@ function SellerProduct({ params }) {
 		return val != product[name];
 	};
 
-	const handleInputChange = (e) => {
-		//const name = e.target.name
-		//const value = e.target.value
-		const { name, value } = e.target;
-
-		// console.log('update', name, value);
-
-		setProduct({
-			...product,
-			[name]: value,
-		});
-	};
-
 	return status ? (
 		<SellerContainer title={'Products'}>
 			<Card className={classes.section}>
-				{product.title ? (
+				{product ? (
 					<List>
 						<ListItem>
 							<Typography
@@ -224,7 +183,7 @@ function SellerProduct({ params }) {
 								{product.title}
 							</Typography>
 							<Button variant="outlined" color="primary">
-								<Link href="/seller/products">
+								<Link href="/seller/products" passHref>
 									Back to Products
 								</Link>
 							</Button>
@@ -474,7 +433,10 @@ function SellerProduct({ params }) {
 				)}
 			</Card>
 
-			<RentalForm rentals={product.rentals} productId={sellerProductId} />
+			<RentalForm
+				rentals={product?.rentals || []}
+				productId={sellerProductId}
+			/>
 			<BlockOutForm
 				updateBlockOuts={setBlockOuts}
 				productId={sellerProductId}
