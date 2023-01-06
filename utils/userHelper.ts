@@ -2,6 +2,9 @@ import axios from 'axios';
 import User from '../types/User';
 
 const userHelper = {
+	/**
+	 * @todo notify user via email/websocket
+	 */
 	async sendMessageToUser(
 		user: User,
 		message: string,

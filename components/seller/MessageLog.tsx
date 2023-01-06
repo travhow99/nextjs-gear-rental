@@ -4,17 +4,42 @@ import {
 	CircularProgress,
 	List,
 	ListItem,
+	TextField,
 	Typography,
 } from '@mui/material';
-import UserMessage from '../../types/UserMessage';
+import { useEffect, useRef, useState } from 'react';
+import User from '../../types/User';
 import useUserMessages from '../../utils/hooks/useUserMessages';
-import OutgoingMessage from '../@core/listItems/messages/OutgoingMessage';
+import userHelper from '../../utils/userHelper';
+import MessageInput from '../@core/listItems/messages/MessageInput';
 import UserContactForm from '../utilities/dialogs/UserContactForm';
+import MessageThread from './widgets/messageThread';
 
-export default function MessageLog({ saleId, user }) {
-	const { messages, isLoading, isError, mutate } = useUserMessages(saleId);
+export default function MessageLog({
+	saleId,
+	user,
+}: {
+	saleId: string;
+	user: User;
+}) {
+	const { messages, isLoading, isError, isValidating, mutate } =
+		useUserMessages(saleId);
 
-	console.log(messages, isLoading, isError);
+	const [isSending, setIsSending] = useState(false);
+
+	console.log('VALIDATE', isValidating);
+
+	const handleSend = async (value: string) => {
+		console.log(value);
+
+		setIsSending(true);
+
+		await userHelper.sendMessageToUser(user, value, saleId);
+
+		setIsSending(false);
+
+		mutate();
+	};
 
 	return (
 		<Card>
@@ -27,34 +52,13 @@ export default function MessageLog({ saleId, user }) {
 							<Typography variant="h5">
 								Messages from {user.name}
 							</Typography>
-							<List
-								sx={{
-									width: '100%',
-									// maxWidth: 360,
-									bgcolor: 'background.paper',
-								}}
-							>
-								{messages.map((message: UserMessage) =>
-									message.sentBy ? (
-										<OutgoingMessage
-											// @ts-ignore
-											key={message._id}
-											message={message}
-											user={user}
-										/>
-									) : (
-										<OutgoingMessage
-											// @ts-ignore
-											key={message._id}
-											message={message}
-											user={user}
-										/>
-									)
-								)}
-							</List>
-							{/**
-							 * @todo Send message textarea component
-							 */}
+							<MessageThread messages={messages} user={user} />
+
+							<MessageInput
+								hasSendButton={true}
+								onSend={handleSend}
+								isSending={isSending}
+							/>
 						</>
 					) : (
 						<UserContactForm user={user} />

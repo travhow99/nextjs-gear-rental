@@ -10,6 +10,9 @@ import {
 	isAfter,
 	isBefore,
 	subDays,
+	isToday,
+	isThisWeek,
+	isYesterday,
 } from 'date-fns';
 import { RentalDate } from '../types/RentalDate';
 
@@ -24,6 +27,20 @@ const dateHelper = {
 	timestampToDateTime(timestamp: timestamp) {
 		const result = format(new Date(timestamp), 'MM-dd-yyyy, hh:ii');
 		return result;
+	},
+
+	toReadableTime(time: string) {
+		const adjusted = new Date(time);
+
+		if (isToday(adjusted)) {
+			return format(adjusted, 'p');
+		} else if (isYesterday(adjusted)) {
+			return 'Yesterday • ' + format(adjusted, 'p');
+		} else if (isThisWeek(adjusted)) {
+			return format(adjusted, 'EEEE • p');
+		} else {
+			return format(adjusted, 'EEEE, LLL d • p');
+		}
 	},
 
 	dateToDateTimeLocalFormat(date: timestamp) {

@@ -11,14 +11,16 @@ import User from '../../../../types/User';
 import UserMessage from '../../../../types/UserMessage';
 import dateHelper from '../../../../utils/dateHelper';
 
-export default function OutgoingMessage({
+export default function MessageItem({
 	message,
 	user,
 	previousMessage,
+	type,
 }: {
 	message: UserMessage;
 	user: User;
 	previousMessage: string;
+	type: 'outgoing' | 'incoming';
 }): JSX.Element {
 	const diffInMinutes = differenceInMinutes(
 		new Date(message.createdAt),
@@ -32,7 +34,10 @@ export default function OutgoingMessage({
 					{dateHelper.toReadableTime(message.createdAt)}
 				</ListSubheader>
 			) : null}
-			<ListItem className="ml-auto" sx={{ width: '45%' }}>
+			<ListItem
+				className={type === 'outgoing' ? 'ml-auto' : ''}
+				sx={{ width: '45%' }}
+			>
 				<ListItemAvatar>
 					{/**
 					 * @todo User Avatar component

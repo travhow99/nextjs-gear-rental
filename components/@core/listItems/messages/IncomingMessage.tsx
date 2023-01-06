@@ -15,7 +15,6 @@ export default function IncomingMessage({
 	message: UserMessage;
 	user: User;
 }): JSX.Element {
-	console.log('got msg', message, user);
 	return (
 		<ListItem /* sx={{ justifyContent: 'flex-end' }} */>
 			<ListItemAvatar>
