@@ -1,10 +1,9 @@
 import { List } from '@mui/material';
+import { useSession } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 import User from '../../../../types/User';
 import UserMessage from '../../../../types/UserMessage';
-import IncomingMessage from '../../../@core/listItems/messages/IncomingMessage';
 import MessageItem from '../../../@core/listItems/messages/MessageItem';
-import OutgoingMessage from '../../../@core/listItems/messages/OutgoingMessage';
 
 export default function MessageThread({
 	messages,
@@ -13,6 +12,15 @@ export default function MessageThread({
 	messages: Array<UserMessage>;
 	user: User;
 }) {
+	const { data: session, status } = useSession({ required: true });
+	console.log('S U:', session.user._id);
+
+	const scrollRef = useRef(null);
+
+	useEffect(() => {
+		scrollRef.current.scrollIntoView();
+	});
+
 	return (
 		<List
 			sx={{
@@ -30,20 +38,18 @@ export default function MessageThread({
 					message={message}
 					user={user}
 					previousMessage={messages[index - 1]?.createdAt}
-					type={message.sentBy ? 'outgoing' : 'incoming'}
+					/**
+					 * @todo Update next-auth session.user type to include _id
+					 */
+					type={
+						message.sentBy === session.user._id
+							? 'outgoing'
+							: 'incoming'
+					}
 				/>
 			))}
 
-			{/* <AlwaysScrollToBottom /> */}
+			<div ref={scrollRef}></div>
 		</List>
 	);
 }
-
-/**
- * @todo Scrolling to bottom on re-focus, should only on initial render
- */
-const AlwaysScrollToBottom = () => {
-	const elementRef = useRef();
-	// useEffect(() => elementRef?.current?.scrollIntoView());
-	return <div ref={elementRef} />;
-};
