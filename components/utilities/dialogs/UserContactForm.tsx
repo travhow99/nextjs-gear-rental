@@ -8,6 +8,7 @@ interface UserContactFormProps {
 	user: User;
 	productId?: string;
 	rentalId?: string;
+	reRender?: Function;
 }
 
 export default function UserContactForm(props: UserContactFormProps) {
@@ -20,6 +21,8 @@ export default function UserContactForm(props: UserContactFormProps) {
 			props.productId,
 			props.rentalId
 		);
+
+		if (props.reRender) props.reRender();
 
 		enqueueSnackbar('Message Sent!', {
 			variant: 'success',

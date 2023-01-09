@@ -59,7 +59,11 @@ export default function MessageLog({
 							/>
 						</>
 					) : (
-						<UserContactForm user={user} />
+						<UserContactForm
+							user={user}
+							reRender={mutate}
+							rentalId={saleId}
+						/>
 					)}
 				</CardContent>
 			)}
