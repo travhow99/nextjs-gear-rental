@@ -42,6 +42,7 @@ export default function MessageThread({
 					 * @todo Update next-auth session.user type to include _id
 					 */
 					type={
+						// @ts-ignore
 						message.sentBy === session.user._id
 							? 'outgoing'
 							: 'incoming'

@@ -3,6 +3,7 @@ import { onError } from '../../../../utils/error';
 import { isAuth } from '../../../../utils/auth';
 import db from '../../../../utils/db';
 import UserMessage from '../../../../models/UserMessage';
+import sendEmail from '../../../../utils/mailer';
 
 const handler = nc({
 	onError,
@@ -49,6 +50,8 @@ handler.post(async (req, res) => {
 		});
 
 		await userMessage.save();
+
+		await sendEmail({ text: req.body.message });
 
 		await db.disconnect();
 
