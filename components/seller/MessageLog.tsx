@@ -27,14 +27,12 @@ export default function MessageLog({
 
 	const [isSending, setIsSending] = useState(false);
 
-	console.log('VALIDATE', isValidating);
-
 	const handleSend = async (value: string) => {
 		console.log(value);
 
 		setIsSending(true);
 
-		await userHelper.sendMessageToUser(user, value, saleId);
+		await userHelper.sendMessageToUser(user, value, null, saleId);
 
 		setIsSending(false);
 

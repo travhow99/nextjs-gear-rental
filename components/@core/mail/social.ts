@@ -1,3 +1,6 @@
+/**
+ * @todo social urls
+ */
 const emailSocial = `<mj-wrapper full-width="full-width">
 <mj-section>
   <mj-column width="100%" padding="0">
@@ -15,7 +18,7 @@ const emailSocial = `<mj-wrapper full-width="full-width">
       View this email in your browser
     </mj-text>
     <mj-text color="#445566" font-size="11px" align="center" line-height="16px">
-      You are receiving this email advertisement because you registered with Croft's Accountants. (123 Main Street, Fort Collins, CO 78701) and agreed to receive emails from us regarding new features, events and special offers.
+      You are receiving this email advertisement because you registered with adventurebuddy. (123 Main Street, Fort Collins, CO 78701) and agreed to receive emails from us regarding new features, events and special offers.
     </mj-text>
     <mj-text color="#445566" font-size="11px" align="center" line-height="16px">
       &copy; adventurebuddy., All Rights Reserved.

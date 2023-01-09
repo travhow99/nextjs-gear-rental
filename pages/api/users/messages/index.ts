@@ -39,8 +39,6 @@ handler.post(async (req, res) => {
 	try {
 		await db.connect();
 
-		console.log('GOT REQ', req.body, req.user);
-
 		const userMessage = new UserMessage({
 			sentBy: req.user._id,
 			sentTo: req.body.sentTo,
@@ -51,11 +49,11 @@ handler.post(async (req, res) => {
 
 		await userMessage.save();
 
-		await sendEmail({ text: req.body.message });
-
 		await db.disconnect();
 
 		res.status(201).send();
+
+		await sendEmail({ text: req.body.message });
 	} catch (error) {
 		await db.disconnect();
 

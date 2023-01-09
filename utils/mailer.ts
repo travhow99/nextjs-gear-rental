@@ -9,6 +9,7 @@ import generalText from '../components/@core/mail/generalText';
 import emailDivider from '../components/@core/mail/divider';
 import emailSplitImage from '../components/@core/mail/splitImage';
 import emailButton from '../components/@core/mail/button';
+import emailHead from '../components/@core/mail/head';
 
 interface emailProps {
 	text: string;
@@ -39,32 +40,8 @@ export default async function sendEmail({ text }: emailProps) {
 	// return;
 	const htmlOutput = mjml2html(`
 <mjml>
-  <mj-head>
-    <mj-title>Discount Light</mj-title>
-    <mj-preview>Pre-header Text</mj-preview>
-    <mj-attributes>
-      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
-      <mj-text font-weight="400" font-size="16px" color="#000000" line-height="24px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-text>
-    </mj-attributes>
-    <mj-style inline="inline">
-      .body-section {
-      -webkit-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
-      -moz-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
-      box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
-      }
-    </mj-style>
-    <mj-style inline="inline">
-      .text-link {
-      color: #5e6ebf
-      }
-    </mj-style>
-    <mj-style inline="inline">
-      .footer-link {
-      color: #888888
-      }
-    </mj-style>
-
-  </mj-head>
+  ${emailHead}
+  
   <mj-body background-color="#E7E7E7" width="600px">
 
     ${emailHeader}
@@ -78,40 +55,55 @@ export default async function sendEmail({ text }: emailProps) {
           <mj-text color="#637381" font-size="16px">
             Hi ${recipient},
           </mj-text>
+        </mj-column>
+      </mj-section>
           ${generalText({
 				bodyHtml: text,
 			})}
-          ${generalText({
+          ${
+				/* generalText({
 				bodyHtml: `<mj-text color="#637381" font-size="16px">
             Tempora culpa porro labore. Repudiandae accusamus obcaecati voluptatibus accusantium perspiciatis:
           </mj-text>`,
-			})}
+			}) */ null
+			}
 
-          ${generalText({
+          ${
+				/* generalText({
 				bodyHtml: `<ul>
               <li style="padding-bottom: 20px"><strong>Lorem ipsum dolor:</strong> Sit amet consectetur adipisicing elit.</li>
               <li style="padding-bottom: 20px"><strong>Quia a assumenda nulla:</strong> Repudiandae accusamus obcaecati voluptatibus accusantium perspiciatis.</li>
               <li><strong>Tempora culpa porro labore:</strong> In quisquam optio quibusdam fugiat perspiciatis nobis.</li>
             </ul>`,
-			})}
-          ${generalText({
+			}) */ null
+			}
+          ${
+				/* generalText({
 				bodyHtml: `Lorem ipsum dolor <a class="text-link" href="https://google.com">sit amet consectetur</a> adipisicing elit. Earum eaque sunt nulla in, id eveniet quae unde ad ipsam ut, harum autem porro reiciendis minus libero illo. Vero, fugiat reprehenderit.`,
-			})}
-          
+			}) */ null
+			}
+      <!--
+      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px">
+        <mj-column width="100%">
           ${emailButton({ href: 'https://google.com', text: 'Learn more' })}
           ${emailButton({ href: 'https://google.com', text: 'Learn more' })}
-          
-          ${generalText({
-				bodyHtml: `Lorem ipsum dolor <a class="text-link" href="https://google.com">sit amet consectetur</a> adipisicing elit. Earum eaque sunt nulla in, id eveniet quae unde ad ipsam ut, harum autem porro reiciendis minus libero illo. Vero, fugiat reprehenderit.`,
-			})}
-                             
-      ${generalText({
-			bodyHtml: `Lorem ipsum dolor sit amet consectetur adipisicing elit.`,
-		})}
-
         </mj-column>
       </mj-section>
+      !-->
+          
+          ${
+				/* generalText({
+				bodyHtml: `Lorem ipsum dolor <a class="text-link" href="https://google.com">sit amet consectetur</a> adipisicing elit. Earum eaque sunt nulla in, id eveniet quae unde ad ipsam ut, harum autem porro reiciendis minus libero illo. Vero, fugiat reprehenderit.`,
+			}) */ null
+			}
+                             
+      ${
+			/* generalText({
+			bodyHtml: `Lorem ipsum dolor sit amet consectetur adipisicing elit.`,
+		}) */ null
+		}
 
+    // @todo images
       ${emailSplitImage({
 			image1Src:
 				'https://res.cloudinary.com/dheck1ubc/image/upload/v1544153577/Email/Images/AnnouncementOffset/Image_1.png',
@@ -136,10 +128,10 @@ export default async function sendEmail({ text }: emailProps) {
 </mjml>`);
 
 	// send mail with defined transport object
-	let info = await transporter.sendMail({
+	const info = await transporter.sendMail({
 		from: '"Fred Foo 👻" <foo@example.com>', // sender address
 		to: 'bar@example.com, baz@example.com', // list of receivers
-		subject: 'Hello ✔', // Subject line
+		subject: `New Message from ${sender}`, // Subject line
 		text: `${text}`, // plain text body
 		html: htmlOutput.html, // html body
 	});
