@@ -3,6 +3,8 @@ import { onError } from '../../../../utils/error';
 import { isAuth } from '../../../../utils/auth';
 import db from '../../../../utils/db';
 import UserMessage from '../../../../models/UserMessage';
+import sendEmail from '../../../../utils/mailer';
+import mailHelper from '../../../../utils/mailHelper';
 
 const handler = nc({
 	onError,
@@ -38,8 +40,6 @@ handler.post(async (req, res) => {
 	try {
 		await db.connect();
 
-		console.log('GOT REQ', req.body, req.user);
-
 		const userMessage = new UserMessage({
 			sentBy: req.user._id,
 			sentTo: req.body.sentTo,
@@ -53,6 +53,13 @@ handler.post(async (req, res) => {
 		await db.disconnect();
 
 		res.status(201).send();
+
+		await mailHelper.newUserMessage({
+			sender: req.user.name,
+			message: req.body.message,
+			user: req.body.sentTo,
+			saleId: req.body.rental,
+		});
 	} catch (error) {
 		await db.disconnect();
 
