@@ -13,7 +13,7 @@ export default function MessageThread({
 	user: User;
 }) {
 	const { data: session, status } = useSession({ required: true });
-	console.log('S U:', session.user._id);
+	// console.log('S U:', session.user._id);
 
 	const scrollRef = useRef(null);
 
