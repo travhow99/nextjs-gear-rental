@@ -13,7 +13,6 @@ handler.use(isAuth);
 handler.get(async (req, res) => {
 	try {
 		await db.connect();
-		console.log(req);
 		// @todo TS error
 		// @ts-ignore
 		const messages = await UserMessage.find({
@@ -22,8 +21,6 @@ handler.get(async (req, res) => {
 				{ $or: [{ sentBy: req.user._id }, { sentTo: req.user._id }] },
 			],
 		}).exec();
-
-		console.log('got messages for ', req.query.id, messages);
 
 		await db.disconnect();
 

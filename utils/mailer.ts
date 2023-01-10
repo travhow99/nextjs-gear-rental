@@ -12,15 +12,18 @@ import emailButton from '../components/@core/mail/button';
 import emailHead from '../components/@core/mail/head';
 
 interface emailProps {
-	text: string;
+	body: string;
+	sender: string;
+	recipient: string;
+	header: string;
 }
 
-const sender = 'Travis Howell';
-const recipient = 'Jon Doe';
-
-const header = `New email from ${sender}`;
-
-export default async function sendEmail({ text }: emailProps) {
+export default async function sendEmail({
+	body,
+	sender,
+	recipient,
+	header,
+}: emailProps) {
 	// Generate test SMTP service account from ethereal.email
 	// Only needed if you don't have a real mail account for testing
 	let testAccount = await nodemailer.createTestAccount();
@@ -57,9 +60,7 @@ export default async function sendEmail({ text }: emailProps) {
           </mj-text>
         </mj-column>
       </mj-section>
-          ${generalText({
-				bodyHtml: text,
-			})}
+          ${body}
           ${
 				/* generalText({
 				bodyHtml: `<mj-text color="#637381" font-size="16px">
@@ -82,14 +83,6 @@ export default async function sendEmail({ text }: emailProps) {
 				bodyHtml: `Lorem ipsum dolor <a class="text-link" href="https://google.com">sit amet consectetur</a> adipisicing elit. Earum eaque sunt nulla in, id eveniet quae unde ad ipsam ut, harum autem porro reiciendis minus libero illo. Vero, fugiat reprehenderit.`,
 			}) */ null
 			}
-      <!--
-      <mj-section background-color="#ffffff" padding-left="15px" padding-right="15px">
-        <mj-column width="100%">
-          ${emailButton({ href: 'https://google.com', text: 'Learn more' })}
-          ${emailButton({ href: 'https://google.com', text: 'Learn more' })}
-        </mj-column>
-      </mj-section>
-      !-->
           
           ${
 				/* generalText({
@@ -131,8 +124,8 @@ export default async function sendEmail({ text }: emailProps) {
 	const info = await transporter.sendMail({
 		from: '"Fred Foo 👻" <foo@example.com>', // sender address
 		to: 'bar@example.com, baz@example.com', // list of receivers
-		subject: `New Message from ${sender}`, // Subject line
-		text: `${text}`, // plain text body
+		subject: `adventurebuddy • New Message from ${sender}`, // Subject line
+		text: `${body}`, // plain text body
 		html: htmlOutput.html, // html body
 	});
 

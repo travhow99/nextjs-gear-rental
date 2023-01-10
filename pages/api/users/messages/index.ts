@@ -4,6 +4,7 @@ import { isAuth } from '../../../../utils/auth';
 import db from '../../../../utils/db';
 import UserMessage from '../../../../models/UserMessage';
 import sendEmail from '../../../../utils/mailer';
+import mailHelper from '../../../../utils/mailHelper';
 
 const handler = nc({
 	onError,
@@ -53,7 +54,12 @@ handler.post(async (req, res) => {
 
 		res.status(201).send();
 
-		await sendEmail({ text: req.body.message });
+		await mailHelper.newUserMessage({
+			sender: req.user.name,
+			message: req.body.message,
+			user: req.body.sentTo,
+			saleId: req.body.rental,
+		});
 	} catch (error) {
 		await db.disconnect();
 
