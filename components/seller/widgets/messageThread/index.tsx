@@ -17,6 +17,9 @@ export default function MessageThread({
 
 	const scrollRef = useRef(null);
 
+	/**
+	 * @todo scrolling entire page down, should just scroll div
+	 */
 	useEffect(() => {
 		scrollRef.current.scrollIntoView();
 	});

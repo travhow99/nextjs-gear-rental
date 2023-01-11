@@ -32,7 +32,6 @@ const mailHelper = {
         </mj-section>
   `;
 
-		console.log('sendhtml', messageHtml);
 		await sendEmail({
 			body: messageHtml,
 			sender,

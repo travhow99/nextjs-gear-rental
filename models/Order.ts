@@ -15,6 +15,7 @@ interface IOrder extends Document {
 	totalPrice: Number;
 	isPaid: Boolean;
 	paidAt?: Date;
+	softDelete?: Boolean;
 }
 
 const orderSchema: Schema = new Schema(
@@ -42,6 +43,7 @@ const orderSchema: Schema = new Schema(
 		totalPrice: { type: Number, required: true },
 		isPaid: { type: Boolean, required: true, default: false },
 		paidAt: { type: Date },
+		softDelete: { type: Boolean, default: false },
 	},
 	{
 		timestamps: true,

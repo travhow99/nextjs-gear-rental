@@ -14,10 +14,11 @@ import ProductImage from '../../../models/ProductImage';
 import SellerProduct from '../../../models/SellerProduct';
 import User from '../../../models/User';
 
+/**
+ * @todo Pass to swr or remove SSR
+ */
 function SalePage({ sale }: { sale: OrderType }) {
 	console.log('got props:', sale);
-
-	useEffect(() => {}, [sale]);
 
 	const pageTitle = `Order #${sale._id}`;
 
@@ -33,7 +34,7 @@ function SalePage({ sale }: { sale: OrderType }) {
 
 	return (
 		<SellerPage title={pageTitle}>
-			<Sale sale={sale} />
+			<Sale saleId={sale._id} />
 		</SellerPage>
 	);
 }

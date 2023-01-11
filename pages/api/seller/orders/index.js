@@ -15,7 +15,7 @@ handler.get(async (req, res) => {
 	await db.connect();
 
 	const orders = await Order.find({ storeId: req.user._id })
-		.select('isPaid totalPrice _id createdAt')
+		.select('isPaid totalPrice _id createdAt softDelete')
 		.sort({ updatedAt: -1 });
 
 	await db.disconnect();

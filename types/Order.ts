@@ -14,6 +14,7 @@ type Order = {
 	isPaid: boolean;
 	paidAt?: Date;
 	createdAt: Date;
+	softDelete?: Boolean;
 };
 
 export default Order;

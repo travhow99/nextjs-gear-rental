@@ -18,7 +18,7 @@ export default class SellerHelper {
 	}
 
 	/**
-	 *
+	 * @todo Turn into hooks
 	 * @returns arr brands
 	 */
 	static fetchBrands = async () => {
@@ -43,8 +43,17 @@ export default class SellerHelper {
 
 	/**
 	 * Archive the order
-	 * @todo
+	 * @todo Should also refund the order
 	 * @param {string} id Order _id
 	 */
-	static archiveOrder = async (id) => {};
+	static archiveOrder = async (id) => {
+		try {
+			const { data } = await axios.delete(`/api/orders/${id}`);
+
+			console.log('got archiveOrder', data);
+		} catch (error) {
+			console.log('fetch err', error);
+			throw error;
+		}
+	};
 }

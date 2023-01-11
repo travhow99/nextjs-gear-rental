@@ -16,13 +16,20 @@ import Order from '../../types/Order';
 import dateHelper from '../../utils/dateHelper';
 import useStyles from '../../utils/styles';
 import ItemsTable from '../products/ItemsTable';
-import UserContactForm from '../utilities/dialogs/UserContactForm';
 import MessageLog from './MessageLog';
+import SellerHelper from '../../utils/seller/SellerHelper';
+import ArchiveOrderButton from './ArchiveOrderButton';
+import useOrder from '../../utils/hooks/useOrder';
+import Loading from '../Loading';
 
-export default function Sale({ sale }: { sale: Order }) {
+export default function Sale({ saleId }: { saleId: string }) {
+	const { order, isLoading, isError, mutate } = useOrder(saleId);
+
 	const classes = useStyles();
 
-	return (
+	return isLoading ? (
+		<Loading />
+	) : (
 		<>
 			<Card className={classes.section}>
 				<Grid
@@ -35,7 +42,7 @@ export default function Sale({ sale }: { sale: Order }) {
 							Order Placed{' '}
 						</Typography>
 						<Typography variant="caption" display="block">
-							{dateHelper.timestampToDate(sale.createdAt)}
+							{dateHelper.timestampToDate(order.createdAt)}
 						</Typography>
 					</Grid>
 					<Grid item xs={3}>
@@ -43,7 +50,7 @@ export default function Sale({ sale }: { sale: Order }) {
 							Total
 						</Typography>
 						<Typography variant="caption" display="block">
-							${sale.totalPrice}
+							${order.totalPrice}
 						</Typography>
 					</Grid>
 					<Grid item xs={3}>
@@ -51,7 +58,7 @@ export default function Sale({ sale }: { sale: Order }) {
 							Rented by
 						</Typography>
 						<Typography variant="caption" display="block">
-							{sale.user.name}
+							{order.user.name}
 							{/* @todo User contact button */}
 						</Typography>
 					</Grid>
@@ -60,9 +67,9 @@ export default function Sale({ sale }: { sale: Order }) {
 							Status
 						</Typography>
 						<Typography variant="caption" display="block">
-							{sale.isPaid && sale.paidAt
+							{order.isPaid && order.paidAt
 								? `Paid ${dateHelper.dateToDateTimeLocalFormat(
-										sale.paidAt
+										order.paidAt
 								  )}`
 								: 'Not Paid'}
 						</Typography>
@@ -72,7 +79,7 @@ export default function Sale({ sale }: { sale: Order }) {
 					<ListItem>
 						<ItemsTable
 							isCartPage={false}
-							items={sale.rentals.map((r) => {
+							items={order.rentals.map((r) => {
 								if (typeof r.product === 'object') {
 									return {
 										...r.product,
@@ -85,11 +92,17 @@ export default function Sale({ sale }: { sale: Order }) {
 					</ListItem>
 				</CardContent>
 				<CardActions className="justify-center">
-					{/* <Button size="small">Archive Order</Button> */}
-					{/* <UserContactForm user={sale.user} rentalId={sale._id} /> */}
+					{order.softDelete ? (
+						<div>Order Archived</div>
+					) : (
+						<ArchiveOrderButton
+							saleId={order._id}
+							reRender={mutate}
+						/>
+					)}
 				</CardActions>
 			</Card>
-			<MessageLog saleId={sale._id} user={sale.user} />
+			<MessageLog saleId={order._id} user={order.user} />
 		</>
 	);
 }
