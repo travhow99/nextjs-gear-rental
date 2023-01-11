@@ -21,7 +21,7 @@ export default function MessageThread({
 	 * @todo scrolling entire page down, should just scroll div
 	 */
 	useEffect(() => {
-		scrollRef.current.scrollIntoView();
+		scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
 	});
 
 	return (
@@ -33,6 +33,7 @@ export default function MessageThread({
 				maxHeight: 320,
 				overflowY: 'auto',
 			}}
+			ref={scrollRef}
 		>
 			{messages.map((message: UserMessage, index: number) => (
 				<MessageItem
@@ -53,7 +54,7 @@ export default function MessageThread({
 				/>
 			))}
 
-			<div ref={scrollRef}></div>
+			{/* <div ref={scrollRef}></div> */}
 		</List>
 	);
 }
