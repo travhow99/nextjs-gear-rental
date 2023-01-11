@@ -1,7 +1,6 @@
 import { Card, CircularProgress, Skeleton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { BasicCardProps } from '../../../../types/BasicCard';
-import Loading from '../../../Loading';
 import BasicCard from '../basicCard';
 
 export default function DataCard(props: BasicCardProps) {

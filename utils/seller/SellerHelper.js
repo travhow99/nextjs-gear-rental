@@ -56,4 +56,24 @@ export default class SellerHelper {
 			throw error;
 		}
 	};
+
+	/**
+	 * Store a seller note for an order.
+	 * @param {string} orderId Order ID
+	 * @param {string} note
+	 */
+	static addOrderNote = async (orderId, note) => {
+		try {
+			const { data } = await axios.post(
+				`/api/seller/orders/${orderId}/notes`,
+				{
+					orderId,
+					note,
+				}
+			);
+		} catch (error) {
+			console.log('fetch err', error);
+			throw error;
+		}
+	};
 }

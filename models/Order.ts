@@ -58,4 +58,6 @@ const orderSchema: Schema = new Schema(
  * Statics
  */
 
-export default models['Order'] || model<IOrder>('Order', orderSchema);
+const Order = models['Order'] || model<IOrder>('Order', orderSchema);
+
+export default Order;

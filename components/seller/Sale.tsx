@@ -21,6 +21,8 @@ import SellerHelper from '../../utils/seller/SellerHelper';
 import ArchiveOrderButton from './ArchiveOrderButton';
 import useOrder from '../../utils/hooks/useOrder';
 import Loading from '../Loading';
+import Rental from '../../types/Rental';
+import OrderNotes from './OrderNotes';
 
 export default function Sale({ saleId }: { saleId: string }) {
 	const { order, isLoading, isError, mutate } = useOrder(saleId);
@@ -79,7 +81,7 @@ export default function Sale({ saleId }: { saleId: string }) {
 					<ListItem>
 						<ItemsTable
 							isCartPage={false}
-							items={order.rentals.map((r) => {
+							items={order.rentals.map((r: Rental) => {
 								if (typeof r.product === 'object') {
 									return {
 										...r.product,
@@ -90,10 +92,13 @@ export default function Sale({ saleId }: { saleId: string }) {
 							})}
 						/>
 					</ListItem>
+					<ListItem>
+						<OrderNotes saleId={saleId} />
+					</ListItem>
 				</CardContent>
 				<CardActions className="justify-center">
 					{order.softDelete ? (
-						<div>Order Archived</div>
+						<div>Order Cancelled</div>
 					) : (
 						<ArchiveOrderButton
 							saleId={order._id}
