@@ -27,60 +27,54 @@ import { signIn, useSession } from 'next-auth/react';
 
 import Layout from '../../components/layout/Layout';
 import useStyles from '../../utils/styles';
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import {
+	PayPalButtons,
+	ScriptReducerAction,
+	usePayPalScriptReducer,
+	SCRIPT_LOADING_STATE,
+} from '@paypal/react-paypal-js';
+import {
+	OnApproveData,
+	OnApproveActions,
+	UnknownObject,
+	CreateOrderActions,
+} from '@paypal/paypal-js/types/components/buttons';
+
 import { getError } from '../../utils/error';
 import ProductHelper from '../../utils/helpers/ProductHelper';
 import Loading from '../../components/Loading';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-	orderRequest,
-	orderSucces,
-	orderFail,
-} from '../../redux/orders/ordersSlice';
-import { payFail, payRequest, paySucces } from '../../redux/paypal/payPalSlice';
 import NotFound from '../../components/pages/NotFound';
 import ItemsTable from '../../components/products/ItemsTable';
+import useOrder from '../../utils/hooks/useOrder';
 
-/**
- * @todo trigger rerender on successful payment
- */
 function Order({ params }) {
 	const orderId = params.id;
-	const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+	const pageTitle = `Order ${orderId}`;
+
+	const [{ isPending }, dispatch] = usePayPalScriptReducer();
 	const classes = useStyles();
-	const router = useRouter();
 
 	const { closeSnackbar, enqueueSnackbar } = useSnackbar();
-	const dispatch = useDispatch();
-	const { orders, paypal } = useSelector((state) => state);
+	// const dispatch = useDispatch();
+	// const { paypal } = useSelector((state) => state);
+
+	const { order, isLoading, isValidating, isError, mutate } =
+		useOrder(orderId);
 
 	const { status, data: session } = useSession({
 		required: true,
 	});
 
-	console.log('orders?', orders);
-
-	const order = orders.orders.find((o) => o._id === orderId);
-
 	useEffect(() => {
-		if (
-			!order ||
-			!order._id ||
-			paySuccess ||
-			(order._id && order._id !== orderId)
-		) {
-			fetchOrder();
-			if (paySuccess) {
-				dispatch(payReset());
-			}
+		if ((order && order.isPaid) || isLoading) {
 		} else {
 			loadPayPalScript();
 		}
-	}, [order, paySuccess]);
+	}, []);
 
 	const fetchOrder = async () => {
 		console.log('fetch order');
-		try {
+		/* try {
 			dispatch(orderRequest());
 
 			const { data } = await axios.get(`/api/orders/history`);
@@ -89,12 +83,12 @@ function Order({ params }) {
 			dispatch(orderSucces(data));
 		} catch (error) {
 			dispatch(orderFail(error));
-		}
+		} */
 	};
 
 	if (!order) {
 		return (
-			<NotFound>
+			<NotFound title={pageTitle}>
 				<Typography component={'h1'} variant={'h1'}>
 					Order not found
 				</Typography>
@@ -113,12 +107,10 @@ function Order({ params }) {
 		totalPrice,
 		isPaid,
 		paidAt,
-		isDelivered,
-		deliveredAt,
 	} = order;
 	console.log('R', rentals);
 
-	const { paySuccess, payLoading, payError } = paypal;
+	// const { paySuccess, payLoading, payError } = paypal;
 
 	const taxTotal = ProductHelper.determineTax(itemsPrice, taxPrice);
 
@@ -127,79 +119,83 @@ function Order({ params }) {
 
 		const { data: clientId } = await axios.get('/api/keys/paypal');
 
-		paypalDispatch({
+		/* dispatch({
 			type: 'resetOptions',
 			value: {
 				'client-id': clientId,
 				currency: 'USD',
 			},
-		});
-		paypalDispatch({ type: 'setLoadingStatus', value: 'pending' });
+		}); */
+
+		const response: ScriptReducerAction = {
+			type: 'setLoadingStatus',
+			value: SCRIPT_LOADING_STATE.PENDING,
+		};
+
+		dispatch(response);
 	};
 
-	const createOrder = (data, actions) => {
-		return actions.order
-			.create({
-				purchase_units: [
-					{
-						amount: {
-							value: ProductHelper.roundToPenny(totalPrice),
-						},
+	const createOrder = async (
+		data: UnknownObject,
+		actions: CreateOrderActions
+	) => {
+		const orderID = await actions.order.create({
+			purchase_units: [
+				{
+					amount: {
+						value: ProductHelper.roundToPenny(totalPrice),
 					},
-				],
-			})
-			.then((orderID) => {
-				return orderID;
-			});
-	};
-
-	const onApprove = (data, actions) => {
-		return actions.order.capture().then(async (details) => {
-			console.log('GOT PAYPAL DETAILS:', details);
-			try {
-				dispatch(payRequest);
-
-				const { data } = await axios.put(
-					`/api/orders/${order._id}/pay`,
-					details
-				);
-
-				// dispatch({ type: 'PAY_SUCCESS', payload: data });
-				dispatch(paySucces);
-
-				enqueueSnackbar('Order paid successfully!', {
-					variant: 'success',
-				});
-			} catch (err) {
-				const error = getError(err);
-				// dispatch({ type: 'PAY_FAIL', payload: getError(err) });
-
-				dispatch(payFail(error));
-
-				enqueueSnackbar(error, { variant: 'error' });
-			}
+				},
+			],
 		});
+		return orderID;
 	};
 
-	const onError = (err) => {
+	const onApprove = async (
+		_data: OnApproveData,
+		actions: OnApproveActions
+	) => {
+		const details = await actions.order.capture();
+
+		try {
+			// dispatch(payRequest);
+			const { data } = await axios.put(
+				`/api/orders/${order._id}/pay`,
+				details
+			);
+
+			// dispatch({ type: 'PAY_SUCCESS', payload: data });
+			// dispatch(paySucces);
+			enqueueSnackbar('Order paid successfully!', {
+				variant: 'success',
+			});
+
+			mutate();
+		} catch (err) {
+			const error = getError(err);
+			// dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+			// dispatch(payFail(error));
+			enqueueSnackbar(error, { variant: 'error' });
+		}
+	};
+
+	const onError = (err: Record<string, unknown>) => {
 		enqueueSnackbar(getError(err), { variant: 'error' });
 	};
 
 	return status ? (
-		<Layout title={`Order ${orderId}`}>
-			<Typography coponent="h1" variant="h1">
-				Order {orderId}
+		<Layout title={pageTitle}>
+			<Typography component="h1" variant="h1">
+				{pageTitle}
 			</Typography>
 
 			{/**
 			 * @todo requestLoading defaulting to false from previous request
 			 */}
-			{orders.requestLoading || !orders.orders.length ? (
+			{isLoading ? (
 				<CircularProgress />
-			) : orders.requestError ? (
-				<Typography className={classes.error}>
-					{orders.requestError}
-				</Typography>
+			) : isError ? (
+				<Typography className={classes.error}>{isError}</Typography>
 			) : (
 				<Grid container spacing={1}>
 					<Grid item md={9} xs={12}>
@@ -223,12 +219,15 @@ function Order({ params }) {
 								</ListItem>
 								<ListItem>
 									<ItemsTable
+										isCartPage={false}
 										items={rentals.map((r) => {
-											return {
-												...r.product,
-												dateOut: r.dateOut,
-												dateDue: r.dateDue,
-											};
+											if (typeof r.product === 'object') {
+												return {
+													...r.product,
+													dateOut: r.dateOut,
+													dateDue: r.dateDue,
+												};
+											}
 										})}
 									/>
 								</ListItem>
@@ -315,9 +314,6 @@ function Order({ params }) {
 	);
 }
 
-/**
- * @todo can be SSR
- */
 export async function getServerSideProps({ params }) {
 	return { props: { params } };
 }
