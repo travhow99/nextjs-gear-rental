@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { useContext } from 'react';
+import useOrder from '../hooks/useOrder';
+import { generateAccessToken } from './paypalHelper';
+import { v4 as uuidv4 } from 'uuid';
 
 export default class SellerHelper {
 	/**
@@ -48,9 +51,50 @@ export default class SellerHelper {
 	 */
 	static archiveOrder = async (id) => {
 		try {
+			// Check order status
+			const { data: order } = await axios.get(`/api/orders/${id}`);
+
+			if (
+				order.paymentResult &&
+				order.paymentResult.status === 'COMPLETED'
+			) {
+				await this.refundPaypalOrder(order.paymentResult.id);
+			}
+
 			const { data } = await axios.delete(`/api/orders/${id}`);
 
 			console.log('got archiveOrder', data);
+		} catch (error) {
+			console.log('fetch err', error);
+			throw error;
+		}
+	};
+
+	static refundPaypalOrder = async (captureId) => {
+		console.log('attempting refund');
+		const baseUrl = `https://api-m.sandbox.paypal.com`;
+		const url = baseUrl + `/v2/payments/captures/${captureId}/refund`;
+
+		try {
+			const accessToken = await generateAccessToken();
+
+			const { data } = await axios.post(
+				url,
+				{},
+				{
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${accessToken}`,
+						'PayPal-Request-Id': uuidv4(),
+					},
+				}
+			);
+
+			/**
+			 * @todo store refund details in db
+			 */
+
+			console.log('refundPaypal:', data);
 		} catch (error) {
 			console.log('fetch err', error);
 			throw error;

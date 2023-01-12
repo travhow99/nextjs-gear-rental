@@ -10,9 +10,9 @@ interface IOrder extends Document {
 		status: string;
 		email_address: string;
 	};
-	itemsPrice: Number;
-	taxPrice: Number;
-	totalPrice: Number;
+	itemsPrice: number;
+	taxPrice: number;
+	totalPrice: number;
 	isPaid: Boolean;
 	paidAt?: Date;
 	softDelete?: Boolean;

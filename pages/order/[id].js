@@ -41,6 +41,9 @@ import { payFail, payRequest, paySucces } from '../../redux/paypal/payPalSlice';
 import NotFound from '../../components/pages/NotFound';
 import ItemsTable from '../../components/products/ItemsTable';
 
+/**
+ * @todo trigger rerender on successful payment
+ */
 function Order({ params }) {
 	const orderId = params.id;
 	const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
@@ -152,6 +155,7 @@ function Order({ params }) {
 
 	const onApprove = (data, actions) => {
 		return actions.order.capture().then(async (details) => {
+			console.log('GOT PAYPAL DETAILS:', details);
 			try {
 				dispatch(payRequest);
 
@@ -199,20 +203,6 @@ function Order({ params }) {
 			) : (
 				<Grid container spacing={1}>
 					<Grid item md={9} xs={12}>
-						{/* <Card className={classes.section}>
-              <List>
-                <ListItem>
-                  <Typography component="h2" variant="h2">
-                    Shipping Address
-                  </Typography>
-                </ListItem>
-                <ListItem>
-                  {shippingAddress.fullName}, {shippingAddress.address},{' '}
-                  {shippingAddress.city}, {shippingAddress.postalCode},{' '}
-                  {shippingAddress.country}
-                </ListItem>
-              </List>
-            </Card> */}
 						<Card className={classes.section}>
 							<List>
 								<ListItem>
@@ -241,94 +231,6 @@ function Order({ params }) {
 											};
 										})}
 									/>
-									{/* <TableContainer>
-										<Table>
-											<TableHead>
-												<TableRow>
-													<TableCell>Image</TableCell>
-													<TableCell>Name</TableCell>
-													<TableCell align="right">
-														Quantity
-													</TableCell>
-													<TableCell align="right">
-														Price
-													</TableCell>
-												</TableRow>
-											</TableHead>
-											<TableBody>
-												{rentals.map((item) => (
-													<TableRow key={item._id}>
-														<TableCell>
-															<NextLink
-																href={`/product/${item.product.slug}`}
-																passHref
-															>
-																<Link>
-																	<Image
-																		src={
-																			item
-																				.product
-																				.images
-																				.length
-																				? item
-																						.product
-																						.images[
-																						item
-																							.product
-																							.images
-																							.length -
-																							1
-																				  ]
-																						.path
-																				: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
-																		}
-																		alt={
-																			item
-																				.product
-																				.title
-																		}
-																		width={
-																			50
-																		}
-																		height={
-																			50
-																		}
-																	></Image>
-																</Link>
-															</NextLink>
-														</TableCell>
-
-														<TableCell>
-															<NextLink
-																href={`/product/${item.product.slug}`}
-																passHref
-															>
-																<Link>
-																	<Typography>
-																		{
-																			item
-																				.product
-																				.title
-																		}
-																	</Typography>
-																</Link>
-															</NextLink>
-														</TableCell>
-
-														<TableCell align="right">
-															<Typography>
-																{item.quantity}
-															</Typography>
-														</TableCell>
-
-														<TableCell align="right">
-															${item.price}
-														</TableCell>
-													</TableRow>
-												))}
-											</TableBody>
-										</Table>
-									</TableContainer> */}
 								</ListItem>
 							</List>
 						</Card>
@@ -402,22 +304,6 @@ function Order({ params }) {
 										)}
 									</ListItem>
 								)}
-								{/* <ListItem>
-                  <Button
-                    onClick={placeOrderHandler}
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                  >
-                    {requestLoading ? (
-                      <ListItem>
-                        <CircularProgress />
-                      </ListItem>
-                    ) : (
-                      'Place Order'
-                    )}
-                  </Button>
-                </ListItem> */}
 							</List>
 						</Card>
 					</Grid>

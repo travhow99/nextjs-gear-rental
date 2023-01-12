@@ -7,7 +7,11 @@ type Order = {
 	storeId: string;
 	rentals: Array<Rental>;
 	paymentMethod: string;
-	paymentResult: string;
+	paymentResult: {
+		id: string;
+		status: string;
+		email_address: string;
+	};
 	itemsPrice: number;
 	taxPrice: number;
 	totalPrice: number;

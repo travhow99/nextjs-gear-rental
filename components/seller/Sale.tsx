@@ -70,8 +70,10 @@ export default function Sale({ saleId }: { saleId: string }) {
 						</Typography>
 						<Typography variant="caption" display="block">
 							{order.isPaid && order.paidAt
-								? `Paid ${dateHelper.dateToDateTimeLocalFormat(
-										order.paidAt
+								? `Paid ${dateHelper.toReadableTime(
+										dateHelper.dateToDateTimeLocalFormat(
+											order.paidAt
+										)
 								  )}`
 								: 'Not Paid'}
 						</Typography>
@@ -102,6 +104,7 @@ export default function Sale({ saleId }: { saleId: string }) {
 					) : (
 						<ArchiveOrderButton
 							saleId={order._id}
+							payment={order.paymentResult}
 							reRender={mutate}
 						/>
 					)}

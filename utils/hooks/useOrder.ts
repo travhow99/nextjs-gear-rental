@@ -1,11 +1,18 @@
 import axios from 'axios';
 import useSWR from 'swr';
+import Order from '../../types/Order';
+import { fetcher } from './fetcher';
 
-const fetcher = async (url: string) =>
-	await axios.get(url).then((res) => res.data);
+interface SWRDataResponse {
+	order: Order;
+	isLoading: boolean;
+	isValidating: boolean;
+	isError: boolean;
+	mutate?: Function;
+}
 
-export default function useOrder(id: string) {
-	const { data, error, isLoading, mutate } = useSWR(
+export default function useOrder(id: string): SWRDataResponse {
+	const { data, error, isLoading, isValidating, mutate } = useSWR(
 		`/api/seller/orders/${id}`,
 		fetcher
 	);
@@ -13,6 +20,7 @@ export default function useOrder(id: string) {
 	return {
 		order: data,
 		isLoading,
+		isValidating,
 		isError: error,
 		mutate,
 	};

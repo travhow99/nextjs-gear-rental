@@ -7,9 +7,15 @@ import ConfirmationDialog from '../utilities/dialogs/ConfirmationDialog';
 const ArchiveOrderButton = ({
 	saleId,
 	reRender,
+	payment,
 }: {
 	saleId: string;
 	reRender?: Function;
+	payment?: {
+		id: string;
+		status: string;
+		email_address: string;
+	};
 }) => {
 	const [showArchive, setShowArchive] = useState(false);
 
