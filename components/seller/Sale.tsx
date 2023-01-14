@@ -69,7 +69,9 @@ export default function Sale({ saleId }: { saleId: string }) {
 							Status
 						</Typography>
 						<Typography variant="caption" display="block">
-							{order.isPaid && order.paidAt
+							{order.softDelete
+								? 'Order Cancelled'
+								: order.isPaid && order.paidAt
 								? `Paid ${dateHelper.toReadableTime(
 										dateHelper.dateToDateTimeLocalFormat(
 											order.paidAt
