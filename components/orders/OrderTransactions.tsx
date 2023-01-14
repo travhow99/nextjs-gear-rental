@@ -4,7 +4,7 @@ import dateHelper from '../../utils/dateHelper';
 import useOrderTransactions from '../../utils/hooks/useOrderTransactions';
 
 export default function OrderTransactions({ saleId }: { saleId: string }) {
-	const { transactions, isLoading, isValidating, isError, mutate } =
+	const { transactions, isLoading, isValidating, isError } =
 		useOrderTransactions(saleId);
 
 	return isLoading ? (
@@ -19,6 +19,9 @@ export default function OrderTransactions({ saleId }: { saleId: string }) {
 					<List>
 						{transactions.map((transaction, index) => (
 							<ListItem key={index}>
+								{/**
+								 * @todo Link to paypal transaction?
+								 */}
 								{transaction.type} •{' '}
 								{dateHelper.toReadableTime(
 									transaction.createdAt
