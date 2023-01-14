@@ -4,18 +4,15 @@ import SellerHelper from '../../utils/seller/SellerHelper';
 import useStyles from '../../utils/styles';
 import ConfirmationDialog from '../utilities/dialogs/ConfirmationDialog';
 
+/**
+ * @todo Ability for seller to add cancellation note/reason
+ */
 const ArchiveOrderButton = ({
 	saleId,
 	reRender,
-	payment,
 }: {
 	saleId: string;
 	reRender?: Function;
-	payment?: {
-		id: string;
-		status: string;
-		email_address: string;
-	};
 }) => {
 	const [showArchive, setShowArchive] = useState(false);
 

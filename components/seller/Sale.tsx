@@ -106,7 +106,6 @@ export default function Sale({ saleId }: { saleId: string }) {
 					) : (
 						<ArchiveOrderButton
 							saleId={order._id}
-							payment={order.paymentResult}
 							reRender={mutate}
 						/>
 					)}

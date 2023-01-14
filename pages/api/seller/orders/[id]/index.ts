@@ -50,4 +50,21 @@ handler.get(async (req, res) => {
 	}
 });
 
+handler.put(async (req, res) => {
+	try {
+		await db.connect();
+
+		// @ts-ignore
+		const result = await Order.findByIdAndUpdate(req.query.id, {
+			softDelete: true,
+		});
+
+		await db.disconnect();
+	} catch (error) {
+		await db.disconnect();
+
+		res.status(404).send({ message: 'order not found' });
+	}
+});
+
 export default handler;

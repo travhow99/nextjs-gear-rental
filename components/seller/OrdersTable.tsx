@@ -53,7 +53,11 @@ export default function OrdersTable(props: OrdersTableProps) {
 								</NextLink>
 							</TableCell>
 							<TableCell>
-								{order.isPaid ? 'Paid' : 'Not Paid'}
+								{order.softDelete
+									? 'Order Cancelled'
+									: order.isPaid
+									? 'Paid'
+									: 'Not Paid'}
 							</TableCell>
 						</TableRow>
 					))}

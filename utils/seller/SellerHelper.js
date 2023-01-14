@@ -58,7 +58,14 @@ export default class SellerHelper {
 				order.paymentResult &&
 				order.paymentResult.status === 'COMPLETED'
 			) {
-				await this.refundPaypalOrder(order.paymentResult.id);
+				const { id: transactionId, status } =
+					await this.refundPaypalOrder(order.paymentResult.id);
+
+				await this.storeOrderTransactionInfo(
+					id,
+					transactionId,
+					'refund'
+				);
 			}
 
 			const { data } = await axios.delete(`/api/orders/${id}`);
@@ -95,8 +102,46 @@ export default class SellerHelper {
 			 */
 
 			console.log('refundPaypal:', data);
+
+			return data;
+
+			/* type paypalRefund {
+				id: string;
+				status: String;
+				links: Array<any>
+			} */
 		} catch (error) {
 			console.log('fetch err', error);
+			throw error;
+		}
+	};
+
+	/**
+	 *
+	 * @param {string} orderId
+	 * @param {string} transactionId Paypal transactionId
+	 * @param {string} type 'purchase' | 'refund'
+	 * @param {string} note
+	 */
+	static storeOrderTransactionInfo = async (
+		orderId,
+		transactionId,
+		type,
+		note = null
+	) => {
+		try {
+			const { data } = await axios.post(
+				`/api/orders/${orderId}/transaction`,
+				{
+					transactionId,
+					type,
+					note,
+				}
+			);
+
+			console.log('storeOrderTransactionInfo', data);
+		} catch (error) {
+			console.log('storeOrderTransactionInfo err', error);
 			throw error;
 		}
 	};

@@ -46,6 +46,7 @@ import Loading from '../../components/Loading';
 import NotFound from '../../components/pages/NotFound';
 import ItemsTable from '../../components/products/ItemsTable';
 import useOrder from '../../utils/hooks/useOrder';
+import SellerHelper from '../../utils/seller/SellerHelper';
 
 function Order({ params }) {
 	const orderId = params.id;
@@ -70,7 +71,7 @@ function Order({ params }) {
 		} else {
 			loadPayPalScript();
 		}
-	}, []);
+	}, [order]);
 
 	const fetchOrder = async () => {
 		console.log('fetch order');
@@ -96,7 +97,7 @@ function Order({ params }) {
 		);
 	}
 
-	console.log(order);
+	console.log('O:', order);
 	const {
 		// shippingAddress,
 		paymentMethod,
@@ -119,13 +120,13 @@ function Order({ params }) {
 
 		const { data: clientId } = await axios.get('/api/keys/paypal');
 
-		/* dispatch({
+		dispatch({
 			type: 'resetOptions',
 			value: {
 				'client-id': clientId,
 				currency: 'USD',
 			},
-		}); */
+		});
 
 		const response: ScriptReducerAction = {
 			type: 'setLoadingStatus',
@@ -164,13 +165,19 @@ function Order({ params }) {
 				details
 			);
 
+			mutate();
+
+			await SellerHelper.storeOrderTransactionInfo(
+				order._id,
+				details.id,
+				'purchase'
+			);
+
 			// dispatch({ type: 'PAY_SUCCESS', payload: data });
 			// dispatch(paySucces);
 			enqueueSnackbar('Order paid successfully!', {
 				variant: 'success',
 			});
-
-			mutate();
 		} catch (err) {
 			const error = getError(err);
 			// dispatch({ type: 'PAY_FAIL', payload: getError(err) });
