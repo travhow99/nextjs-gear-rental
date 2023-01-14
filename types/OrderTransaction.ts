@@ -5,6 +5,7 @@ type OrderTransaction = {
 	transactionId: string;
 	type: TransactionType;
 	note: string;
+	createdAt?: string;
 };
 
 export default OrderTransaction;

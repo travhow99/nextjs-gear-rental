@@ -47,6 +47,7 @@ import NotFound from '../../components/pages/NotFound';
 import ItemsTable from '../../components/products/ItemsTable';
 import useOrder from '../../utils/hooks/useOrder';
 import SellerHelper from '../../utils/seller/SellerHelper';
+import OrderTransactions from '../../components/orders/OrderTransactions';
 
 function Order({ params }) {
 	const orderId = params.id;
@@ -210,10 +211,13 @@ function Order({ params }) {
 							<List>
 								<ListItem>
 									<Typography component="h2" variant="h2">
-										Payment Method
+										Payment
 									</Typography>
 								</ListItem>
 								<ListItem>{paymentMethod}</ListItem>
+								<ListItem>
+									<OrderTransactions saleId={orderId} />
+								</ListItem>
 							</List>
 						</Card>
 

@@ -23,6 +23,7 @@ import useOrder from '../../utils/hooks/useOrder';
 import Loading from '../Loading';
 import Rental from '../../types/Rental';
 import OrderNotes from './OrderNotes';
+import OrderTransactions from '../orders/OrderTransactions';
 
 export default function Sale({ saleId }: { saleId: string }) {
 	const { order, isLoading, isError, mutate } = useOrder(saleId);
@@ -95,6 +96,9 @@ export default function Sale({ saleId }: { saleId: string }) {
 								}
 							})}
 						/>
+					</ListItem>
+					<ListItem>
+						<OrderTransactions saleId={saleId} />
 					</ListItem>
 					<ListItem>
 						<OrderNotes saleId={saleId} />
