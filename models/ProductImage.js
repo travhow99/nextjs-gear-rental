@@ -27,6 +27,6 @@ const productImageSchema = new mongoose.Schema(
  */
 
 const ProductImage =
-  mongoose.models['ProductImage'] ||
+  mongoose?.models['ProductImage'] ||
   mongoose.model('ProductImage', productImageSchema);
 export default ProductImage;

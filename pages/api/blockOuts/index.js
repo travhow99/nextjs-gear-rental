@@ -7,55 +7,59 @@ import { isSeller } from '../../../utils/isSeller';
 import BlockOut from '../../../models/BlockOut';
 
 const handler = nc({
-  onError,
+	onError,
 });
 
 handler.use(isSeller);
 
 handler.get(async (req, res) => {
-  try {
-    await db.connect();
+	try {
+		await db.connect();
 
-    const filter = {
-      user_id: req.user._id,
-    };
+		const filter = {
+			user_id: req.user._id,
+		};
 
-    if (req.body.product) filter.product = req.body.product;
+		if (req.body.product) filter.product = req.body.product;
 
-    const blockOuts = await BlockOut.find(filter);
+		const blockOuts = await BlockOut.find(filter);
 
-    await db.disconnect();
+		await db.disconnect();
 
-    res.status(200).send(blockOuts);
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+		res.status(200).send(blockOuts);
+	} catch (error) {
+		await db.disconnect();
+
+		res.status(400).json({ success: false, message: error.message });
+	}
 });
 
 handler.post(async (req, res) => {
-  try {
-    await db.connect();
+	try {
+		await db.connect();
 
-    const blockOut = new BlockOut({
-      user_id: req.user._id,
-      ...req.body,
-    });
+		const blockOut = new BlockOut({
+			user_id: req.user._id,
+			...req.body,
+		});
 
-    console.log(blockOut);
+		console.log(blockOut);
 
-    const newBlockOut = await blockOut.save();
+		const newBlockOut = await blockOut.save();
 
-    const sellerProduct = await SellerProduct.findById(req.body.product);
-    sellerProduct.blockOuts.push(blockOut);
+		const sellerProduct = await SellerProduct.findById(req.body.product);
+		sellerProduct.blockOuts.push(blockOut);
 
-    await sellerProduct.save();
+		await sellerProduct.save();
 
-    await db.disconnect();
+		await db.disconnect();
 
-    res.status(201).send(newBlockOut);
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+		res.status(201).send(newBlockOut);
+	} catch (error) {
+		await db.disconnect();
+
+		res.status(400).json({ success: false, message: error.message });
+	}
 });
 
 export default handler;

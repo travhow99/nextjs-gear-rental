@@ -46,6 +46,9 @@ function convertDocToObj(doc) {
   doc.createdAt = doc.createdAt.toString();
   doc.updatedAt = doc.updatedAt.toString();
 
+  if (doc.user) doc.user = doc.user.toString();
+  if (doc.user_id) doc.user_id = doc.user_id.toString();
+
   return doc;
 }
 

@@ -35,7 +35,7 @@ import LoadingPage from '../../components/pages/LoadingPage';
 import SideNav from '../../components/layout/SideNav';
 import AdminContainer from '../../components/admin/AdminContainer';
 import { Stack } from '@mui/material';
-import ProductHelper from '../../utils/methods/product';
+import ProductHelper from '../../utils/helpers/ProductHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   adminSalesRequest,

@@ -1,33 +1,35 @@
 import Head from 'next/head';
 import {
-  Grid,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
+	Grid,
+	Card,
+	CardActionArea,
+	CardMedia,
+	CardContent,
+	Typography,
+	CardActions,
+	Button,
 } from '@material-ui/core';
 import SimpleItem from '../products/SimpleItem';
 import utilStyles from '../../styles/utils.module.css';
 
 export default function HomeCallToAction(props) {
-  const topItems = props.topItems;
-  console.log(topItems);
-  return (
-    <>
-      <h1>Products</h1>
+	const topItems = props.topItems;
+	console.log(topItems);
+	return (
+		<>
+			<Typography component={'h1'} variant={'h1'}>
+				Products
+			</Typography>
 
-      <Grid container spacing={3}>
-        {topItems.map((product) => (
-          <Grid item md={4} xs={12} key={product._id}>
-            <SimpleItem product={product} />
-          </Grid>
-        ))}
-      </Grid>
-    </>
-  );
+			<Grid container spacing={3}>
+				{topItems.map((product) => (
+					<Grid item md={4} xs={12} key={product._id}>
+						<SimpleItem product={product} />
+					</Grid>
+				))}
+			</Grid>
+		</>
+	);
 }
 
 /* const Arrow = createIcon({

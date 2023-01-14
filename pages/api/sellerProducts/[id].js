@@ -1,58 +1,152 @@
 import nc from 'next-connect';
 import SellerProduct from '../../../models/SellerProduct';
+import Order from '../../../models/Order';
 import ProductImage from '../../../models/ProductImage';
-import Rental from '../../../models/Rental';
+import User from '../../../models/User';
 import BlockOut from '../../../models/BlockOut';
+import Rental from '../../../models/Rental';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
 
 const handler = nc({
-  onError,
+	onError,
 });
 
 handler.use(isSeller);
 
 handler.get(async (req, res) => {
-  try {
-    await db.connect();
+	try {
+		await db.connect();
 
-    const sellerproduct = await SellerProduct.findById(req.query.id).populate([
-      'images',
-      // 'rentals',
-      {
-        path: 'blockOuts',
-        match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
-      },
-    ]);
+		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
+			req.user._id,
+			req.query.id
+		);
 
-    await db.disconnect();
+		if (Boolean(sellerOwnsProduct)) {
+			const sellerproduct = await SellerProduct.findById(
+				req.query.id
+			).populate([
+				'images',
+				{
+					path: 'rentals',
+					populate: {
+						path: 'user',
+						model: User,
+						select: 'name email',
+					},
+				},
+				{
+					path: 'blockOuts',
+					match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+				},
+			]);
 
-    res.send(sellerproduct);
-  } catch (error) {
-    console.log('err', error);
-    res.status(404).send({ message: 'product not found' });
-  }
+			// Casted to object to allow for data manipulation
+			const sellerProductObject = sellerproduct.toObject();
+
+			await Promise.all(
+				sellerproduct.rentals.map(async (r, index) => {
+					try {
+						const rentalId = await Order.findOne({
+							rentals: r._id,
+						});
+
+						sellerProductObject.rentals[index].orderId =
+							rentalId._id;
+					} catch (error) {
+						console.log('caought err:', error);
+					}
+				})
+			);
+
+			await db.disconnect();
+
+			res.send(sellerProductObject);
+		} else {
+			await db.disconnect();
+
+			res.status(404).send({ message: 'product not found' });
+		}
+	} catch (error) {
+		console.log('err', error);
+		res.status(404).send({ message: 'product not found' });
+	}
 });
 
 handler.put(async (req, res) => {
-  await db.connect();
+	try {
+		await db.connect();
 
-  SellerProduct.findByIdAndUpdate(
-    req.query.id,
-    req.body,
-    { new: true },
-    async (err, result) => {
-      await db.disconnect();
+		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
+			req.user._id,
+			req.query.id
+		);
 
-      if (err) {
-        console.log('err', err);
-        res.status(404).send({ message: 'product not found' });
-      } else {
-        res.send({ message: 'product updated', result });
-      }
-    }
-  );
+		if (Boolean(sellerOwnsProduct)) {
+			SellerProduct.findByIdAndUpdate(req.query.id, req.body, {
+				new: true,
+			})
+				.populate([
+					'images',
+					'rentals',
+					{
+						path: 'blockOuts',
+						match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+					},
+				])
+				.exec(async (err, result) => {
+					await db.disconnect();
+
+					if (err) {
+						console.log('err', err);
+						res.status(404).send({ message: 'product not found' });
+					} else {
+						res.send({ message: 'product updated', result });
+					}
+				});
+		} else {
+			await db.disconnect();
+
+			res.status(404).send({ message: 'product not found' });
+		}
+	} catch (error) {
+		await db.disconnect();
+
+		console.log('err', error);
+		res.status(404).send({ message: 'product not found' });
+	}
+});
+
+handler.delete(async (req, res) => {
+	try {
+		await db.connect();
+
+		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
+			req.user._id,
+			req.query.id
+		);
+
+		if (Boolean(sellerOwnsProduct)) {
+			const r = await SellerProduct.findByIdAndUpdate(req.query.id, {
+				softDelete: true,
+			});
+
+			console.log('owns p,', r);
+
+			res.send({ message: 'product deleted' });
+		} else {
+			await db.disconnect();
+
+			res.status(404).send({ message: 'product not found' });
+		}
+	} catch (error) {
+		await db.disconnect();
+
+		console.log('err', error);
+		res.status(404).send({ message: 'product not found' });
+	}
 });
 
 export default handler;
