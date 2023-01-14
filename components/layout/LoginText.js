@@ -12,6 +12,10 @@ export default function LoginText() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const isUser = !!session?.user;
+  const isAdmin = isUser && session.user.role === 'admin';
+  const isSeller = isUser && (session.user.seller || isAdmin);
+
   const loginMenuOpenHandler = (e) => {
     setAnchorEl(e.currentTarget);
   };
@@ -19,12 +23,10 @@ export default function LoginText() {
   const loginMenuCloseHandler = (e, redirect = null) => {
     setAnchorEl(null);
 
-    console.log(e, 'red?', redirect);
     if (redirect) router.push(redirect);
   };
 
   const loginClickHandler = async () => {
-    console.log('login click');
     signIn();
   };
 
@@ -37,8 +39,6 @@ export default function LoginText() {
     });
   };
 
-  console.log('sesh:', session);
-  console.log('anchor:', anchorEl);
   if (session) {
     return (
       <>
@@ -57,13 +57,26 @@ export default function LoginText() {
           open={Boolean(anchorEl)}
           onClose={(e) => loginMenuCloseHandler(e)}
         >
+          {isAdmin && (
+            <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/admin')}>
+              Admin
+            </MenuItem>
+          )}
+          {isSeller && (
+            <MenuItem
+              divider={true}
+              onClick={(e) => loginMenuCloseHandler(e, '/seller')}
+            >
+              Seller Portal
+            </MenuItem>
+          )}
+          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/account')}>
+            My account
+          </MenuItem>
           <MenuItem
             onClick={(e) => loginMenuCloseHandler(e, '/account/profile')}
           >
             Profile
-          </MenuItem>
-          <MenuItem onClick={(e) => loginMenuCloseHandler(e, '/account')}>
-            My account
           </MenuItem>
           <MenuItem
             onClick={(e) => loginMenuCloseHandler(e, '/account/orders')}

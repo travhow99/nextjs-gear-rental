@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { useContext } from 'react';
-import { AdminStore } from './AdminStore';
 
 export default class AdminHelper {
   static async fetchOrders() {
-    const { state, dispatch } = useContext(AdminStore);
+    /* const { state, dispatch } = useContext(AdminStore);
     try {
       const { data } = await axios.get('/api/admin/orders');
       console.log('got orders', data);
@@ -12,6 +11,6 @@ export default class AdminHelper {
     } catch (error) {
       console.log('fetch erro', error);
       dispatch({ type: 'FETCH_FAIL' });
-    }
+    } */
   }
 }

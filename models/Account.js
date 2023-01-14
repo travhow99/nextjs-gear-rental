@@ -30,5 +30,5 @@ const accountSchema = new mongoose.Schema(
  */
 
 const Account =
-  mongoose.models['Account'] || mongoose.model('Account', accountSchema);
+  mongoose?.models['Account'] || mongoose.model('Account', accountSchema);
 export default Account;

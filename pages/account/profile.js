@@ -20,7 +20,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 import Cookies from 'js-cookie';
 import Layout from '../../components/layout/Layout';
-import { Store } from '../../utils/Store';
 import { signIn, useSession } from 'next-auth/react';
 import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
@@ -29,7 +28,6 @@ import Loading from '../../components/Loading';
  * @todo format with ProfilePage component
  */
 function Profile() {
-  const { state, dispatch } = useContext(Store);
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -38,13 +36,6 @@ function Profile() {
   });
 
   const loggedIn = !!session?.user;
-
-  /* const { status, data: session } = useSession({
-    required: true,
-    onUnauthenticated() {
-      signIn();
-    },
-  }); */
 
   const {
     handleSubmit,

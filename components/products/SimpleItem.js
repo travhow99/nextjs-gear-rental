@@ -1,66 +1,88 @@
 import {
-  Grid,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
+	Grid,
+	Card,
+	CardActionArea,
+	CardMedia,
+	CardContent,
+	Typography,
+	CardActions,
+	Button,
 } from '@material-ui/core';
 import axios from 'axios';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { Store } from '../../utils/Store';
+import { addItem } from '../../redux/cart/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import ProductHelper from '../../utils/helpers/ProductHelper';
+import { useSnackbar } from 'notistack';
 
 export default function SimpleItem(props) {
-  const router = useRouter();
-  const { state, dispatch } = useContext(Store);
+	const router = useRouter();
+	// const cart = useSelector();
+	const dispatch = useDispatch();
+	const { closeSnackbar, enqueueSnackbar } = useSnackbar();
 
-  console.log(props);
-  const product = props.product;
+	const product = props.product;
 
-  const addToCartHandler = async (product) => {
-    const existingItem = state.cart.cartItems.find(
-      (item) => item._id === product._id
-    );
-    const quantity = existingItem ? existingItem.quantity + 1 : 1;
+	/**
+	 * @deprecated
+	 * @todo implement useApi hook
+	 * ../../utils/hooks/useApi.js
+	 */
+	const addToCartHandler = async (product) => {
+		closeSnackbar();
 
-    const { data } = await axios.get(`/api/products/${product._id}`);
-    if (data.stock < quantity) {
-      alert('OUT OF STOCK');
-      return;
-    }
+		const existingItem = cart.cartItems.find(
+			(item) => item._id === product._id
+		);
+		const quantity = existingItem ? existingItem.quantity + 1 : 1;
 
-    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
-    router.push('/cart');
-  };
+		const { data } = await axios.get(`/api/products/${product._id}`);
+		if (data.stock < quantity) {
+			enqueueSnackbar('OUT OF STOCK', { variant: 'error' });
+			return;
+		}
 
-  return (
-    <Card>
-      <NextLink href={`/product/${product.slug}`} passHref>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            image={product.imageUrl}
-            title={product.title}
-          ></CardMedia>
-          <CardContent>
-            <Typography>{product.title}</Typography>
-          </CardContent>
-        </CardActionArea>
-      </NextLink>
-      <CardActions>
-        <Typography>${product.price}</Typography>
-        <Button
-          size="small"
-          color="primary"
-          onClick={() => addToCartHandler(product)}
-        >
-          Add to cart
-        </Button>
-      </CardActions>
-    </Card>
-  );
+		dispatch(addItem({ ...product, quantity }));
+
+		router.push('/cart');
+	};
+
+	/**
+	 *
+	 * @todo
+	 * @param {*} product
+	 */
+	const quickLookModalHandler = (product) => {};
+
+	return (
+		<Card>
+			<NextLink href={`/product/${product.slug}`} passHref>
+				<CardActionArea>
+					<CardMedia
+						component="img"
+						image={
+							product.imageUrl || product.images.length
+								? product.images[product.images.length - 1].path
+								: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
+						}
+						title={product.title}
+					></CardMedia>
+					<CardContent>
+						<Typography>{product.title}</Typography>
+					</CardContent>
+				</CardActionArea>
+			</NextLink>
+			<CardActions>
+				<Typography>${product.price}</Typography>
+				<Button
+					size="small"
+					color="primary"
+					// onClick={() => addToCartHandler(product)}
+				>
+					Quick Look
+				</Button>
+			</CardActions>
+		</Card>
+	);
 }

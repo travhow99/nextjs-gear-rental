@@ -15,7 +15,7 @@ export default function UnauthorizedPage() {
   return (
     <div>
       <Container className={classes._404}>
-        <Grid item xs={12}>
+        <Grid item md={12} xs={12}>
           <Typography component="h1" variant="h1">
             Unauthorized
           </Typography>

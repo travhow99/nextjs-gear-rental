@@ -6,6 +6,8 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import clientPromise from '../../../lib/mongodb';
 
 export default NextAuth({
+  secret:
+    process.env.NODE_ENV === 'development' ? null : process.env.NEXTAUTH_SECRET,
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     /* GithubProvider({
@@ -22,7 +24,7 @@ export default NextAuth({
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     }), */
   ],
-  debug: true,
+  // debug: true,
   /* debug: process.env.NODE_ENV === "development",
   secret: process.env.AUTH_SECRET,
   jwt: {
