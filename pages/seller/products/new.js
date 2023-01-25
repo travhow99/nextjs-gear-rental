@@ -388,7 +388,7 @@ function AddProduct() {
 													type={'number'}
 													fullWidth
 													id="sellerProductStock"
-													labelId="sellerProductStock"
+													// labelId="sellerProductStock"
 													label="Stock"
 													value={stock}
 													onChange={(e, newValue) => {
@@ -428,7 +428,7 @@ function AddProduct() {
 													variant="outlined"
 													fullWidth
 													id="sellerProductPrice"
-													labelId="sellerProductPrice"
+													// labelId="sellerProductPrice"
 													label="Price"
 													value={price}
 													onChange={(e, newValue) => {
