@@ -22,7 +22,7 @@ export default function DataCard(props: BasicCardProps) {
 			</Typography>
 			{/* <Skeleton variant="rectangular" height={'calc(100% - 2rem)'} /> */}
 			<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-				<CircularProgress />
+				<CircularProgress className="py-2" />
 			</Box>
 		</Card>
 	);
