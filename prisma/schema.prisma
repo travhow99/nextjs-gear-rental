@@ -7,29 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-type OrdersOrderItems {
-  id       String @map("_id") @db.ObjectId
-  imageAlt String
-  imageUrl String
-  price    Int
-  quantity Int
-  slug     String
-  title    String
-}
-
 type OrdersPaymentResult {
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  email_address Json?
-  id            String
-  status        String
-}
-
-type OrdersShippingAddress {
-  address    String
-  city       String
-  country    String
-  fullName   String
-  postalCode String
+  id     String
+  status String
 }
 
 model accounts {
@@ -75,23 +55,42 @@ model categories {
   updatedAt DateTime @db.Date
 }
 
+model ordernotes {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  createdAt DateTime @db.Date
+  note      String
+  orderId   String   @db.ObjectId
+  updatedAt DateTime @db.Date
+}
+
 model orders {
-  id              String                @id @default(auto()) @map("_id") @db.ObjectId
-  v               Int                   @map("__v")
-  createdAt       DateTime              @db.Date
-  isDelivered     Boolean
-  isPaid          Boolean
-  itemsPrice      Int
-  orderItems      OrdersOrderItems[]
-  paidAt          DateTime?             @db.Date
-  paymentMethod   String
-  paymentResult   OrdersPaymentResult?
-  shippingAddress OrdersShippingAddress
-  taxPrice        Float
-  /// Multiple data types found: Float: 90%, Int: 10% out of 10 sampled entries
-  totalPrice      Json
-  updatedAt       DateTime              @db.Date
-  user            String                @db.ObjectId
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int                  @map("__v")
+  createdAt     DateTime             @db.Date
+  isPaid        Boolean
+  itemsPrice    Int
+  paidAt        DateTime?            @db.Date
+  paymentMethod String
+  paymentResult OrdersPaymentResult?
+  rentals       String[]             @db.ObjectId
+  softDelete    Boolean?
+  storeId       String?              @db.ObjectId
+  taxPrice      Float
+  totalPrice    Float
+  updatedAt     DateTime             @db.Date
+  user          String               @db.ObjectId
+}
+
+model ordertransactions {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  createdAt     DateTime @db.Date
+  note          String
+  orderId       String?  @db.ObjectId
+  transactionId String
+  type          String
+  updatedAt     DateTime @db.Date
 }
 
 model productimages {
@@ -116,8 +115,7 @@ model products {
   imageAlt    String
   imageUrl    String
   price       Int
-  /// Multiple data types found: Float: 83.3%, Int: 16.7% out of 6 sampled entries
-  rating      Json
+  rating      Float
   rental_min  Int
   size        String?
   slug        String   @unique(map: "slug_1")
@@ -127,7 +125,17 @@ model products {
 }
 
 model rentals {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  v          Int      @map("__v")
+  createdAt  DateTime @db.Date
+  dateDue    DateTime @db.Date
+  dateOut    DateTime @db.Date
+  price      Int
+  product    String   @db.ObjectId
+  quantity   Int
+  softDelete Boolean
+  updatedAt  DateTime @db.Date
+  user       String   @db.ObjectId
 }
 
 model sellerproducts {
@@ -141,12 +149,14 @@ model sellerproducts {
   description String
   gender      String?
   images      String[] @db.ObjectId
+  keyword     String?
   price       Int
   product     String
   rentalMin   Int
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  rentals     Json?
+  rentals     String[] @db.ObjectId
   size        String?
+  slug        String   @unique(map: "slug_1")
+  softDelete  Boolean?
   stock       Int
   title       String
   updatedAt   DateTime @db.Date
@@ -160,10 +170,22 @@ model sessions {
   userId       String   @db.ObjectId
 }
 
+model usermessages {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  createdAt DateTime @db.Date
+  message   String
+  product   String?  @db.ObjectId
+  rental    String?  @db.ObjectId
+  sentBy    String   @db.ObjectId
+  sentTo    String   @db.ObjectId
+  updatedAt DateTime @db.Date
+}
+
 model users {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   email         String
-  emailVerified Boolean
+  emailVerified DateTime? @db.Date
   image         String
   name          String
   role          String?
