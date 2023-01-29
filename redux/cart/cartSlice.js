@@ -1,54 +1,83 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
+import CartHelper from '../../utils/helpers/CartHelper';
 
 export const cartSlice = createSlice({
-  name: 'cart',
-  initialState: {
-    cartItems: Cookies.get('cartItems')
-      ? JSON.parse(Cookies.get('cartItems'))
-      : [],
-  },
-  reducers: {
-    addItem: (state, action) => {
-      console.log('recd additem action', action);
-      const newItem = action.payload;
+	name: 'cart',
+	initialState: {
+		cartItems: Cookies.get('cartItems')
+			? JSON.parse(Cookies.get('cartItems'))
+			: [],
+		paymentMethod: Cookies.get('paymentMethod') || '',
+	},
+	reducers: {
+		/**
+		 * @todo add uuid for unique?
+		 */
+		addItem: (state, action) => {
+			console.log(
+				'recd additem action',
+				action,
+				'current:',
+				current(state)
+			);
+			const newProduct = action.payload;
 
-      const itemAlreadyExists = state.cartItems.find(
-        (item) => item._id === newItem._id
-      );
+			const cartCopy = [...state.cartItems];
 
-      const cartItems = itemAlreadyExists
-        ? state.cartItems.map((item) =>
-            item.title === itemAlreadyExists.title ? newItem : item
-          )
-        : [...state.cartItems, newItem];
+			console.log('pre methodo', cartCopy);
+			const { cartItems, status } = CartHelper.addProductToCart(
+				cartCopy,
+				newProduct
+			);
 
-      console.log('updating cart', newItem, cartItems);
+			console.log('got add2cart response:', cartItems, status);
 
-      state.cartItems = cartItems;
+			console.log('updating cart', newProduct, cartItems);
 
-      Cookies.set('cartItems', JSON.stringify(cartItems));
-    },
-    removeItem: (state, action) => {
-      const cartItems = state.cartItems.filter(
-        (item) => item._id !== action.payload._id
-      );
+			state.cartItems = cartItems;
 
-      console.log('rmv', action, cartItems);
+			if (
+				!Cookies.get('cartItems') ||
+				JSON.stringify(cartItems) !==
+					JSON.parse(Cookies.get('cartItems'))
+			) {
+				Cookies.set('cartItems', JSON.stringify(cartItems));
+			}
+		},
+		removeItem: (state, action) => {
+			const cartItems = state.cartItems.filter(
+				(item) => item.uuid !== action.payload.uuid
+			);
 
-      state.cartItems = cartItems;
+			console.log('rmv', action, cartItems);
 
-      Cookies.set('cartItems', JSON.stringify(cartItems));
-    },
-    clearCart: (state) => {
-      state.cartItems = [];
+			state.cartItems = cartItems;
 
-      Cookies.remove('cartItems');
-    },
-    // selectCart:
-  },
+			if (
+				JSON.stringify(cartItems) !==
+				JSON.parse(Cookies.get('cartItems'))
+			) {
+				Cookies.set('cartItems', JSON.stringify(cartItems));
+			}
+		},
+		clearCart: (state) => {
+			state.cartItems = [];
+
+			Cookies.remove('cartItems');
+		},
+		// selectCart:
+		setPaymentMethod: (state, action) => {
+			state.paymentMethod = action.payload;
+
+			console.log('set state!', action.payload);
+
+			Cookies.set('paymentMethod', action.payload);
+		},
+	},
 });
 
-export const { addItem, removeItem, clearCart } = cartSlice.actions;
+export const { addItem, removeItem, clearCart, setPaymentMethod } =
+	cartSlice.actions;
 
 export default cartSlice.reducer;

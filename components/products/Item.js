@@ -23,6 +23,7 @@ import BetaProductCalendar from './BetaProductCalendar';
 import { getDay } from 'date-fns';
 import dateHelper from '../../utils/dateHelper';
 import ProductHelper from '../../utils/helpers/ProductHelper';
+import CartHelper from '../../utils/helpers/CartHelper';
 
 export default function Item(props) {
 	const router = useRouter();
@@ -46,6 +47,8 @@ export default function Item(props) {
 		setButtonIsDisabled(disabled);
 	}, [rental]);
 
+	console.log('C:', cart.cartItems);
+
 	/**
 	 * @todo No need to account for existing item in cart?
 	 */
@@ -53,26 +56,53 @@ export default function Item(props) {
 		const existingItem = cart.cartItems.find(
 			(item) => item._id === product._id
 		);
-		const quantity = existingItem ? existingItem.quantity + 1 : 1;
 
-		const { data } = await axios.get(`/api/products/${product._id}`);
-		if (data.stock < quantity) {
-			enqueueSnackbar('OUT OF STOCK', { variant: 'error' });
+		const storeRental = {
+			startDate: rental.startDate.toISOString(),
+			endDate: rental.endDate.toISOString(),
+		};
 
-			alert('OUT OF STOCK');
-			return;
+		console.log(cart.cartItems, {
+			...product,
+			rental: storeRental,
+		});
+		if (
+			CartHelper.productCanBeAddedToCart(cart.cartItems, {
+				...product,
+				dateOut: storeRental.startDate,
+				dateDue: storeRental.endDate,
+			})
+		) {
+			dispatch(
+				/**
+				 * @todo should be able to store just product._id & generate rest serverside
+				 */
+				addItem({
+					_id: product._id,
+					product: product.product,
+					slug: product.slug,
+					title: product.title,
+					user: product.user,
+					price: product.price,
+					images: [product.images[product.images.length - 1]],
+					dateOut: storeRental.startDate,
+					dateDue: storeRental.endDate,
+				})
+			);
+			router.push('/cart');
+		} else {
+			enqueueSnackbar('Product Unavailable', {
+				variant: 'error',
+				autoHideDuration: 3000,
+			});
 		}
-
-		dispatch(addItem({ ...product, quantity, rental }));
-
-		router.push('/cart');
 	};
 
 	const booked = ProductHelper.buildCalendar(product);
 	const startIsBooked = ProductHelper.getIsBooked(booked, rental.startDate);
 	const endIsBooked = ProductHelper.getIsBooked(booked, rental.endDate);
 
-	console.log('booked?', booked, startIsBooked, endIsBooked);
+	// console.log('booked?', booked, startIsBooked, endIsBooked);
 	/**
 	 * @todo also should ensure both dates are not in
 	 */
@@ -83,7 +113,7 @@ export default function Item(props) {
 
 	// console.log(product.rental_min, product.stock);
 	console.log('new product!!', product);
-	console.log('rental date', rental, rental.startDate, rental.endDate);
+	// console.log('rental date', rental, rental.startDate, rental.endDate);
 
 	return (
 		<>
@@ -177,7 +207,7 @@ export default function Item(props) {
 							{rental.startDate && (
 								<ListItem>
 									<Typography component="p">
-										{dateHelper.getNumberOfDaysBetween(
+										{dateHelper.getReadableNumberOfDaysBetween(
 											rental.endDate,
 											rental.startDate
 										)}

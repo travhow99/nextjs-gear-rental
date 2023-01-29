@@ -7,51 +7,60 @@ import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 
 const handler = nc({
-  onError,
+	onError,
 });
 
 handler.use(isAuth);
 
 handler.post(async (req, res) => {
-  try {
-    await db.connect();
+	try {
+		await db.connect();
 
-    console.log('got request', req.body);
-    const rentals = req.body.orderItems;
+		console.log('got request', req.body);
+		const rentals = req.body.orderItems.map((rental) => {
+			rental.product = rental._id;
+			delete rental._id;
+			delete rental.createdAt;
+			delete rental.updatedAt;
+			return rental;
+		});
 
-    // Add the Rentals to the db
-    const { insertedIds } = await Rental.insertMany(rentals);
+		console.log('r:', rentals);
 
-    console.log('got insertedids', insertedIds);
+		// Add the Rentals to the db
+		const result = await Rental.insertMany(rentals);
 
-    return;
+		console.log('got insertedids', result);
 
-    const newOrder = new Order({
-      ...req.body,
-      user: req.user._id,
-      rentals: insertedIds,
-    });
-    console.log('store new order', newOrder);
-    const order = await newOrder.save();
+		const newOrder = new Order({
+			...req.body,
+			user: req.user._id,
+			storeId: rentals[0].user,
+			rentals: result.map((rental) => rental._id),
+		});
+		console.log('store new order', newOrder);
+		const order = await newOrder.save();
 
-    // Store rentals to SellerProduct
-    /**
-     * @todo need to add rentals to SellerProduct
-     */
-    /* rentals.forEach((rental) => {
-      const sellerProduct = SellerProduct.findById(rental.product);
+		// Store rentals to SellerProduct
+		result.map(async (rental) => {
+			// const ObjectId = require('mongoose').Types.ObjectId;
 
-      sellerProduct.rentals.push(rental);
+			// const productId = new ObjectId(rental.product);
+			const productId = rental.product;
+			const sellerProduct = await SellerProduct.findById(productId);
 
-      await sellerProduct.save();
-    }); */
 
-    await db.disconnect();
+			sellerProduct.rentals.push(rental);
 
-    res.status(201).send(order);
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+			await sellerProduct.save();
+		});
+
+		await db.disconnect();
+
+		res.status(201).send(order);
+	} catch (error) {
+		res.status(400).json({ success: false, message: error.message });
+	}
 });
 
 export default handler;

@@ -30,7 +30,7 @@ export default function BlockOutForm({
 
 	const classes = useStyles();
 
-	const uploadHandler = async (e) => {
+	/* const uploadHandler = async (e) => {
 		try {
 			const { data } = await axios.get('/api/blockOuts', formData, {
 				headers: {
@@ -40,7 +40,7 @@ export default function BlockOutForm({
 		} catch (error) {
 			console.log('product img err', error);
 		}
-	};
+	}; */
 
 	const addBlockOut = () => {
 		setAdding(true);
@@ -139,7 +139,6 @@ export default function BlockOutForm({
 		setShowDelete(false);
 		setDeleteId(null);
 	};
-	console.log('bo id', adding);
 
 	return (
 		<Card className={classes.section}>

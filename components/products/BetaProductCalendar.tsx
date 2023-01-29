@@ -1,15 +1,19 @@
+import { addDays } from 'date-fns';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { DateRange, Range } from 'react-date-range';
+import { Calendar, DateRange, Range } from 'react-date-range';
+import { Booking } from '../../types/Booking';
 import ProductHelper from '../../utils/helpers/ProductHelper';
 
-export default function BetaProductCalendaer({
+export default function BetaProductCalendar({
 	range,
 	setRange,
 	productId,
+	isAdmin = false,
 }: {
 	range: Range;
 	setRange: Dispatch<SetStateAction<Range>>;
 	productId: string;
+	isAdmin: Boolean;
 }): JSX.Element {
 	const [disabled, setDisabled] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -22,10 +26,15 @@ export default function BetaProductCalendaer({
 				await ProductHelper.fetchCalendar(productId);
 
 			console.log('got calendar', bookings, endMonth);
+
+			/**
+			 * @todo get days between, or serverside function?
+			 */
 			setBooked(
-				bookings.map(
-					(booking: string | number | Date) => new Date(booking)
-				)
+				bookings.flatMap((booking: Booking) => [
+					new Date(booking.in),
+					new Date(booking.out),
+				])
 			);
 			setLoading(false);
 			setMaxMonth(endMonth);
@@ -36,26 +45,36 @@ export default function BetaProductCalendaer({
 
 	const handleMonthChange = async (date: Date) => {
 		console.log('month change,', date);
+		// debugger;
 	};
 
 	// console.log(booked[0]?.in, new Date(booked[0]?.in));
 	console.log('bookings:', booked);
+	console.log(maxMonth);
 
-	return (
-		<DateRange
-			editableDateInputs={true}
-			onChange={(item) => {
-				const selection = item.selection;
-				console.log(selection);
-				setRange(selection);
-			}}
-			moveRangeOnFirstSelection={false}
-			ranges={[range]}
-			endDatePlaceholder={'Return'}
-			showMonthAndYearPickers={true}
-			minDate={new Date()}
-			onShownDateChange={handleMonthChange}
-			disabledDates={booked}
-		/>
+	const customProps = {
+		editableDateInputs: !isAdmin,
+		onChange: isAdmin
+			? null
+			: (item) => {
+					const selection = item.selection;
+					// debugger;
+					console.log(selection);
+					setRange(selection);
+			  },
+		moveRangeOnFirstSelection: false,
+		ranges: [range],
+		showDateDisplay: !isAdmin,
+		endDatePlaceholder: 'Return',
+		showMonthAndYearPickers: true,
+		minDate: isAdmin ? addDays(new Date(), -365 * 2) : new Date(),
+		onShownDateChange: handleMonthChange,
+		disabledDates: isAdmin ? [] : booked,
+	};
+
+	return isAdmin ? (
+		<Calendar {...customProps} />
+	) : (
+		<DateRange {...customProps} />
 	);
 }

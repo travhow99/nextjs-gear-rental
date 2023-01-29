@@ -24,6 +24,9 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem } from '../redux/cart/cartSlice';
+import dateHelper from '../utils/dateHelper';
+import ProductHelper from '../utils/helpers/ProductHelper';
+import CartHelper from '../utils/helpers/CartHelper';
 
 function Cart() {
 	const router = useRouter();
@@ -73,25 +76,31 @@ function Cart() {
 							<Table>
 								<TableHead>
 									<TableRow>
-										<TableCell>Image</TableCell>
-										<TableCell>Name</TableCell>
+										<TableCell></TableCell>
+										<TableCell>Item</TableCell>
 										<TableCell align="right">
-											Quantity
+											Days
 										</TableCell>
 										<TableCell align="right">
-											Price
+											Price / day
 										</TableCell>
 										<TableCell align="right">
-											Action
+											Total Price
+										</TableCell>
+										<TableCell align="right">
+											Dates
+										</TableCell>
+										<TableCell align="right">
+											{/* Action */}
 										</TableCell>
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{cartItems.map((item) => (
-										<TableRow key={item._id}>
+									{cartItems.map((item, index) => (
+										<TableRow key={index}>
 											<TableCell>
 												<NextLink
-													href={`/product/${item._id}`}
+													href={`/product/${item.slug}`}
 													passHref
 												>
 													<Link>
@@ -106,7 +115,8 @@ function Cart() {
 																				.images
 																				.length -
 																				1
-																	  ].path
+																	  ]?.path ||
+																	  'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 																	: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 															}
 															alt={item.name}
@@ -119,7 +129,7 @@ function Cart() {
 
 											<TableCell>
 												<NextLink
-													href={`/product/${item._id}`}
+													href={`/product/${item.slug}`}
 													passHref
 												>
 													<Link>
@@ -131,32 +141,47 @@ function Cart() {
 											</TableCell>
 
 											<TableCell align="right">
-												<Select
-													value={item.quantity}
-													onChange={(e) =>
-														updateCartHandler(
-															item,
-															e.target.value
-														)
-													}
-												>
-													{[
-														...Array(
-															item.stock
-														).keys(),
-													].map((x) => (
-														<MenuItem
-															key={x + 1}
-															value={x + 1}
-														>
-															{x + 1}
-														</MenuItem>
-													))}
-												</Select>
+												<Typography>
+													{dateHelper.getReadableNumberOfDaysBetween(
+														new Date(item.dateOut),
+														new Date(item.dateDue)
+													)}
+												</Typography>
 											</TableCell>
 
 											<TableCell align="right">
-												${item.price}
+												<Typography>
+													${item.price}
+												</Typography>
+											</TableCell>
+
+											<TableCell align="right">
+												<Typography>
+													$
+													{console.log({
+														startDate: item.dateOut,
+														endDate: item.dateDue,
+													})}
+													{ProductHelper.getProductTotalPrice(
+														item.price,
+														{
+															startDate:
+																item.dateOut,
+															endDate:
+																item.dateDue,
+														}
+													)}
+												</Typography>
+											</TableCell>
+
+											<TableCell align="right">
+												<Typography>
+													{/* @todo format date range method */}
+													{dateHelper.getHumanReadableDateRangeText(
+														new Date(item.dateOut),
+														new Date(item.dateDue)
+													)}
+												</Typography>
 											</TableCell>
 
 											<TableCell align="right">
@@ -181,15 +206,9 @@ function Cart() {
 							<List>
 								<ListItem>
 									<Typography variant="h2">
-										Subtotal (
-										{cartItems.reduce(
-											(a, c) => a + c.quantity,
-											0
-										)}{' '}
-										items) : ${' '}
-										{cartItems.reduce(
-											(a, c) => a + c.quantity * c.price,
-											0
+										Subtotal ({cartItems.length} items) : ${' '}
+										{CartHelper.getCartTotalPrice(
+											cartItems
 										)}
 									</Typography>
 								</ListItem>

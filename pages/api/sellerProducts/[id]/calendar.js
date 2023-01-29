@@ -5,19 +5,30 @@ import BlockOut from '../../../../models/BlockOut';
 import { onError } from '../../../../utils/error';
 import SellerProduct from '../../../../models/SellerProduct';
 import ProductHelper from '../../../../utils/helpers/ProductHelper';
-import { getMonth } from 'date-fns';
+import { addDays, getMonth, startOfDay, startOfToday } from 'date-fns';
+import { authCheck } from '../../../../utils/authCheck';
 
 const handler = nc({ onError });
+
+handler.use(authCheck);
 
 handler.get(async (req, res) => {
 	try {
 		await db.connect();
 
-		// console.log('query!', req);
+		const sellerOwnsProduct = req.user
+			? await SellerProduct.sellerOwnsProduct(req.user._id, req.query.id)
+			: false;
 
-		const now = new Date();
-		const cutoff = ProductHelper.getFutureMonth(now);
-		console.log(now);
+		console.log('s owns p?', sellerOwnsProduct);
+
+		const startDate = sellerOwnsProduct
+			? startOfDay(addDays(new Date(), -365 * 2))
+			: startOfToday();
+		const cutoff = sellerOwnsProduct
+			? startOfDay(addDays(new Date(), 365 * 2))
+			: ProductHelper.getFutureMonth(startDate);
+		console.log(startDate);
 		console.log(cutoff);
 
 		// @todo Add to api methods
@@ -30,7 +41,7 @@ handler.get(async (req, res) => {
 					match: {
 						softDelete: { $ne: true }, // Filter the softDeletes from view
 						dateOut: {
-							$gte: now,
+							$gte: startDate,
 							$lt: cutoff,
 						},
 					},
@@ -42,13 +53,13 @@ handler.get(async (req, res) => {
 						$or: [
 							{
 								dateOut: {
-									$gte: now,
+									$gte: startDate,
 									$lt: cutoff,
 								},
 							},
 							{
 								dateIn: {
-									$gte: now,
+									$gte: startDate,
 									$lt: cutoff,
 								},
 							},
@@ -61,7 +72,7 @@ handler.get(async (req, res) => {
 
 		res.send({
 			bookings: ProductHelper.buildCalendar(sellerproduct),
-			startMonth: getMonth(now),
+			startMonth: getMonth(startDate),
 			endMonth: getMonth(cutoff),
 		});
 	} catch (error) {

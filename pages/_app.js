@@ -24,8 +24,6 @@ export default function App({
 		}
 	}, []);
 
-	console.log('redux store', reduxStore);
-
 	return (
 		<SnackbarProvider
 			anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -63,7 +61,6 @@ export default function App({
  * Authenticated pages must have Component.auth variable === TRUE to require authentication process.
  */
 function Auth({ children, redirect }) {
-	console.log('redirect?', redirect);
 	const { data: session, status } = useSession({ required: true });
 	const isUser = !!session?.user;
 
@@ -87,7 +84,6 @@ function Auth({ children, redirect }) {
 }
 
 const Admin = ({ children, redirect }) => {
-	console.log('redirect?', redirect);
 	const router = useRouter();
 	const { data: session, status } = useSession({ required: true });
 	const isUser = !!session?.user;
@@ -119,7 +115,6 @@ const Admin = ({ children, redirect }) => {
 };
 
 const Seller = ({ children, redirect }) => {
-	console.log('redirect?', redirect);
 	const router = useRouter();
 	const { data: session, status } = useSession({ required: true });
 	const isUser = !!session?.user;

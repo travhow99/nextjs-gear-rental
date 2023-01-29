@@ -4,6 +4,9 @@ import dateHelper from '../dateHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { getMonth, isAfter, isBefore, isSameDay, setMonth } from 'date-fns';
+import Product from '../../types/Product';
+import { RentalDate } from '../../types/RentalDate';
+import { Booking } from '../../types/Booking';
 
 // export default _product;
 
@@ -11,8 +14,8 @@ export default class ProductHelper {
 	/**
 	 * @todo Calculate with # of days for rental
 	 */
-	static determineSubtotal(cartItems) {
-		const total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
+	static determineSubtotal(cartItems: Array<Product>) {
+		const total = cartItems.reduce((a, c) => a + c.price, 0);
 		return this.roundToPenny(total);
 	}
 
@@ -39,22 +42,25 @@ export default class ProductHelper {
 		return dateHelper.timestampToDate(timestamp);
 	}
 
-	static fetchProduct = async (id) => {
+	static fetchProduct = async (id: string): Promise<Product> => {
 		const { data } = await axios.get(`/api/products/${id}`);
 		return data;
 	};
 
+	/**
+	 * @deprecated
+	 */
 	static addProductToCart = async (product) => {
 		const dispatch = useDispatch();
-		const { cart } = useSelector((state) => state);
+		const { cart } = useSelector((state: any) => state);
 
 		console.log('prod method add to cart', product);
 		const existingItem = cart.cartItems.find(
-			(item) => item._id === product._id
+			(item: Product) => item._id === product._id
 		);
 		const quantity = existingItem ? existingItem.quantity + 1 : 1;
 
-		const data = this.fetchProduct(product._id);
+		const data = await this.fetchProduct(product._id);
 		if (data.stock < quantity) {
 			alert('OUT OF STOCK');
 			return;
@@ -72,7 +78,11 @@ export default class ProductHelper {
 	static fetchCalendar = async (
 		id: string,
 		month: number = null
-	): Promise<any> => {
+	): Promise<{
+		bookings: Array<Booking>;
+		startMonth: number;
+		endMonth: number;
+	}> => {
 		let endpoint = `/api/sellerProducts/${id}/calendar`;
 
 		if (month) endpoint += `/${month}`;
@@ -95,8 +105,6 @@ export default class ProductHelper {
 		const blockOuts = data.blockOuts
 			.map((bo) => ProductHelper.getDaysArray(bo.dateOut, bo.dateIn))
 			.flatMap((bo) => bo);
-
-		console.log('blockOuts', blockOuts);
 
 		const rentals = data.rentals.map((bo) => {
 			return { out: bo.dateOut, in: bo.dateDue, type: 'rental' };
@@ -191,8 +199,26 @@ export default class ProductHelper {
 		return result;
 	};
 
-	static getFutureMonth = (month) => {
+	static getFutureMonth = (month: string | number | Date) => {
 		const future = new Date(month);
 		return setMonth(future, getMonth(future) + 3);
+	};
+
+	static getProductTotalPrice = (price: number, dates: RentalDate) => {
+		console.log(price, dates);
+		return (
+			price *
+			dateHelper.getNumberOfDaysBetween(
+				new Date(dates.startDate),
+				new Date(dates.endDate)
+			)
+		);
+	};
+
+	/**
+	 * Admin Helpers
+	 */
+	static deleteSellerProduct = async (id: string) => {
+		await axios.delete(`/api/sellerProducts/${id}`);
 	};
 }
