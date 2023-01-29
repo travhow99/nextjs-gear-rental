@@ -15,6 +15,9 @@
 # production
 /build
 
+# backups
+/mongo-backup
+
 # misc
 .DS_Store
 
