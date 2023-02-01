@@ -22,25 +22,27 @@ model Account {
   scope             String
   token_type        String
   type              String
-  userId            String @db.ObjectId // relation scalar field  (used in the `@relation
+  userId            String @db.ObjectId
   user              User   @relation(fields: [userId], references: [id])
+
+  @@map("accounts")
 }
 
-model Blockout {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  v               Int            @map("__v")
-  count           Int
-  createdAt       DateTime       @db.Date
-  dateIn          DateTime       @db.Date
-  dateOut         DateTime       @db.Date
-  productId       String         @db.ObjectId
-  product         Product        @relation(fields: [productId], references: [id])
-  softDelete      Boolean?
-  updatedAt       DateTime       @db.Date
-  userId          String         @db.ObjectId // relation scalar field  (used in the `@relation
-  user            User           @relation(fields: [userId], references: [id])
-  SellerProduct   SellerProduct? @relation(fields: [sellerProductId], references: [id])
-  sellerProductId String?        @db.ObjectId
+model BlockOut {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  v          Int            @map("__v")
+  count      Int
+  createdAt  DateTime       @db.Date
+  dateIn     DateTime       @db.Date
+  dateOut    DateTime       @db.Date
+  softDelete Boolean?
+  updatedAt  DateTime       @db.Date
+  userId     String         @db.ObjectId
+  user       User           @relation(fields: [userId], references: [id])
+  productId  String?        @db.ObjectId
+  product    SellerProduct? @relation(fields: [productId], references: [id])
+
+  @@map("blockouts")
 }
 
 model Brand {
@@ -50,6 +52,8 @@ model Brand {
   logoUrl    String
   title      String
   url        String
+
+  @@map("brands")
 }
 
 model Category {
@@ -58,6 +62,8 @@ model Category {
   createdAt DateTime @db.Date
   name      String
   updatedAt DateTime @db.Date
+
+  @@map("categories")
 }
 
 model OrderNote {
@@ -68,77 +74,81 @@ model OrderNote {
   orderId   String   @db.ObjectId
   order     Order    @relation(fields: [orderId], references: [id])
   updatedAt DateTime @db.Date
+
+  @@map("ordernotes")
 }
 
 model Order {
-  id               String               @id @default(auto()) @map("_id") @db.ObjectId
-  v                Int                  @map("__v")
-  createdAt        DateTime             @db.Date
-  isPaid           Boolean
-  itemsPrice       Int
-  orderNotes       OrderNote[]
-  paidAt           DateTime?            @db.Date
-  paymentMethod    String
-  paymentResult    OrdersPaymentResult?
-  rentals          Rental[]
-  softDelete       Boolean?
-  storeId          String?              @db.ObjectId
-  store            User?                @relation(name: "OrderReceived", fields: [storeId], references: [id])
-  taxPrice         Float
-  totalPrice       Float
-  updatedAt        DateTime             @db.Date
-  userId           String               @db.ObjectId // relation scalar field  (used in the `@relation
-  user             User                 @relation(fields: [userId], references: [id])
-  OrderTransaction OrderTransaction[]
+  id                String               @id @default(auto()) @map("_id") @db.ObjectId
+  v                 Int                  @map("__v")
+  createdAt         DateTime             @db.Date
+  isPaid            Boolean
+  itemsPrice        Int
+  orderNotes        OrderNote[]
+  paidAt            DateTime?            @db.Date
+  paymentMethod     String
+  paymentResult     OrdersPaymentResult?
+  rentals           Rental[]
+  softDelete        Boolean?
+  storeId           String?              @db.ObjectId
+  store             User?                @relation(name: "OrderReceived", fields: [storeId], references: [id])
+  taxPrice          Float
+  totalPrice        Float
+  updatedAt         DateTime             @db.Date
+  userId            String               @db.ObjectId
+  user              User                 @relation(fields: [userId], references: [id])
+  ordertransactions OrderTransaction[]
+
+  @@map("orders")
 }
 
 model OrderTransaction {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   v             Int      @map("__v")
   createdAt     DateTime @db.Date
-  note          String
+  note          String?
   orderId       String?  @db.ObjectId
   order         Order?   @relation(fields: [orderId], references: [id])
   transactionId String
   type          String
   updatedAt     DateTime @db.Date
+
+  @@map("ordertransactions")
 }
 
 model ProductImage {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  v               Int            @map("__v")
-  category        String
-  createdAt       DateTime       @db.Date
-  path            String
-  productId       String         @db.ObjectId
-  product         Product        @relation(fields: [productId], references: [id])
-  updatedAt       DateTime       @db.Date
-  SellerProduct   SellerProduct? @relation(fields: [sellerProductId], references: [id])
-  sellerProductId String?        @db.ObjectId
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int            @map("__v")
+  category  String
+  createdAt DateTime       @db.Date
+  path      String
+  updatedAt DateTime       @db.Date
+  product   SellerProduct? @relation(fields: [productId], references: [id])
+  productId String?        @db.ObjectId
+
+  @@map("productimages")
 }
 
 model Product {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int            @map("__v")
-  brand        String
-  category     String
-  createdAt    DateTime       @db.Date
-  description  String
-  gender       String?
-  imageAlt     String
-  imageUrl     String
-  price        Int
-  rating       Float
-  rental_min   Int
-  size         String?
-  slug         String         @unique(map: "slug_1")
-  stock        Int
-  title        String
-  updatedAt    DateTime       @db.Date
-  Blockout     Blockout[]
-  ProductImage ProductImage[]
-  Rental       Rental[]
-  UserMessage  UserMessage[]
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  v           Int      @map("__v")
+  brand       String
+  category    String
+  createdAt   DateTime @db.Date
+  description String
+  gender      String?
+  imageAlt    String
+  imageUrl    String
+  price       Int
+  rating      Float
+  rental_min  Int
+  size        String?
+  slug        String   @unique(map: "slug_1")
+  stock       Int
+  title       String
+  updatedAt   DateTime @db.Date
+
+  @@map("products")
 }
 
 model Rental {
@@ -148,68 +158,75 @@ model Rental {
   dateDue         DateTime       @db.Date
   dateOut         DateTime       @db.Date
   price           Int
-  productId       String         @db.ObjectId
-  product         Product        @relation(fields: [productId], references: [id])
   quantity        Int
   softDelete      Boolean
   updatedAt       DateTime       @db.Date
-  userId          String         @db.ObjectId // relation scalar field  (used in the `@relation
+  userId          String         @db.ObjectId
   user            User           @relation(fields: [userId], references: [id])
-  Order           Order?         @relation(fields: [orderId], references: [id])
+  orders          Order?         @relation(fields: [orderId], references: [id])
   orderId         String?        @db.ObjectId
-  SellerProduct   SellerProduct? @relation(fields: [sellerProductId], references: [id])
+  sellerproducts  SellerProduct? @relation(fields: [sellerProductId], references: [id])
   sellerProductId String?        @db.ObjectId
-  UserMessage     UserMessage[]
+  usermessages    UserMessage[]
+
+  @@map("rentals")
 }
 
 model SellerProduct {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
-  v           Int            @map("__v")
-  blockOuts   Blockout[]
-  brand       String
-  category    String
-  condition   String?
-  createdAt   DateTime       @db.Date
-  description String
-  gender      String?
-  images      ProductImage[]
-  keyword     String?
-  price       Int
-  product     String
-  rentalMin   Int
-  rentals     Rental[]
-  size        String?
-  slug        String         @unique(map: "slug_1")
-  softDelete  Boolean?
-  stock       Int
-  title       String
-  updatedAt   DateTime       @db.Date
-  userId      String         @db.ObjectId // relation scalar field  (used in the `@relation
-  user        User           @relation(fields: [userId], references: [id])
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int            @map("__v")
+  blockOuts    BlockOut[]
+  brand        String
+  category     String
+  condition    String?
+  createdAt    DateTime       @db.Date
+  description  String
+  gender       String?
+  images       ProductImage[]
+  keyword      String?
+  price        Int
+  product      String
+  rentalMin    Int
+  rentals      Rental[]
+  size         String?
+  slug         String         @unique(map: "slug_1")
+  softDelete   Boolean?
+  stock        Int
+  title        String
+  updatedAt    DateTime       @db.Date
+  userId       String         @db.ObjectId
+  user         User           @relation(fields: [userId], references: [id])
+  usermessages UserMessage[]
+
+  @@map("sellerproducts")
 }
 
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   expires      DateTime @db.Date
   sessionToken String
-  userId       String   @db.ObjectId // relation scalar field  (used in the `@relation
+  userId       String   @db.ObjectId
   user         User     @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
 }
 
 model UserMessage {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int      @map("__v")
-  createdAt DateTime @db.Date
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int            @map("__v")
+  createdAt DateTime       @db.Date
   message   String
-  productId String   @db.ObjectId
-  product   Product  @relation(fields: [productId], references: [id])
-  rentalId  String?  @db.ObjectId
-  rental    Rental?  @relation(fields: [rentalId], references: [id])
-  sentById  String   @db.ObjectId
-  sentBy    User     @relation(name: "UserMessageOutgoing", fields: [sentById], references: [id])
-  sentToId  String   @db.ObjectId
-  sentTo    User     @relation(name: "UserMessageIncoming", fields: [sentToId], references: [id])
-  updatedAt DateTime @db.Date
+  productId String?        @db.ObjectId
+  product   SellerProduct? @relation(fields: [productId], references: [id])
+  rentalId  String?        @db.ObjectId
+  rental    Rental?        @relation(fields: [rentalId], references: [id])
+  sentById  String         @db.ObjectId
+  sentBy    User           @relation(name: "UserMessageOutgoing", fields: [sentById], references: [id])
+  sentToId  String         @db.ObjectId
+  sentTo    User           @relation(name: "UserMessageIncoming", fields: [sentToId], references: [id])
+  updatedAt DateTime       @db.Date
+
+  @@map("usermessages")
 }
 
 model User {
@@ -220,13 +237,15 @@ model User {
   name                String
   role                String?
   seller              Boolean?
-  Account             Account[]
-  Blockout            Blockout[]
-  Order               Order[]
-  Rental              Rental[]
-  SellerProduct       SellerProduct[]
-  Session             Session[]
+  accounts            Account[]
+  blockouts           BlockOut[]
+  orders              Order[]
+  rentals             Rental[]
+  sellerproducts      SellerProduct[]
+  sessions            Session[]
   UserMessageOutgoing UserMessage[]   @relation("UserMessageOutgoing")
   UserMessageIncoming UserMessage[]   @relation("UserMessageIncoming")
   OrderReceived       Order[]         @relation("OrderReceived")
+
+  @@map("users")
 }
