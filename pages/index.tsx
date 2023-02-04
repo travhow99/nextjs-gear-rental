@@ -7,7 +7,7 @@ import ProductImage from '../models/ProductImage';
 
 export default function Home({ products }) {
 	return (
-		<Layout home>
+		<Layout title="Adventure Buddy">
 			<HomeCallToAction topItems={products} />
 			{/* <Box m={4} className={utilStyles.headingMd}>
         <SimpleGrid columns={3} spacing={10}>
@@ -23,6 +23,7 @@ export default function Home({ products }) {
 export async function getServerSideProps() {
 	await db.connect();
 
+	// @ts-ignore
 	const products = await SellerProduct.find({ softDelete: { $ne: true } })
 		.select('-rentals -blockOuts')
 		.populate({ path: 'images', model: ProductImage })
