@@ -43,7 +43,6 @@ import SellerHelper from '../../../utils/seller/SellerHelper';
 import useStyles from '../../../utils/styles';
 import Link from 'next/link';
 import useSellerProduct from '../../../utils/hooks/useSellerProduct';
-import { mutate } from 'swr';
 
 const initialProduct = {
 	category: '',

@@ -8,6 +8,8 @@ import Rental from '../../../models/Rental';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
+import prisma from '../../../lib/prisma';
+import { sellerOwnsProduct } from '../../../utils/helpers/api/SellerProductHelper';
 
 const handler = nc({
 	onError,
@@ -17,133 +19,88 @@ handler.use(isSeller);
 
 handler.get(async (req, res) => {
 	try {
-		await db.connect();
+		const ownsProduct = await sellerOwnsProduct(req.user._id, req.query.id);
 
-		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
-			req.user._id,
-			req.query.id
-		);
+		console.log('got OP', ownsProduct);
 
-		if (Boolean(sellerOwnsProduct)) {
-			const sellerproduct = await SellerProduct.findById(
-				req.query.id
-			).populate([
-				'images',
-				{
-					path: 'rentals',
-					populate: {
-						path: 'user',
-						model: User,
-						select: 'name email',
+		if (ownsProduct) {
+			const sellerProductObject = await prisma.sellerProduct.findUnique({
+				where: {
+					id: req.query.id,
+				},
+				include: {
+					images: true,
+					user: {
+						select: {
+							id: true,
+							name: true,
+						},
 					},
+					blockOuts: true,
 				},
-				{
-					path: 'blockOuts',
-					match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
-				},
-			]);
-
-			// Casted to object to allow for data manipulation
-			const sellerProductObject = sellerproduct.toObject();
-
-			await Promise.all(
-				sellerproduct.rentals.map(async (r, index) => {
-					try {
-						const rentalId = await Order.findOne({
-							rentals: r._id,
-						});
-
-						sellerProductObject.rentals[index].orderId =
-							rentalId._id;
-					} catch (error) {
-						console.log('caought err:', error);
-					}
-				})
-			);
-
-			await db.disconnect();
+			});
 
 			res.send(sellerProductObject);
 		} else {
-			await db.disconnect();
-
-			res.status(404).send({ message: 'product not found' });
+			throw new Error('product not found');
 		}
 	} catch (error) {
 		console.log('err', error);
+		console.error(error);
+		// await prisma.$disconnect();
+
 		res.status(404).send({ message: 'product not found' });
 	}
 });
 
 handler.put(async (req, res) => {
 	try {
-		await db.connect();
+		const ownsProduct = await sellerOwnsProduct(req.user._id, req.query.id);
 
-		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
-			req.user._id,
-			req.query.id
-		);
+		console.log('got OP', ownsProduct);
 
-		if (Boolean(sellerOwnsProduct)) {
-			SellerProduct.findByIdAndUpdate(req.query.id, req.body, {
-				new: true,
-			})
-				.populate([
-					'images',
-					'rentals',
-					{
-						path: 'blockOuts',
-						match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
-					},
-				])
-				.exec(async (err, result) => {
-					await db.disconnect();
+		if (ownsProduct) {
+			const sellerProductObject = await prisma.sellerProduct.update({
+				where: {
+					id: req.query.id,
+				},
+				data: req.body,
+			});
 
-					if (err) {
-						console.log('err', err);
-						res.status(404).send({ message: 'product not found' });
-					} else {
-						res.send({ message: 'product updated', result });
-					}
-				});
+			res.send(sellerProductObject);
 		} else {
-			await db.disconnect();
-
-			res.status(404).send({ message: 'product not found' });
+			throw new Error('product not found');
 		}
 	} catch (error) {
-		await db.disconnect();
-
 		console.log('err', error);
+		console.error(error);
+		// await prisma.$disconnect();
+
 		res.status(404).send({ message: 'product not found' });
 	}
 });
 
 handler.delete(async (req, res) => {
 	try {
-		await db.connect();
+		const ownsProduct = await sellerOwnsProduct(req.user._id, req.query.id);
 
-		const sellerOwnsProduct = await SellerProduct.sellerOwnsProduct(
-			req.user._id,
-			req.query.id
-		);
-
-		if (Boolean(sellerOwnsProduct)) {
-			const r = await SellerProduct.findByIdAndUpdate(req.query.id, {
-				softDelete: true,
+		if (ownsProduct) {
+			const r = await prisma.sellerProduct.update({
+				where: {
+					id: req.query.id,
+				},
+				data: {
+					softDelete: true,
+				},
 			});
 
 			console.log('owns p,', r);
 
 			res.send({ message: 'product deleted' });
 		} else {
-			await db.disconnect();
-
-			res.status(404).send({ message: 'product not found' });
+			throw new Error('product not found');
 		}
 	} catch (error) {
-		await db.disconnect();
-
 		console.log('err', error);
 		res.status(404).send({ message: 'product not found' });
 	}

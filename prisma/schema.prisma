@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Mongodb replica set package: https://dev.to/salim_angelo/how-to-convert-your-localhost-standalone-mongodb-cluster-into-a-replica-set-using-run-rs-npm-package-on-mac-os-54hd
+// sudo run-rs --mongod
 type OrdersPaymentResult {
   id     String
   status String
@@ -30,7 +32,7 @@ model Account {
 
 model BlockOut {
   id         String         @id @default(auto()) @map("_id") @db.ObjectId
-  v          Int            @map("__v")
+  v          Int            @default(0) @map("__v") @ignore
   count      Int
   createdAt  DateTime       @db.Date
   dateIn     DateTime       @db.Date
@@ -58,7 +60,7 @@ model Brand {
 
 model Category {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int      @map("__v")
+  v         Int      @default(0) @map("__v") @ignore
   createdAt DateTime @db.Date
   name      String
   updatedAt DateTime @db.Date
@@ -68,7 +70,7 @@ model Category {
 
 model OrderNote {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int      @map("__v")
+  v         Int      @default(0) @map("__v") @ignore
   createdAt DateTime @db.Date
   note      String
   orderId   String   @db.ObjectId
@@ -80,7 +82,7 @@ model OrderNote {
 
 model Order {
   id                String               @id @default(auto()) @map("_id") @db.ObjectId
-  v                 Int                  @map("__v")
+  v                 Int                  @default(0) @map("__v") @ignore
   createdAt         DateTime             @db.Date
   isPaid            Boolean
   itemsPrice        Int
@@ -104,7 +106,7 @@ model Order {
 
 model OrderTransaction {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int      @map("__v")
+  v             Int      @default(0) @map("__v") @ignore
   createdAt     DateTime @db.Date
   note          String?
   orderId       String?  @db.ObjectId
@@ -118,7 +120,7 @@ model OrderTransaction {
 
 model ProductImage {
   id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int            @map("__v")
+  v         Int            @default(0) @map("__v") @ignore
   category  String
   createdAt DateTime       @db.Date
   path      String
@@ -131,7 +133,7 @@ model ProductImage {
 
 model Product {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  v           Int      @map("__v")
+  v           Int      @default(0) @map("__v") @ignore
   brand       String
   category    String
   createdAt   DateTime @db.Date
@@ -153,7 +155,7 @@ model Product {
 
 model Rental {
   id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  v               Int            @map("__v")
+  v               Int            @default(0) @map("__v") @ignore
   createdAt       DateTime       @db.Date
   dateDue         DateTime       @db.Date
   dateOut         DateTime       @db.Date
@@ -174,7 +176,7 @@ model Rental {
 
 model SellerProduct {
   id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int            @map("__v")
+  v            Int            @default(0) @map("__v") @ignore
   blockOuts    BlockOut[]
   brand        String
   category     String
@@ -213,7 +215,7 @@ model Session {
 
 model UserMessage {
   id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int            @map("__v")
+  v         Int            @default(0) @map("__v") @ignore
   createdAt DateTime       @db.Date
   message   String
   productId String?        @db.ObjectId
