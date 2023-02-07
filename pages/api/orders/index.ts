@@ -1,7 +1,8 @@
 import nc from 'next-connect';
 import Order from '../../../models/Order';
-import Rental from '../../../models/Rental';
+// import Rental from '../../../models/Rental';
 import SellerProduct from '../../../models/SellerProduct';
+import Rental from '../../../types/Rental';
 import { isAuth } from '../../../utils/auth';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
@@ -17,7 +18,9 @@ handler.post(async (req, res) => {
 		await db.connect();
 
 		console.log('got request', req.body);
-		const rentals = req.body.orderItems.map((rental) => {
+
+		return;
+		const rentals = req.body.orderItems.map((rental: Rental) => {
 			rental.product = rental._id;
 			delete rental._id;
 			delete rental.createdAt;
@@ -48,7 +51,6 @@ handler.post(async (req, res) => {
 			// const productId = new ObjectId(rental.product);
 			const productId = rental.product;
 			const sellerProduct = await SellerProduct.findById(productId);
-
 
 			sellerProduct.rentals.push(rental);
 

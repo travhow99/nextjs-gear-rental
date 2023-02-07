@@ -68,6 +68,35 @@ model Category {
   @@map("categories")
 }
 
+// Cart / Shopping Session
+model Cart {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String?    @db.ObjectId
+  user      User?      @relation(fields: [userId], references: [id])
+  v         Int        @default(0) @map("__v") @ignore
+  cartItems CartItem[]
+  createdAt DateTime?  @db.Date
+  updatedAt DateTime?  @db.Date
+
+  @@map("cart")
+}
+
+model CartItem {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  cartId    String        @db.ObjectId
+  cart      Cart          @relation(fields: [cartId], references: [id])
+  productId String        @db.ObjectId
+  product   SellerProduct @relation(fields: [productId], references: [id])
+  startDate DateTime      @db.Date
+  endDate   DateTime      @db.Date
+  // quantity ?
+  v         Int           @default(0) @map("__v") @ignore
+  createdAt DateTime?     @db.Date
+  updatedAt DateTime?     @db.Date
+
+  @@map("cartitems")
+}
+
 model OrderNote {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   v         Int      @default(0) @map("__v") @ignore
@@ -131,6 +160,8 @@ model ProductImage {
   @@map("productimages")
 }
 
+// @todo @deprecated ?
+// Original idea was to have "base" products that users could make their own instance of
 model Product {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   v           Int      @default(0) @map("__v") @ignore
@@ -199,6 +230,7 @@ model SellerProduct {
   userId       String         @db.ObjectId
   user         User           @relation(fields: [userId], references: [id])
   usermessages UserMessage[]
+  CartItem     CartItem[]
 
   @@map("sellerproducts")
 }
@@ -248,6 +280,7 @@ model User {
   UserMessageOutgoing UserMessage[]   @relation("UserMessageOutgoing")
   UserMessageIncoming UserMessage[]   @relation("UserMessageIncoming")
   OrderReceived       Order[]         @relation("OrderReceived")
+  Cart                Cart[]
 
   @@map("users")
 }
