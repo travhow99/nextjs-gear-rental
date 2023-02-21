@@ -162,14 +162,14 @@ function Order({ params }) {
 		try {
 			// dispatch(payRequest);
 			const { data } = await axios.put(
-				`/api/orders/${order._id}/pay`,
+				`/api/orders/${order.id}/pay`,
 				details
 			);
 
 			mutate();
 
 			await SellerHelper.storeOrderTransactionInfo(
-				order._id,
+				order.id,
 				details.id,
 				'purchase'
 			);

@@ -109,13 +109,13 @@ export default function Sale({ saleId }: { saleId: string }) {
 						<div>Order Cancelled</div>
 					) : (
 						<ArchiveOrderButton
-							saleId={order._id}
+							saleId={order.id}
 							reRender={mutate}
 						/>
 					)}
 				</CardActions>
 			</Card>
-			<MessageLog saleId={order._id} user={order.user} />
+			<MessageLog saleId={order.id} user={order.user} />
 		</>
 	);
 }

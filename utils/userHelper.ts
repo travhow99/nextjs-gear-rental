@@ -12,7 +12,7 @@ const userHelper = {
 		rental?: string
 	) {
 		const { data } = await axios.post(`/api/users/messages`, {
-			sentTo: user._id,
+			sentTo: user.id,
 			message,
 			product,
 			rental,

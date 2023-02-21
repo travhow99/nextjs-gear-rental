@@ -10,21 +10,23 @@ import {
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import useStyles from '../../utils/styles';
 import LoginText from './LoginText';
+import useCart from '../../utils/hooks/useCart';
+import Cookies from 'js-cookie';
+import { useEffect } from 'react';
+import useLocalStorage from '../../utils/hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+
+interface RootState {
+	cart: {
+		cartId: string | null;
+	};
+}
 
 export default function Header() {
-	const { cart } = useSelector((state) => state);
-	const [cartCount, setCartCount] = useState(0);
-
-	useEffect(() => {
-		setCartCount(cart.cartItems.length);
-	}, [cart]);
+	const { cart } = useCart();
 
 	const classes = useStyles();
 
-	const headerImg =
-		'https://icons.iconarchive.com/icons/blackvariant/button-ui-system-folders-drives/1024/Generic-icon.png';
 	return (
 		<AppBar position="static" className={classes.navbar}>
 			<Toolbar>
@@ -39,7 +41,10 @@ export default function Header() {
 				<div>
 					<NextLink href="/cart" passHref>
 						<Link>
-							<Badge color="secondary" badgeContent={cartCount}>
+							<Badge
+								color="secondary"
+								badgeContent={cart ? cart.cartItems.length : 0}
+							>
 								<ShoppingCartIcon />
 							</Badge>
 						</Link>

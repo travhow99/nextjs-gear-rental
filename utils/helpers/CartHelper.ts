@@ -1,19 +1,21 @@
-import Product from '../../types/Product';
 import dateHelper from '../dateHelper';
 import ProductHelper from './ProductHelper';
 import { v4 as uuidv4 } from 'uuid';
+import SellerProduct from '../../types/SellerProduct';
+import Cart from '../../types/Cart';
+import CartItem from '../../types/CartItem';
 
 type Result = 'success' | 'conflict' | 'error';
 
 type CartActionResult = {
-	cartItems: Array<Product> | null;
+	cartItems: Array<SellerProduct> | null;
 	status: Result;
 };
 
 export default class CartHelper {
-	static productIsInCart(cartItems: Array<Product>, newItemId: string) {
+	static productIsInCart(cartItems: Array<SellerProduct>, newItemId: string) {
 		const result = Boolean(
-			cartItems.find((item: { _id: string }) => item._id === newItemId)
+			cartItems.find((item: { id: string }) => item.id === newItemId)
 		);
 
 		console.log('p in cart?', result);
@@ -21,13 +23,13 @@ export default class CartHelper {
 	}
 
 	static productHasConflictingDate(
-		cartItems: Array<Product>,
-		product: Product
+		cartItems: Array<SellerProduct>,
+		product: SellerProduct
 	) {
-		if (!this.productIsInCart(cartItems, product._id)) return false;
+		if (!this.productIsInCart(cartItems, product.id)) return false;
 
 		const existingProduct = cartItems.find(
-			(item: { _id: string }) => item._id === product._id
+			(item: { id: string }) => item.id === product.id
 		);
 
 		return dateHelper.dateRangesOverlap(
@@ -43,8 +45,8 @@ export default class CartHelper {
 	}
 
 	static addProductToCart(
-		cartItems: Array<Product>,
-		product: Product
+		cartItems: Array<SellerProduct>,
+		product: SellerProduct
 	): CartActionResult {
 		console.log(
 			'add2cart ',
@@ -57,7 +59,7 @@ export default class CartHelper {
 		};
 
 		if (
-			this.productIsInCart(cartItems, product._id) &&
+			this.productIsInCart(cartItems, product.id) &&
 			this.productHasConflictingDate(cartItems, product)
 		) {
 			result.cartItems = cartItems;
@@ -74,14 +76,14 @@ export default class CartHelper {
 	 * @todo allow for purchases from multiple sellers in the future
 	 */
 	static productCanBeAddedToCart(
-		cartItems: Array<Product>,
-		product: Product
+		cartItems: Array<SellerProduct>,
+		product: SellerProduct
 	): boolean {
 		console.log('product compare', cartItems, product);
 		if (cartItems.length && product.user !== cartItems[0].user)
 			return false;
 		if (
-			this.productIsInCart(cartItems, product._id) &&
+			this.productIsInCart(cartItems, product.id) &&
 			this.productHasConflictingDate(cartItems, product)
 		) {
 			return false;
@@ -90,7 +92,20 @@ export default class CartHelper {
 		return true;
 	}
 
-	static getCartTotalPrice(cartItems: Array<Product>) {
+	static getCartTotalPrice(cartItems: Array<CartItem>) {
+		console.log('T PRICE:', cartItems);
+
+		const price = cartItems.reduce((a, c) => {
+			return (
+				a +
+				dateHelper.getNumberOfDaysBetween(
+					new Date(c.startDate),
+					new Date(c.endDate)
+				) *
+					c.product.price
+			);
+		}, 0);
+		return price;
 		const totalPrice = cartItems.reduce((a, c) => {
 			console.log('a:', a);
 			return (

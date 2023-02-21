@@ -21,8 +21,8 @@ handler.post(async (req, res) => {
 
 		return;
 		const rentals = req.body.orderItems.map((rental: Rental) => {
-			rental.product = rental._id;
-			delete rental._id;
+			rental.product = rental.id;
+			delete rental.id;
 			delete rental.createdAt;
 			delete rental.updatedAt;
 			return rental;

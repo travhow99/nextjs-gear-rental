@@ -32,7 +32,7 @@ export default function OrdersTable(props: OrdersTableProps) {
 				<TableBody>
 					{sales.map((order) => (
 						// @ts-ignore
-						<TableRow key={order._id}>
+						<TableRow key={order.id}>
 							<TableCell>
 								{ProductHelper.formatPurchaseDate(
 									order.createdAt
@@ -43,12 +43,12 @@ export default function OrdersTable(props: OrdersTableProps) {
 							</TableCell>
 							<TableCell>
 								<NextLink
-									href={`/seller/sales/${order._id}`}
+									href={`/seller/sales/${order.id}`}
 									passHref
 								>
 									<Link>
 										{/* @todo Why is this underlined, but not components/products/RentalTable.tsx? */}
-										<Typography>{order._id}</Typography>
+										<Typography>{order.id}</Typography>
 									</Link>
 								</NextLink>
 							</TableCell>

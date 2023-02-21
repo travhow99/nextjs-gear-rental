@@ -1,10 +1,6 @@
-import BlockOut from '../../../models/BlockOut';
-import Rental from '../../../models/Rental';
-import SellerProduct from '../../../models/SellerProduct';
-import ProductImage from '../../../models/ProductImage';
 import prisma from '../../../lib/prisma';
 import User from '../../../types/User';
-import Product from '../../../types/Product';
+import SellerProduct from '../../../types/SellerProduct';
 
 /**
  * Library of helper methods for SellerProduct on the server side
@@ -42,8 +38,8 @@ import Product from '../../../types/Product';
 export async function fetchCalendarData() {}
 
 export async function sellerOwnsProduct(
-	userId: User['_id'],
-	productId: Product['_id']
+	userId: User['id'],
+	productId: SellerProduct['id']
 ): Promise<boolean> {
 	const ownsProduct = await prisma.sellerProduct.count({
 		where: {

@@ -23,33 +23,33 @@ import Layout from '../components/layout/Layout';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, removeItem } from '../redux/cart/cartSlice';
 import dateHelper from '../utils/dateHelper';
 import ProductHelper from '../utils/helpers/ProductHelper';
+import useCart from '../utils/hooks/useCart';
+import CartItem from '../types/CartItem';
+import addDays from 'date-fns/addDays';
 import CartHelper from '../utils/helpers/CartHelper';
+import { removeItemFromCart } from '../utils/helpers/api/CartHelper';
 
 function Cart() {
 	const router = useRouter();
-	const dispatch = useDispatch();
 
-	const { cart } = useSelector((state) => state);
-	const { cartItems } = cart;
+	const { cart, isLoading, mutate } = useCart();
+
+	const { cartItems } = cart || { cartItems: [] };
 
 	console.log('cart?', cartItems);
+	const today = new Date();
+	const tomorrow = addDays(today, 1);
 
-	const updateCartHandler = async (product, quantity) => {
-		const { data } = await axios.get(`/api/products/${product._id}`);
-		console.log(data);
-		if (data.stock < quantity) {
-			alert('OUT OF STOCK');
-			return;
-		}
+	const removeCartHandler = async (productId: CartItem['id']) => {
+		// dispatch(removeItem(product));
 
-		dispatch(addItem({ ...product, quantity }));
-	};
+		try {
+			await removeItemFromCart(productId);
 
-	const removeCartHandler = async (product) => {
-		dispatch(removeItem(product));
+			mutate();
+		} catch (error) {}
 	};
 
 	const checkoutHandler = () => {
@@ -59,10 +59,10 @@ function Cart() {
 
 	return (
 		<Layout title="Cart">
-			<Typography coponent="h1" variant="h1">
+			<Typography component="h1" variant="h1">
 				Cart
 			</Typography>
-			{cartItems.length === 0 ? (
+			{isLoading || cartItems.length === 0 ? (
 				<div>
 					Cart is empty.{' '}
 					<NextLink href="/" passHref>
@@ -96,22 +96,26 @@ function Cart() {
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{cartItems.map((item, index) => (
+									{cartItems.map((cartItem, index) => (
 										<TableRow key={index}>
 											<TableCell>
 												<NextLink
-													href={`/product/${item.slug}`}
+													href={`/product/${cartItem.product.slug}`}
 													passHref
 												>
 													<Link>
 														<Image
 															src={
-																item.imageUrl ||
-																item.images
-																	.length
-																	? item
+																cartItem.product
+																	.imageUrl ||
+																cartItem.product
+																	.images
+																	?.length
+																	? cartItem
+																			.product
 																			.images[
-																			item
+																			cartItem
+																				.product
 																				.images
 																				.length -
 																				1
@@ -119,7 +123,10 @@ function Cart() {
 																	  'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 																	: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 															}
-															alt={item.name}
+															alt={
+																cartItem.product
+																	.title
+															}
 															width={50}
 															height={50}
 														></Image>
@@ -129,12 +136,15 @@ function Cart() {
 
 											<TableCell>
 												<NextLink
-													href={`/product/${item.slug}`}
+													href={`/product/${cartItem.product.slug}`}
 													passHref
 												>
 													<Link>
 														<Typography>
-															{item.title}
+															{
+																cartItem.product
+																	.title
+															}
 														</Typography>
 													</Link>
 												</NextLink>
@@ -143,32 +153,32 @@ function Cart() {
 											<TableCell align="right">
 												<Typography>
 													{dateHelper.getReadableNumberOfDaysBetween(
-														new Date(item.dateOut),
-														new Date(item.dateDue)
+														new Date(
+															cartItem.startDate
+														),
+														new Date(
+															cartItem.endDate
+														)
 													)}
 												</Typography>
 											</TableCell>
 
 											<TableCell align="right">
 												<Typography>
-													${item.price}
+													${cartItem.product.price}
 												</Typography>
 											</TableCell>
 
 											<TableCell align="right">
 												<Typography>
 													$
-													{console.log({
-														startDate: item.dateOut,
-														endDate: item.dateDue,
-													})}
 													{ProductHelper.getProductTotalPrice(
-														item.price,
+														cartItem.product.price,
 														{
 															startDate:
-																item.dateOut,
+																cartItem.startDate,
 															endDate:
-																item.dateDue,
+																cartItem.endDate,
 														}
 													)}
 												</Typography>
@@ -178,8 +188,12 @@ function Cart() {
 												<Typography>
 													{/* @todo format date range method */}
 													{dateHelper.getHumanReadableDateRangeText(
-														new Date(item.dateOut),
-														new Date(item.dateDue)
+														new Date(
+															cartItem.startDate
+														),
+														new Date(
+															cartItem.endDate
+														)
 													)}
 												</Typography>
 											</TableCell>
@@ -189,7 +203,9 @@ function Cart() {
 													variant="contained"
 													color="secondary"
 													onClick={(e) =>
-														removeCartHandler(item)
+														removeCartHandler(
+															cartItem.id
+														)
 													}
 												>
 													x

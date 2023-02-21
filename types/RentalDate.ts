@@ -1,4 +1,6 @@
+import CartItem from './CartItem';
+
 export type RentalDate = {
-	startDate: string;
-	endDate: string;
+	startDate: CartItem['startDate'];
+	endDate: CartItem['endDate'];
 };

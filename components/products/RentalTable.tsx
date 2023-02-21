@@ -49,7 +49,7 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 				<TableBody>
 					{rentals.map((rental: Rental) => (
 						<TableRow
-							key={rental._id}
+							key={rental.id}
 							/* sx={{
 								'&:last-child td, &:last-child th': {
 									border: 0,
@@ -64,7 +64,7 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 											? rental.product
 											: rental.product._id
 									}
-									rentalId={rental._id}
+									rentalId={rental.id}
 								/>
 							</TableCell>
 							<TableCell align="right">

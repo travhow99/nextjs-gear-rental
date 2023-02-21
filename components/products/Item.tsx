@@ -14,7 +14,7 @@ import {
 import useStyles from '../../utils/styles';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { addItem } from '../../redux/cart/cartSlice';
+import { createCart } from '../../redux/cart/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import ProductCalendar from './ProductCalendar';
@@ -23,12 +23,22 @@ import BetaProductCalendar from './BetaProductCalendar';
 import { getDay } from 'date-fns';
 import dateHelper from '../../utils/dateHelper';
 import ProductHelper from '../../utils/helpers/ProductHelper';
-import CartHelper from '../../utils/helpers/CartHelper';
+import useCart from '../../utils/hooks/useCart';
+import CartItem from '../../types/CartItem';
+import { addProductToCart } from '../../utils/helpers/api/CartHelper';
+import SellerProduct from '../../types/SellerProduct';
 
-export default function Item(props) {
+/* interface RootState {
+	cart: {
+		cartId: string | null,
+	};
+} */
+
+export default function Item(props: { product: SellerProduct }) {
+	// const { cart: cartStore } = useSelector((state /* : RootState */) => state);
+
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const { cart } = useSelector((state) => state);
 	const { closeSnackbar, enqueueSnackbar } = useSnackbar();
 
 	const [rental, setRental] = useState({
@@ -42,59 +52,37 @@ export default function Item(props) {
 	const classes = useStyles();
 	const product = props.product;
 
+	const {
+		cart,
+		mutate, // Used to trigger refresh
+	} = useCart();
+
+	console.log('have cart', cart);
+
 	useEffect(() => {
 		const disabled = buttonShouldBeDisabled();
 		setButtonIsDisabled(disabled);
 	}, [rental]);
 
-	console.log('C:', cart.cartItems);
-
-	/**
-	 * @todo No need to account for existing item in cart?
-	 */
 	const addToCartHandler = async () => {
-		const existingItem = cart.cartItems.find(
-			(item) => item._id === product._id
-		);
+		try {
+			const storeRental: CartItem = {
+				productId: product.id,
+				startDate: rental.startDate,
+				endDate: rental.endDate,
+			};
 
-		const storeRental = {
-			startDate: rental.startDate.toISOString(),
-			endDate: rental.endDate.toISOString(),
-		};
+			const updatedCart = await addProductToCart(storeRental, cart);
 
-		console.log(cart.cartItems, {
-			...product,
-			rental: storeRental,
-		});
-		if (
-			CartHelper.productCanBeAddedToCart(cart.cartItems, {
-				...product,
-				dateOut: storeRental.startDate,
-				dateDue: storeRental.endDate,
-			})
-		) {
-			dispatch(
-				/**
-				 * @todo should be able to store just product._id & generate rest serverside
-				 */
-				addItem({
-					_id: product._id,
-					product: product.product,
-					slug: product.slug,
-					title: product.title,
-					user: product.user,
-					price: product.price,
-					images: [product.images[product.images.length - 1]],
-					dateOut: storeRental.startDate,
-					dateDue: storeRental.endDate,
-				})
-			);
-			router.push('/cart');
-		} else {
-			enqueueSnackbar('Product Unavailable', {
-				variant: 'error',
-				autoHideDuration: 3000,
-			});
+			if (!cart?.id) {
+				dispatch(createCart(updatedCart.id));
+			}
+
+			enqueueSnackbar('Product added!', { variant: 'success' });
+
+			mutate();
+		} catch (error) {
+			enqueueSnackbar(error.message, { variant: 'error' });
 		}
 	};
 
@@ -132,7 +120,7 @@ export default function Item(props) {
 								? product.images[product.images.length - 1].path
 								: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 						}
-						alt={product.name}
+						alt={product.title}
 						width={640}
 						height={640}
 						layout="responsive"
@@ -216,8 +204,9 @@ export default function Item(props) {
 							)}
 							<ListItem>
 								<BetaProductCalendar
-									productId={product._id}
-									rental={rental}
+									isAdmin={false}
+									productId={product.id}
+									// rental={rental}
 									setRange={setRental}
 									range={rental}
 								/>

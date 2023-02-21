@@ -19,34 +19,28 @@ type ResponseData = {
 
 type NextApiRequestWithUser = NextApiRequest & { user?: User };
 
-type CartWithItemsProductAndImages = Cart;
-
 handler.get(
 	async (
 		req: NextApiRequestWithUser,
-		res: NextApiResponse<ResponseData | CartWithItemsProductAndImages>
+		res: NextApiResponse<ResponseData | CartItem>
 	) => {
 		try {
-			const cartId = String(req.query.id);
+			const cartItemId = String(req.query.id);
 
-			const cart = await prisma.cart.findFirst({
+			const cartItem = await prisma.cartItem.findFirst({
 				where: {
-					id: cartId,
+					id: cartItemId,
 				},
 				include: {
-					cartItems: {
+					product: {
 						include: {
-							product: {
-								include: {
-									images: true,
-								},
-							},
+							images: true,
 						},
 					},
 				},
 			});
 
-			res.status(200).send(cart);
+			res.status(200).send(cartItem);
 		} catch (error) {
 			res.status(400).json({ success: false, message: error.message });
 		}
@@ -59,29 +53,28 @@ handler.put(
 		res: NextApiResponse /* <ResponseData | Cart> */
 	) => {
 		try {
-			const cartId = String(req.query.id);
-			const { cartItems }: { cartItems: CartItem } = req.body;
+			const cartItemId = String(req.query.id);
 
-			const cartData = {
-				userId: null,
-				cartItems: { create: cartItems },
-			};
-
-			if (req.user) cartData.userId = req.user.id;
-
-			const cart = await prisma.cart.update({
+			const cartItem = await prisma.cartItem.update({
 				where: {
-					id: cartId,
+					id: cartItemId,
 				},
-				data: {
-					cartItems: { create: req.body.cartItem },
+				data: req.body.cartItem,
+				include: {
+					product: {
+						include: {
+							images: true,
+						},
+					},
 				},
-				include: { cartItems: true },
 			});
 
-			res.status(200).send(cart);
+			res.status(200).send(cartItem);
 		} catch (error) {
-			res.status(404).json({ success: false, message: 'Cart not found' });
+			res.status(404).json({
+				success: false,
+				message: 'CartItem not found',
+			});
 		}
 	}
 );
@@ -92,14 +85,11 @@ handler.delete(
 		res: NextApiResponse /* <ResponseData | Cart> */
 	) => {
 		try {
-			const cartId = String(req.query.id);
+			const cartItemId = String(req.query.id);
 
-			const cart = await prisma.cart.update({
+			const cartItem = await prisma.cartItem.delete({
 				where: {
-					id: cartId,
-				},
-				data: {
-					cartItems: { deleteMany: [{ id: req.body.id }] },
+					id: cartItemId,
 				},
 			});
 
@@ -108,7 +98,10 @@ handler.delete(
 				message: 'CartItem deleted',
 			});
 		} catch (error) {
-			res.status(404).json({ success: false, message: 'Cart not found' });
+			res.status(404).json({
+				success: false,
+				message: 'CartItem not found',
+			});
 		}
 	}
 );

@@ -1,5 +1,8 @@
 import ProductImage from './ProductImage';
 
+/**
+ * @deprecated
+ */
 type Product = {
 	_id: string;
 	product: string;

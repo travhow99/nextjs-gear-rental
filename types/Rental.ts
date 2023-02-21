@@ -2,7 +2,7 @@ import Product from './Product';
 import User from './User';
 
 type Rental = {
-	_id?: string;
+	id?: string;
 	orderId?: string;
 	user: User;
 	product: Product | string;

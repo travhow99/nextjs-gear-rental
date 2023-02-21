@@ -20,7 +20,7 @@ import User from '../../../models/User';
 function SalePage({ sale }: { sale: OrderType }) {
 	console.log('got props:', sale);
 
-	const pageTitle = `Order #${sale._id}`;
+	const pageTitle = `Order #${sale.id}`;
 
 	if (!sale) {
 		return (
@@ -34,7 +34,7 @@ function SalePage({ sale }: { sale: OrderType }) {
 
 	return (
 		<SellerPage title={pageTitle}>
-			<Sale saleId={sale._id} />
+			<Sale saleId={sale.id} />
 		</SellerPage>
 	);
 }

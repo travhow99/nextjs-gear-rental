@@ -4,12 +4,9 @@ import {
 	getDate,
 	getYear,
 	formatDistance,
-	isSameYear,
-	isSameMonth,
 	isSameDay,
 	isAfter,
 	isBefore,
-	subDays,
 	isToday,
 	isThisWeek,
 	isYesterday,
@@ -74,17 +71,14 @@ const dateHelper = {
 		return new Date(currentYear, month, 1);
 	},
 
-	getReadableNumberOfDaysBetween(
-		date1: number | Date,
-		date2: number | Date
-	): string {
+	getReadableNumberOfDaysBetween(date1: Date, date2: Date): string {
 		const days = formatDistance(date2, date1);
 		console.log('d:', days, parseInt(days, 10));
 
 		return days === 'less than a minute' ? '1 day' : days;
 	},
 
-	getNumberOfDaysBetween(date1: number | Date, date2: number | Date): number {
+	getNumberOfDaysBetween(date1: Date, date2: Date): number {
 		const days = formatDistance(date2, date1);
 		console.log('d:', days, parseInt(days, 10));
 
@@ -110,9 +104,7 @@ const dateHelper = {
 		const startDate2 = new Date(rentalDate2.startDate);
 		const endDate2 = new Date(rentalDate2.endDate);
 
-		// (StartDate1 <= EndDate2) and (StartDate2 <= EndDate1)
-
-		console.log(
+		/* console.log(
 			startDate1,
 			startDate2,
 			endDate1,
@@ -121,14 +113,19 @@ const dateHelper = {
 			isAfter(startDate1, endDate2),
 			isSameDay(startDate2, endDate1),
 			isBefore(startDate2, endDate1)
-		);
+		); */
+
+		// (StartDate1 <= EndDate2) and (StartDate2 <= EndDate1)
+		// Ref: https://stackoverflow.com/a/325939/10013177
+
 		if (
 			isSameDay(startDate1, endDate2) ||
 			isSameDay(startDate1, startDate2) ||
-			isAfter(startDate1, endDate2) ||
+			// isAfter(startDate1, endDate2) ||
 			// isSameDay(startDate1, endDate1) ||
 			isSameDay(startDate2, endDate1) ||
-			isBefore(startDate2, endDate1)
+			// isBefore(startDate2, endDate1)
+			(isBefore(startDate1, endDate2) && isBefore(startDate2, endDate1))
 		) {
 			return true;
 		}

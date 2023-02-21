@@ -2,7 +2,7 @@ import Rental from './Rental';
 import User from './User';
 
 type Order = {
-	_id?: string;
+	id?: string;
 	user: User;
 	storeId: string;
 	rentals: Array<Rental>;

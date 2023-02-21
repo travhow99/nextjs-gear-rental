@@ -3,13 +3,9 @@ import { useRouter } from 'next/router';
 import { getTopItems } from '../../lib/items';
 import Layout from '../../components/layout/Layout';
 import Item from '../../components/products/Item';
-import db from '../../utils/db';
-import SellerProduct from '../../models/SellerProduct';
-import Rental from '../../models/Rental';
-import BlockOut from '../../models/BlockOut';
-import ProductImage from '../../models/ProductImage';
 import NotFound from '../../components/pages/NotFound';
 import { Typography } from '@material-ui/core';
+import prisma from '../../lib/prisma';
 
 export default function ProductPage(props) {
 	const { product } = props;
@@ -35,7 +31,24 @@ export async function getServerSideProps(context) {
 	const { params } = context;
 	const { slug } = params;
 
-	await db.connect();
+	const product = await prisma.sellerProduct.findFirst({
+		where: {
+			slug: slug,
+		},
+		include: {
+			images: true,
+			rentals: true,
+			blockOuts: {
+				where: {
+					NOT: {
+						softDelete: true,
+					},
+				},
+			},
+		},
+	});
+
+	/* await db.connect();
 
 	const product = await SellerProduct.findOne({ slug: slug })
 		.populate([
@@ -56,7 +69,7 @@ export async function getServerSideProps(context) {
 		.lean();
 	await db.disconnect();
 
-	console.log(slug, product);
+	console.log(slug, product); */
 
 	return {
 		props: {

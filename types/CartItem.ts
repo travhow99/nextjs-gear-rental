@@ -1,7 +1,10 @@
+import SellerProduct from './SellerProduct';
+
 type CartItem = {
-	_id?: string;
-	cartId: string;
+	id?: string;
+	cartId?: string;
 	productId: string;
+	product?: SellerProduct;
 	startDate: Date;
 	endDate: Date;
 
