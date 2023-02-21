@@ -5,6 +5,7 @@ import BlockOut from '../../../models/BlockOut';
 import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
+import prisma from '../../../lib/prisma';
 
 const handler = nc({
 	onError,
@@ -36,7 +37,7 @@ handler.get(async (req, res) => {
 });
 
 handler.post(async (req, res) => {
-	await db.connect();
+	/* await db.connect();
 
 	const sellerProduct = new SellerProduct({
 		...req.body,
@@ -45,7 +46,16 @@ handler.post(async (req, res) => {
 
 	const product = await sellerProduct.save();
 
-	await db.disconnect();
+	await db.disconnect(); */
+
+	const product = await prisma.sellerProduct.create({
+		data: {
+			...req.body,
+			userId: req.user._id,
+		},
+	});
+
+	console.log('created prod:', product);
 
 	res.status(201).send(product);
 });
