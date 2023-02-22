@@ -179,7 +179,7 @@ model Product {
   rating      Float
   rental_min  Int
   size        String?
-  slug        String   @unique(map: "slug_1")
+  slug        String   @unique
   stock       Int
   title       String
   createdAt   DateTime @default(now())
@@ -226,7 +226,7 @@ model SellerProduct {
   rentalMin    Int
   rentals      Rental[]
   size         String?
-  slug         String         @unique(map: "slug_1")
+  slug         String         @unique
   softDelete   Boolean?
   stock        Int
   title        String

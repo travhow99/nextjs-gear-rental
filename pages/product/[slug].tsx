@@ -12,7 +12,7 @@ export default function ProductPage(props) {
 
 	if (!product) {
 		return (
-			<NotFound>
+			<NotFound title={'adventureBuddy'}>
 				<Typography component={'h1'} variant={'h1'}>
 					Product Not Found
 				</Typography>
@@ -31,7 +31,7 @@ export async function getServerSideProps(context) {
 	const { params } = context;
 	const { slug } = params;
 
-	const product = await prisma.sellerProduct.findFirst({
+	const product = await prisma.sellerProduct.findUnique({
 		where: {
 			slug: slug,
 		},
@@ -40,36 +40,20 @@ export async function getServerSideProps(context) {
 			rentals: true,
 			blockOuts: {
 				where: {
-					NOT: {
-						softDelete: true,
-					},
+					OR: [
+						{
+							softDelete: false,
+						},
+						{
+							softDelete: {
+								isSet: false,
+							},
+						},
+					],
 				},
 			},
 		},
 	});
-
-	/* await db.connect();
-
-	const product = await SellerProduct.findOne({ slug: slug })
-		.populate([
-			{
-				path: 'images',
-				model: ProductImage,
-			},
-			{
-				path: 'rentals',
-				model: Rental,
-			},
-			{
-				path: 'blockOuts',
-				match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
-				model: BlockOut,
-			},
-		])
-		.lean();
-	await db.disconnect();
-
-	console.log(slug, product); */
 
 	return {
 		props: {
