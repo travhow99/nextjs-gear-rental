@@ -12,23 +12,23 @@ import {
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useDispatch } from 'react-redux';
-import Product from '../../types/Product';
+import SellerProduct from '../../types/SellerProduct';
 import dateHelper from '../../utils/dateHelper';
+import { removeItemFromCart } from '../../utils/helpers/api/CartHelper';
 import ProductHelper from '../../utils/helpers/ProductHelper';
-import { removeItem } from '../../redux/cart/cartSlice';
 
 export default function ItemsTable({
 	items,
 	isCartPage,
 }: {
-	items: Array<Product>;
+	items: Array<SellerProduct>;
 	isCartPage: boolean;
 }) {
 	console.log('I', items);
 	const dispatch = useDispatch();
 
-	const removeCartHandler = async (product: Product) => {
-		dispatch(removeItem(product));
+	const removeCartHandler = async (product: SellerProduct) => {
+		dispatch(removeItemFromCart(product));
 	};
 
 	return (

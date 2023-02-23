@@ -6,9 +6,17 @@ import Item from '../../components/products/Item';
 import NotFound from '../../components/pages/NotFound';
 import { Typography } from '@material-ui/core';
 import prisma from '../../lib/prisma';
+import SellerProduct from '../../types/SellerProduct';
+// import useSellerProduct from '../../utils/hooks/useSellerProduct';
 
-export default function ProductPage(props) {
+/**
+ * @todo Implement SWR with fallback data
+ * @todo SEO work
+ */
+export default function ProductPage(props: { product: SellerProduct }) {
 	const { product } = props;
+
+	// const {} = useSellerProduct();
 
 	if (!product) {
 		return (

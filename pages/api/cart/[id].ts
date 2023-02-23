@@ -5,6 +5,7 @@ import prisma from '../../../lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 import User from '../../../types/User';
 import { Cart, CartItem, SellerProduct } from '@prisma/client';
+import NextApiRequestWithUser from '../../../types/api/NextApiRequestWithUser';
 
 const handler = nextConnect({
 	onError,
@@ -16,8 +17,6 @@ type ResponseData = {
 	success?: Boolean;
 	message?: string;
 };
-
-type NextApiRequestWithUser = NextApiRequest & { user?: User };
 
 type CartWithItemsProductAndImages = Cart;
 
