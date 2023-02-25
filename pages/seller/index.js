@@ -32,10 +32,10 @@ import TotalProductsWidget from '../../components/seller/widgets/totalProductsWi
 import RecentOrdersWidget from '../../components/seller/widgets/recentOrdersWidget';
 import TotalOrdersWidget from '../../components/seller/widgets/totalOrdersWidget';
 import OrdersTable from '../../components/seller/OrdersTable';
-import useOrders from '../../utils/hooks/useOrders';
+import useSellerOrders from '../../utils/hooks/useSellerOrders';
 
 function Seller() {
-	const { orders, isLoading, isError } = useOrders();
+	const { orders, isLoading, isError } = useSellerOrders();
 	const { data: session, status } = useSession({
 		required: true,
 	});

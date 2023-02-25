@@ -1,7 +1,10 @@
+import { NextApiResponse } from 'next';
 import nc from 'next-connect';
+import prisma from '../../../lib/prisma';
 import Order from '../../../models/Order';
 // import Rental from '../../../models/Rental';
 import SellerProduct from '../../../models/SellerProduct';
+import NextApiRequestWithUser from '../../../types/api/NextApiRequestWithUser';
 import Rental from '../../../types/Rental';
 import { isAuth } from '../../../utils/auth';
 import db from '../../../utils/db';
@@ -13,8 +16,28 @@ const handler = nc({
 
 handler.use(isAuth);
 
+handler.get(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
+	try {
+		const orders = await prisma.order.findMany({
+			where: {
+				userId: req.user.id,
+			},
+			include: {
+				rentals: true,
+			},
+		});
+
+		res.send(orders);
+	} catch (error) {}
+});
+
+/**
+ * @todo
+ */
 handler.post(async (req, res) => {
 	try {
+		// const order = await prisma.order.create({});
+
 		await db.connect();
 
 		console.log('got request', req.body);

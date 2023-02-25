@@ -29,7 +29,6 @@ import { signIn, useSession } from 'next-auth/react';
 import useStyles from '../../utils/styles';
 import ProductHelper from '../../utils/helpers/ProductHelper';
 import { Stack } from '@mui/material';
-import ProfileContainer from '../../components/account/ProfileContainer';
 import Loading from '../../components/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -37,46 +36,27 @@ import {
 	orderSucces,
 	orderFail,
 } from '../../redux/orders/ordersSlice';
+import ProfileContainer from '../../components/account/ProfileContainer';
+import useUserOrders from '../../utils/hooks/useUserOrders';
 function Orders() {
-	const router = useRouter();
-	const classes = useStyles();
-	const dispatch = useDispatch();
-	const { orders } = useSelector((state) => state);
+	const { orders, isLoading, isError } = useUserOrders();
 
-	// const { orders, requestLoading, requestFor, requestError, paySuccess } =
-	//   state;
+	if (orders) console.log('got orders', orders);
 
 	const { data: session, status } = useSession({
 		required: true,
 	});
 
-	useEffect(() => {
-		if (!orders.orders.length) fetchOrders();
-	}, []);
-
-	const fetchOrders = async () => {
-		try {
-			console.log('fetching orders!!');
-			dispatch(orderRequest());
-
-			const { data } = await axios.get(`/api/orders/history`);
-			console.log('got data', data);
-			dispatch(orderSucces(data));
-		} catch (error) {
-			dispatch(orderFail(error));
-		}
-	};
-
 	return (
 		<ProfileContainer title={'Orders'}>
 			{status ? (
 				<>
-					<Typography coponent="h1" variant="h1">
+					<Typography component="h1" variant="h1">
 						Orders
 					</Typography>
-					{orders.requestLoading || !orders.orders.length ? (
+					{isLoading /* || !orders.orders.length */ ? (
 						<Loading />
-					) : orders.orders.length === 0 ? (
+					) : orders.length === 0 ? (
 						<div>
 							You have no orders yet...
 							<br />
@@ -101,11 +81,11 @@ function Orders() {
 											</TableRow>
 										</TableHead>
 										<TableBody>
-											{orders.orders
+											{orders
 												.slice(0)
 												.reverse()
 												.map((order) => (
-													<TableRow key={order._id}>
+													<TableRow key={order.id}>
 														<TableCell>
 															{ProductHelper.formatPurchaseDate(
 																order.createdAt
@@ -141,13 +121,13 @@ function Orders() {
 
 														<TableCell>
 															<NextLink
-																href={`/order/${order._id}`}
+																href={`/order/${order.id}`}
 																passHref
 															>
 																<Link>
 																	<Typography>
 																		{
-																			order._id
+																			order.id
 																		}
 																	</Typography>
 																</Link>

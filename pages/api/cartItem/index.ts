@@ -5,6 +5,7 @@ import prisma from '../../../lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 import User from '../../../types/User';
 import CartItem from '../../../types/CartItem';
+import NextApiRequestWithUser from '../../../types/api/NextApiRequestWithUser';
 
 const handler = nextConnect({
 	onError,
@@ -13,29 +14,28 @@ const handler = nextConnect({
 handler.use(authCheck);
 
 interface CartDataType {
-	userId: any;
+	userId: string;
 	cartItems: {
 		create: CartItem;
 	};
 }
-
-type NextApiRequestWithUser = NextApiRequest & { user?: User };
 
 handler.post(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 	try {
 		const { cartItem }: { cartItem: CartItem } = req.body;
 
 		const cartData: CartDataType = {
-			userId: null,
+			userId: req.user.id,
 			cartItems: { create: cartItem },
 		};
 
 		console.log('cd:', cartData, cartItem);
 
-		if (req.user) cartData.userId = req.user.id;
-
 		const cart = await prisma.cart.create({
-			data: cartData,
+			data: {
+				userId: req.user.id,
+				cartItems: { create: [cartItem] },
+			},
 			include: { cartItems: true },
 		});
 

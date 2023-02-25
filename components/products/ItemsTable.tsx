@@ -13,6 +13,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useDispatch } from 'react-redux';
 import SellerProduct from '../../types/SellerProduct';
+import SellerProductWithRentalDateOrCartItemDate from '../../types/SellerProductWithRentalDate';
 import dateHelper from '../../utils/dateHelper';
 import { removeItemFromCart } from '../../utils/helpers/api/CartHelper';
 import ProductHelper from '../../utils/helpers/ProductHelper';
@@ -21,14 +22,14 @@ export default function ItemsTable({
 	items,
 	isCartPage,
 }: {
-	items: Array<SellerProduct>;
+	items: Array<SellerProductWithRentalDateOrCartItemDate>;
 	isCartPage: boolean;
 }) {
 	console.log('I', items);
 	const dispatch = useDispatch();
 
 	const removeCartHandler = async (product: SellerProduct) => {
-		dispatch(removeItemFromCart(product));
+		dispatch(removeItemFromCart(product.id));
 	};
 
 	return (
@@ -87,7 +88,7 @@ export default function ItemsTable({
 							<TableCell align="right">
 								<Typography>
 									{dateHelper.getReadableNumberOfDaysBetween(
-										new Date(item.dateOut),
+										new Date(item.startDate),
 										new Date(item.dateDue)
 									)}
 								</Typography>
@@ -103,7 +104,7 @@ export default function ItemsTable({
 									{ProductHelper.getProductTotalPrice(
 										item.price,
 										{
-											startDate: item.dateOut,
+											startDate: item.startDate,
 											endDate: item.dateDue,
 										}
 									)}
@@ -113,7 +114,7 @@ export default function ItemsTable({
 							<TableCell align="right">
 								<Typography>
 									{dateHelper.getHumanReadableDateRangeText(
-										new Date(item.dateOut),
+										new Date(item.startDate),
 										new Date(item.dateDue)
 									)}
 								</Typography>

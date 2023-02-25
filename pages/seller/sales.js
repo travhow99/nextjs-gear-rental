@@ -44,10 +44,10 @@ import {
 	sellerSalesSuccess,
 } from '../../redux/seller/sellerSlice';
 import OrdersTable from '../../components/seller/OrdersTable';
-import useOrders from '../../utils/hooks/useOrders';
+import useSellerOrders from '../../utils/hooks/useSellerOrders';
 
 function SellerSales() {
-	const { orders, isLoading, isError } = useOrders();
+	const { orders, isLoading, isError } = useSellerOrders();
 
 	/* const dispatch = useDispatch();
 	const {

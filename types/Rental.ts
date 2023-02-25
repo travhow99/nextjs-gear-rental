@@ -1,15 +1,15 @@
-import Product from './Product';
+import SellerProduct from './SellerProduct';
 import User from './User';
 
 type Rental = {
 	id?: string;
 	orderId?: string;
 	user: User;
-	product: Product | string;
+	product: SellerProduct | string;
 	quantity?: Number;
-	dateOut: string;
-	dateDue: string;
-	dateReturned?: string;
+	dateOut: Date;
+	dateDue: Date;
+	dateReturned?: Date;
 	price: Number;
 	details?: string;
 	softeDelete?: Boolean;
