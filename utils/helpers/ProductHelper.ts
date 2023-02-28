@@ -7,6 +7,7 @@ import { getMonth, isAfter, isBefore, isSameDay, setMonth } from 'date-fns';
 import Product from '../../types/Product';
 import { RentalDate } from '../../types/RentalDate';
 import { Booking } from '../../types/Booking';
+import CartItem from '../../types/CartItem';
 
 // export default _product;
 
@@ -14,8 +15,8 @@ export default class ProductHelper {
 	/**
 	 * @todo Calculate with # of days for rental
 	 */
-	static determineSubtotal(cartItems: Array<Product>) {
-		const total = cartItems.reduce((a, c) => a + c.price, 0);
+	static determineSubtotal(cartItems: Array<CartItem>) {
+		const total = cartItems.reduce((a, c) => a + c.product.price, 0);
 		return this.roundToPenny(total);
 	}
 

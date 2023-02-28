@@ -14,7 +14,7 @@ export const cartSlice = createSlice({
 
 			Cookies.set('cartId', action.payload);
 		},
-		deleteCart: (state, action) => {
+		deleteCart: (state) => {
 			state.cartId = null;
 
 			Cookies.remove('cartId');

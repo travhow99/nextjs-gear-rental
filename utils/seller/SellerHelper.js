@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useContext } from 'react';
-import useOrder from '../hooks/useOrder';
+import useSellerOrder from '../hooks/useSellerOrder';
 import { generateAccessToken } from './paypalHelper';
 import { v4 as uuidv4 } from 'uuid';
 

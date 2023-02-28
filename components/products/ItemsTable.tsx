@@ -88,8 +88,16 @@ export default function ItemsTable({
 							<TableCell align="right">
 								<Typography>
 									{dateHelper.getReadableNumberOfDaysBetween(
-										new Date(item.startDate),
-										new Date(item.dateDue)
+										new Date(
+											isCartPage
+												? item.startDate
+												: item.dateOut
+										),
+										new Date(
+											isCartPage
+												? item.endDate
+												: item.dateDue
+										)
 									)}
 								</Typography>
 							</TableCell>
@@ -104,8 +112,12 @@ export default function ItemsTable({
 									{ProductHelper.getProductTotalPrice(
 										item.price,
 										{
-											startDate: item.startDate,
-											endDate: item.dateDue,
+											startDate: isCartPage
+												? item.startDate
+												: item.dateOut,
+											endDate: isCartPage
+												? item.endDate
+												: item.dateDue,
 										}
 									)}
 								</Typography>
@@ -114,8 +126,16 @@ export default function ItemsTable({
 							<TableCell align="right">
 								<Typography>
 									{dateHelper.getHumanReadableDateRangeText(
-										new Date(item.startDate),
-										new Date(item.dateDue)
+										new Date(
+											isCartPage
+												? item.startDate
+												: item.dateOut
+										),
+										new Date(
+											isCartPage
+												? item.endDate
+												: item.dateDue
+										)
 									)}
 								</Typography>
 							</TableCell>

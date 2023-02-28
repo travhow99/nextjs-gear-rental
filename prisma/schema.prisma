@@ -130,7 +130,7 @@ model Order {
   totalPrice        Float
   userId            String               @db.ObjectId
   user              User                 @relation(fields: [userId], references: [id])
-  ordertransactions OrderTransaction[]
+  orderTransactions OrderTransaction[]
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @updatedAt
 
@@ -148,7 +148,7 @@ model OrderTransaction {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  @@map("ordertransactions")
+  @@map("orderTransactions")
 }
 
 model ProductImage {
@@ -200,7 +200,7 @@ model Rental {
   user            User           @relation(fields: [userId], references: [id])
   orders          Order?         @relation(fields: [orderId], references: [id])
   orderId         String?        @db.ObjectId
-  sellerproducts  SellerProduct? @relation(fields: [sellerProductId], references: [id])
+  sellerProduct   SellerProduct? @relation(fields: [sellerProductId], references: [id])
   sellerProductId String?        @db.ObjectId
   usermessages    UserMessage[]
   createdAt       DateTime       @default(now())

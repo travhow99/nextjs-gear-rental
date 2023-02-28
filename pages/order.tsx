@@ -31,7 +31,8 @@ import { getError } from '../utils/error';
 import Cookies from 'js-cookie';
 import { signIn, useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearCart } from '../redux/cart/cartSlice';
+import { deleteCart } from '../redux/cart/cartSlice';
+import useCart from '../utils/hooks/useCart';
 
 function Order() {
 	const classes = useStyles();
@@ -51,8 +52,10 @@ function Order() {
 		cart: { shippingAddress, paymentMethod },
 	} = state; */
 
-	const { cart } = useSelector((state) => state);
-	const { cartItems, paymentMethod } = cart;
+	const { cart, isLoading } = useCart();
+	const { cartItems } = cart || { cartItems: [] };
+
+	const paymentMethod = 'stripe';
 
 	console.log('cart?', cartItems);
 	console.log('pmt?', paymentMethod);
@@ -83,7 +86,7 @@ function Order() {
 				email: session.user.email,
 			});
 
-			dispatch(clearCart());
+			dispatch(deleteCart());
 			Cookies.remove('cartItems');
 			setLoading(false);
 
@@ -107,7 +110,7 @@ function Order() {
 	return (
 		<Layout title="Cart">
 			<CheckoutWizard activeStep={2} />
-			<Typography coponent="h1" variant="h1">
+			<Typography component="h1" variant="h1">
 				Order
 			</Typography>
 
@@ -173,66 +176,80 @@ function Order() {
 											</TableRow>
 										</TableHead>
 										<TableBody>
-											{cartItems.map((item, index) => (
-												<TableRow
-													key={item.tempId || index}
-												>
-													<TableCell>
-														<NextLink
-															href={`/product/${item.slug}`}
-															passHref
-														>
-															<Link>
-																<Image
-																	src={
-																		item.imageUrl ||
-																		item
-																			.images
-																			.length
-																			? item
-																					.images[
-																					item
-																						.images
-																						.length -
-																						1
-																			  ]
-																					.path
-																			: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
-																	}
-																	alt={
-																		item.name
-																	}
-																	width={50}
-																	height={50}
-																></Image>
-															</Link>
-														</NextLink>
-													</TableCell>
+											{isLoading ? (
+												<CircularProgress />
+											) : (
+												cartItems.map((item, index) => (
+													<TableRow
+														key={item.id || index}
+													>
+														<TableCell>
+															<NextLink
+																href={`/product/${item.product.slug}`}
+																passHref
+															>
+																<Link>
+																	<Image
+																		src={
+																			item
+																				.product
+																				.imageUrl ||
+																			item
+																				.product
+																				.images
+																				.length
+																				? item
+																						.product
+																						.images[
+																						item
+																							.product
+																							.images
+																							.length -
+																							1
+																				  ]
+																						.path
+																				: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
+																		}
+																		alt={
+																			item
+																				.product
+																				.title
+																		}
+																		width={
+																			50
+																		}
+																		height={
+																			50
+																		}
+																	></Image>
+																</Link>
+															</NextLink>
+														</TableCell>
 
-													<TableCell>
-														<NextLink
-															href={`/product/${item.slug}`}
-															passHref
-														>
-															<Link>
-																<Typography>
-																	{item.title}
-																</Typography>
-															</Link>
-														</NextLink>
-													</TableCell>
+														<TableCell>
+															<NextLink
+																href={`/product/${item.product.slug}`}
+																passHref
+															>
+																<Link>
+																	<Typography>
+																		{
+																			item
+																				.product
+																				.title
+																		}
+																	</Typography>
+																</Link>
+															</NextLink>
+														</TableCell>
 
-													<TableCell align="right">
-														<Typography>
-															{item.quantity}
-														</Typography>
-													</TableCell>
-
-													<TableCell align="right">
-														${item.price}
-													</TableCell>
-												</TableRow>
-											))}
+														<TableCell align="right">
+															$
+															{item.product.price}
+														</TableCell>
+													</TableRow>
+												))
+											)}
 										</TableBody>
 									</Table>
 								</TableContainer>

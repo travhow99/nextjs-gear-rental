@@ -1,13 +1,20 @@
 import { CircularProgress, List, ListItem, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import OrderTransaction from '../../types/OrderTransaction';
 import dateHelper from '../../utils/dateHelper';
 import useOrderTransactions from '../../utils/hooks/useOrderTransactions';
 
-export default function OrderTransactions({ saleId }: { saleId: string }) {
-	const { transactions, isLoading, isValidating, isError } =
-		useOrderTransactions(saleId);
+export default function OrderTransactions({
+	saleId,
+	transactions,
+}: {
+	saleId: string;
+	transactions: Array<OrderTransaction>;
+}) {
+	// const { transactions, isLoading, isValidating, isError } =
+	// 	useOrderTransactions(saleId);
 
-	return isLoading ? (
+	return false /* isLoading */ ? (
 		<Box sx={{ display: 'flex', justifyContent: 'center' }}>
 			<CircularProgress />
 		</Box>

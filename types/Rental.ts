@@ -5,7 +5,8 @@ type Rental = {
 	id?: string;
 	orderId?: string;
 	user: User;
-	product: SellerProduct | string;
+	// product: SellerProduct | string;
+	sellerProduct?: SellerProduct;
 	quantity?: Number;
 	dateOut: Date;
 	dateDue: Date;

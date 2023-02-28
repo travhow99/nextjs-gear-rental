@@ -19,14 +19,14 @@ import ItemsTable from '../products/ItemsTable';
 import MessageLog from './MessageLog';
 import SellerHelper from '../../utils/seller/SellerHelper';
 import ArchiveOrderButton from './ArchiveOrderButton';
-import useOrder from '../../utils/hooks/useOrder';
+import useSellerOrder from '../../utils/hooks/useSellerOrder';
 import Loading from '../Loading';
 import Rental from '../../types/Rental';
 import OrderNotes from './OrderNotes';
 import OrderTransactions from '../orders/OrderTransactions';
 
 export default function Sale({ saleId }: { saleId: string }) {
-	const { order, isLoading, isError, mutate } = useOrder(saleId);
+	const { order, isLoading, isError, mutate } = useSellerOrder(saleId);
 
 	const classes = useStyles();
 

@@ -28,7 +28,9 @@ handler.get(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 		});
 
 		res.send(orders);
-	} catch (error) {}
+	} catch (error) {
+		res.status(404).send({ message: 'orders not found' });
+	}
 });
 
 /**

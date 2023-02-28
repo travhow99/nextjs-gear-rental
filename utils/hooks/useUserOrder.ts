@@ -11,9 +11,9 @@ interface SWRDataResponse {
 	mutate?: Function;
 }
 
-export default function useOrder(id: string): SWRDataResponse {
+export default function useUserOrder(id: string): SWRDataResponse {
 	const { data, error, isLoading, isValidating, mutate } = useSWR(
-		`/api/seller/orders/${id}`,
+		`/api/orders/${id}`,
 		fetcher
 	);
 

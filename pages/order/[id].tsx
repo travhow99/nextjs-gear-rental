@@ -45,9 +45,9 @@ import ProductHelper from '../../utils/helpers/ProductHelper';
 import Loading from '../../components/Loading';
 import NotFound from '../../components/pages/NotFound';
 import ItemsTable from '../../components/products/ItemsTable';
-import useOrder from '../../utils/hooks/useOrder';
 import SellerHelper from '../../utils/seller/SellerHelper';
 import OrderTransactions from '../../components/orders/OrderTransactions';
+import useUserOrder from '../../utils/hooks/useUserOrder';
 
 function Order({ params }) {
 	const orderId = params.id;
@@ -61,7 +61,7 @@ function Order({ params }) {
 	// const { paypal } = useSelector((state) => state);
 
 	const { order, isLoading, isValidating, isError, mutate } =
-		useOrder(orderId);
+		useUserOrder(orderId);
 
 	const { status, data: session } = useSession({
 		required: true,
@@ -216,7 +216,10 @@ function Order({ params }) {
 								</ListItem>
 								<ListItem>{paymentMethod}</ListItem>
 								<ListItem>
-									<OrderTransactions saleId={orderId} />
+									<OrderTransactions
+										saleId={orderId}
+										transactions={order.orderTransactions}
+									/>
 								</ListItem>
 							</List>
 						</Card>
@@ -232,13 +235,11 @@ function Order({ params }) {
 									<ItemsTable
 										isCartPage={false}
 										items={rentals.map((r) => {
-											if (typeof r.product === 'object') {
-												return {
-													...r.product,
-													dateOut: r.dateOut,
-													dateDue: r.dateDue,
-												};
-											}
+											return {
+												...r.sellerProduct,
+												dateOut: r.dateOut,
+												dateDue: r.dateDue,
+											};
 										})}
 									/>
 								</ListItem>

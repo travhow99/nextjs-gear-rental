@@ -1,3 +1,4 @@
+import OrderTransaction from './OrderTransaction';
 import Rental from './Rental';
 import User from './User';
 
@@ -17,6 +18,7 @@ type Order = {
 	totalPrice: number;
 	isPaid: boolean;
 	paidAt?: Date;
+	orderTransactions?: Array<OrderTransaction>;
 	createdAt: Date;
 	softDelete?: Boolean;
 };
