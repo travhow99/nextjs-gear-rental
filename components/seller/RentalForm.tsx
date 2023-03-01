@@ -19,7 +19,7 @@ import BetaProductCalendar from '../products/BetaProductCalendar';
 import Rental from '../../types/Rental';
 import RentalTable from '../products/RentalTable';
 
-export default function RentalForm({ productId, rentals, updateBlockOuts }) {
+export default function RentalForm({ productId, rentals }) {
 	const [adding, setAdding] = useState(false);
 	const [editing, setEditing] = useState(null);
 	const [dateIn, setDateIn] = useState('');
@@ -48,7 +48,7 @@ export default function RentalForm({ productId, rentals, updateBlockOuts }) {
 			(_rental: Rental, index: number) => index !== removeIndex
 		);
 
-		updateBlockOuts(updatedRentals);
+		// updateRentals(updatedRentals);
 
 		setShowDelete(false);
 		setDeleteId(null);

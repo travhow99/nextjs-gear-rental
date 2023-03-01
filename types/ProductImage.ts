@@ -1,7 +1,8 @@
 import Product from './Product';
 
 type ProductImage = {
-	productId: Product;
+	id?: string;
+	productId: string;
 	path: string;
 	category?: string;
 	description?: string;

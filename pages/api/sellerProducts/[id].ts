@@ -36,6 +36,7 @@ handler.get(async (req, res) => {
 						},
 					},
 					blockOuts: true,
+					rentals: true,
 				},
 			});
 

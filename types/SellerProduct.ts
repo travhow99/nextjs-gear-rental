@@ -1,4 +1,6 @@
+import { BlockOut } from '@prisma/client';
 import ProductImage from './ProductImage';
+import Rental from './Rental';
 
 type SellerProduct = {
 	id?: string;
@@ -19,6 +21,8 @@ type SellerProduct = {
 	stock: number;
 	title: string;
 	userId: string;
+	blockOuts: Array<BlockOut>;
+	rentals: Array<Rental>;
 	rating?: number;
 	reviewCount?: number;
 	createdAt?: Date;

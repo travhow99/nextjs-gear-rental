@@ -37,28 +37,12 @@ import {
 	categoryRequest,
 	categorySuccess,
 } from '../../../redux/category/categorySlice';
-import { sellerUploadRequest } from '../../../redux/seller/sellerSlice';
 import SellerHelper from '../../../utils/seller/SellerHelper';
 
 import useStyles from '../../../utils/styles';
 import Link from 'next/link';
 import useSellerProduct from '../../../utils/hooks/useSellerProduct';
-
-const initialProduct = {
-	category: '',
-	stock: 1,
-	rentalMin: 1,
-	title: '',
-	brand: '',
-	gender: '',
-	size: '',
-	condition: '',
-	price: '',
-	description: '',
-	keyword: '',
-	images: [],
-	rentals: [],
-};
+import { getError } from '../../../utils/error';
 
 function SellerProduct({ params }) {
 	const sellerProductId = params.id;
@@ -82,7 +66,6 @@ function SellerProduct({ params }) {
 	const {
 		brand: { brands },
 		category: { categories },
-		seller: { uploadRequestLoading, uploadRequestError },
 	} = useSelector((state) => state);
 
 	const { data: session, status } = useSession({
@@ -164,14 +147,13 @@ function SellerProduct({ params }) {
 		console.log('img upload data', data);
 
 		const updatedImages = [...product.images, data];
-		setImages(updatedImages);
 	};
 
 	const checkForChange = (name, val) => {
 		return val != product[name];
 	};
 
-	return status ? (
+	return status && !isLoading ? (
 		<SellerContainer title={'Products'}>
 			<Card className={classes.section}>
 				{product ? (
@@ -198,7 +180,7 @@ function SellerProduct({ params }) {
 								 */}
 								{product.images?.length >= 1 &&
 									product.images.map((image) => (
-										<Grid key={image._id} item xs={3}>
+										<Grid key={image.id} item xs={3}>
 											<Image
 												priority
 												src={image.path}
@@ -261,7 +243,7 @@ function SellerProduct({ params }) {
 								<Grid item xs>
 									<Autocomplete
 										fullWidth
-										name="brand"
+										// name="brand"
 										options={brands.map(
 											(brand) => brand.title
 										)}
@@ -286,7 +268,7 @@ function SellerProduct({ params }) {
 								<Grid item xs>
 									<Autocomplete
 										fullWidth
-										name="category"
+										// name="category"
 										disableClearable
 										options={categories.map(
 											(category) => category.name
@@ -396,13 +378,13 @@ function SellerProduct({ params }) {
 			</Card>
 
 			<RentalForm
-				rentals={product?.rentals || []}
+				rentals={product.rentals || []}
 				productId={sellerProductId}
 			/>
 			<BlockOutForm
 				updateBlockOuts={setBlockOuts}
 				productId={sellerProductId}
-				blockOuts={blockOuts}
+				blockOuts={product.blockOuts}
 			/>
 		</SellerContainer>
 	) : (
