@@ -3,9 +3,8 @@ import { onError } from '../../../utils/error';
 import { authCheck } from '../../../utils/authCheck';
 import prisma from '../../../lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
-import User from '../../../types/User';
-import { CartItem } from '@prisma/client';
 import NextApiRequestWithUser from '../../../types/api/NextApiRequestWithUser';
+import CartItem from '../../../types/CartItem';
 
 const handler = nextConnect({
 	onError,
