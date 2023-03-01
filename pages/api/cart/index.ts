@@ -25,7 +25,7 @@ handler.post(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 	try {
 		const { cartItem }: { cartItem: CartItem } = req.body;
 
-		const cartData: CartDataType = {
+		const cartData = {
 			userId: null,
 			cartItems: { create: cartItem },
 		};
@@ -35,7 +35,12 @@ handler.post(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 		if (req.user) cartData.userId = req.user.id;
 
 		const cart = await prisma.cart.create({
-			data: cartData,
+			data: {
+				userId: req.user?.id || null,
+				cartItems: {
+					create: [cartItem],
+				},
+			},
 			include: { cartItems: true },
 		});
 
