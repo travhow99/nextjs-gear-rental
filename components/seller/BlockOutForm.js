@@ -204,7 +204,7 @@ export default function BlockOutForm({
 						{blockOuts &&
 							blockOuts.length > 0 &&
 							blockOuts.map((bo) => (
-								<ListItem key={bo._id}>
+								<ListItem key={bo.id}>
 									<Paper
 										className={classes.paper}
 										elevation={3}

@@ -87,9 +87,9 @@ export default function Sale({ saleId }: { saleId: string }) {
 						<ItemsTable
 							isCartPage={false}
 							items={order.rentals.map((r: Rental) => {
-								if (typeof r.product === 'object') {
+								if (typeof r.sellerProduct === 'object') {
 									return {
-										...r.product,
+										...r.sellerProduct,
 										dateOut: r.dateOut,
 										dateDue: r.dateDue,
 									};
@@ -98,7 +98,10 @@ export default function Sale({ saleId }: { saleId: string }) {
 						/>
 					</ListItem>
 					<ListItem>
-						<OrderTransactions saleId={saleId} />
+						<OrderTransactions
+							transactions={order.orderTransactions}
+							saleId={saleId}
+						/>
 					</ListItem>
 					<ListItem>
 						<OrderNotes saleId={saleId} />
