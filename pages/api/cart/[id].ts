@@ -4,7 +4,7 @@ import { authCheck } from '../../../utils/authCheck';
 import prisma from '../../../lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 import User from '../../../types/User';
-import { Cart, CartItem, SellerProduct } from '@prisma/client';
+import { CartItem } from '@prisma/client';
 import NextApiRequestWithUser from '../../../types/api/NextApiRequestWithUser';
 
 const handler = nextConnect({
@@ -18,12 +18,12 @@ type ResponseData = {
 	message?: string;
 };
 
-type CartWithItemsProductAndImages = Cart;
+// type CartWithItemsProductAndImages = Cart;
 
 handler.get(
 	async (
 		req: NextApiRequestWithUser,
-		res: NextApiResponse<ResponseData | CartWithItemsProductAndImages>
+		res: NextApiResponse /* <ResponseData | CartWithItemsProductAndImages> */
 	) => {
 		try {
 			const cartId = String(req.query.id);
