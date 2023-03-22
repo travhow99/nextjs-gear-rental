@@ -1,7 +1,9 @@
 import nc from 'next-connect';
+import prisma from '../../../../../lib/prisma';
 import OrderNote from '../../../../../models/OrderNote';
 import db from '../../../../../utils/db';
 import { onError } from '../../../../../utils/error';
+import { sellerOwnsOrder } from '../../../../../utils/helpers/api/SellerOrderHelper';
 import { isSeller } from '../../../../../utils/isSeller';
 
 const handler = nc({
@@ -12,24 +14,22 @@ handler.use(isSeller);
 
 handler.get(async (req, res) => {
 	try {
-		await db.connect();
+		/**
+		 * @todo verify seller owns order
+		 */
+		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
 
-		// @ts-ignore
-		const sellerOwnsOrder = await OrderNote.sellerOwnsOrder(
-			req.user._id,
-			req.query.id
-		);
+		console.log('s owns o rdre?', ownsOrder);
 
-		console.log('s owns o rdre?', sellerOwnsOrder);
+		if (!ownsOrder) throw new Error('order not found');
 
-		if (!sellerOwnsOrder) throw new Error('order not found');
-
-		// @ts-ignore
-		const orderNotes = await OrderNote.find({ orderId: req.query.id });
+		const orderNotes = await prisma.orderNote.findMany({
+			where: {
+				orderId: req.query.id,
+			},
+		});
 
 		console.log('got order notes', orderNotes);
-
-		await db.disconnect();
 
 		res.send(orderNotes);
 	} catch (error) {
@@ -43,15 +43,11 @@ handler.post(async (req, res) => {
 	try {
 		await db.connect();
 
-		// @ts-ignore
-		const sellerOwnsOrder = await OrderNote.sellerOwnsOrder(
-			req.user._id,
-			req.query.id
-		);
+		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
 
-		console.log('s owns o rdre?', sellerOwnsOrder);
+		console.log('s owns o rdre?', ownsOrder);
 
-		if (!sellerOwnsOrder) throw new Error('order not found');
+		if (!ownsOrder) throw new Error('order not found');
 
 		const orderNote = new OrderNote({
 			orderId: req.body.orderId,

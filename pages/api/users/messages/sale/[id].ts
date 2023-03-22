@@ -18,7 +18,7 @@ handler.get(async (req, res) => {
 		const messages = await UserMessage.find({
 			$and: [
 				{ rental: req.query.id },
-				{ $or: [{ sentBy: req.user._id }, { sentTo: req.user._id }] },
+				{ $or: [{ sentBy: req.user.id }, { sentTo: req.user.id }] },
 			],
 		}).exec();
 

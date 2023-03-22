@@ -1,4 +1,5 @@
 import nc from 'next-connect';
+import prisma from '../../../../../lib/prisma';
 import Order from '../../../../../models/Order';
 import ProductImage from '../../../../../models/ProductImage';
 import Rental from '../../../../../models/Rental';
@@ -16,31 +17,29 @@ handler.use(isSeller);
 
 handler.get(async (req, res) => {
 	try {
-		await db.connect();
-		// @ts-ignore
-		const order = await Order.findById(req.query.id)
-			.populate([
-				{
-					path: 'rentals',
-					model: Rental,
-					populate: {
-						path: 'product',
-						model: SellerProduct,
-						populate: {
-							path: 'images',
-							model: ProductImage,
+		const order = await prisma.order.findFirst({
+			where: {
+				id: req.query.id,
+			},
+			include: {
+				rentals: {
+					include: {
+						sellerProduct: {
+							include: {
+								images: true,
+							},
 						},
 					},
 				},
-				{
-					path: 'user',
-					model: User,
-					select: 'name email',
+				user: {
+					select: {
+						name: true,
+						email: true,
+					},
 				},
-			])
-			.lean();
-
-		await db.disconnect();
+				orderTransactions: true,
+			},
+		});
 
 		res.send(order);
 	} catch (error) {

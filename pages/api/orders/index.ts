@@ -34,9 +34,6 @@ handler.get(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 	}
 });
 
-/**
- * @todo
- */
 handler.post(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 	try {
 		const rentals = req.body.orderItems.map(
@@ -51,31 +48,6 @@ handler.post(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 				};
 			}
 		);
-
-		/* console.log(
-			{
-				data: {
-					userId: req.user.id,
-					storeId: req.body.orderItems[0].product.userId,
-					rentals: {
-						createMany: {
-							data: [rentals],
-						},
-					},
-					paymentMethod: req.body.paymentMethod,
-					itemsPrice: parseFloat(req.body.itemsPrice),
-					taxPrice: parseFloat(req.body.taxPrice),
-					totalPrice: parseFloat(req.body.totalPrice),
-				},
-				include: {
-					rentals: true,
-				},
-			},
-			'user:',
-			req.user
-		); */
-
-		console.log('R:', rentals);
 
 		const order = await prisma.order.create({
 			data: {

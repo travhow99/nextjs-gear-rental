@@ -16,7 +16,7 @@ handler.get(async (req, res) => {
 
 		// @todo TS error
 		// @ts-ignore
-		const orders = await Order.find({ storeId: req.user._id }).lean();
+		const orders = await Order.find({ storeId: req.user.id }).lean();
 
 		await db.disconnect();
 

@@ -17,7 +17,7 @@ handler.get(async (req, res) => {
 		await db.connect();
 
 		const filter = {
-			user_id: req.user._id,
+			user_id: req.user.id,
 		};
 
 		if (req.body.product) filter.product = req.body.product;
@@ -37,7 +37,7 @@ handler.post(async (req, res) => {
 		await db.connect();
 
 		const rental = new Rental({
-			user_id: req.user._id,
+			user_id: req.user.id,
 			...req.body,
 		});
 

@@ -18,7 +18,7 @@ handler.get(async (req, res) => {
 		// @todo TS error
 		// @ts-ignore
 		const orders = await Order.find({
-			storeId: req.user._id,
+			storeId: req.user.id,
 			createdAt: {
 				$gte: addDays(new Date(), -2),
 			},

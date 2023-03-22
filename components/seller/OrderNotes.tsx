@@ -21,7 +21,7 @@ export default function OrderNotes({ saleId }: { saleId: string }) {
 		</Box>
 	) : (
 		<Box>
-			{notes.length ? (
+			{notes && notes.length ? (
 				<>
 					<Typography>Order Notes</Typography>
 					<List>

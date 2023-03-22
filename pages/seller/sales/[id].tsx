@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next';
-import Order from '../../../models/Order';
 import db from '../../../utils/db';
 import OrderType from '../../../types/Order';
 import Layout from '../../../components/layout/Layout';
@@ -13,16 +12,18 @@ import Rental from '../../../models/Rental';
 import ProductImage from '../../../models/ProductImage';
 import SellerProduct from '../../../models/SellerProduct';
 import User from '../../../models/User';
+import Order from '../../../types/Order';
+import prisma from '../../../lib/prisma';
 
 /**
  * @todo Pass to swr or remove SSR
  */
-function SalePage({ sale }: { sale: OrderType }) {
-	console.log('got props:', sale);
+function SalePage({ saleId }: { saleId: string }) {
+	console.log('got props:', saleId);
 
-	const pageTitle = `Order #${sale.id}`;
+	const pageTitle = `Order #${saleId}`;
 
-	if (!sale) {
+	if (!saleId) {
 		return (
 			<NotFound title={pageTitle}>
 				<Typography component={'h1'} variant={'h1'}>
@@ -34,7 +35,7 @@ function SalePage({ sale }: { sale: OrderType }) {
 
 	return (
 		<SellerPage title={pageTitle}>
-			<Sale saleId={sale.id} />
+			<Sale saleId={saleId} />
 		</SellerPage>
 	);
 }
@@ -43,13 +44,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 	const { params } = context;
 	const { id } = params;
 
-	await db.connect();
+	/* const sale = await prisma.order.findFirst({
+		where: {
+			id: String(id),
+		},
+		include: {
+			rentals: {
+				include: {
+					sellerProduct: {
+						include: {
+							images: true,
+						},
+					},
+				},
+			},
+		},
+	}); */
 
 	/**
 	 * @todo Resolve with mongoose or migrate to Prisma?
 	 */
 	// @ts-ignore
-	const sale: OrderType = await Order.findById(id)
+	/* const sale: OrderType = await Order.findById(id)
 		.populate([
 			{
 				path: 'rentals',
@@ -69,15 +85,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 				select: 'name email',
 			},
 		])
-		.lean(); //.exec();
+		.lean(); */ //.exec();
 
-	console.log('sale:', sale);
-
-	await db.disconnect();
+	// console.log('sale:', sale);
 
 	return {
 		props: {
-			sale: JSON.parse(JSON.stringify(sale)),
+			saleId: id, //JSON.parse(JSON.stringify(sale)),
 		},
 	};
 };

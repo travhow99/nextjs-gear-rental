@@ -21,7 +21,7 @@ handler.get(async (req, res) => {
 		/* const messages = await UserMessage.find({
 			$and: [
 				{ rental: req.body.rental },
-				{ $or: [{ sentBy: req.user._id }, { sentTo: req.user._id }] },
+				{ $or: [{ sentBy: req.user.id }, { sentTo: req.user.id }] },
 			],
 		}); */
 
@@ -41,7 +41,7 @@ handler.post(async (req, res) => {
 		await db.connect();
 
 		const userMessage = new UserMessage({
-			sentBy: req.user._id,
+			sentBy: req.user.id,
 			sentTo: req.body.sentTo,
 			message: req.body.message,
 			product: req.body.product,

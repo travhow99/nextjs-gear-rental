@@ -18,7 +18,7 @@ handler.get(async (req, res) => {
 		await db.connect();
 
 		const products = await SellerProduct.find({
-			user_id: req.user._id,
+			user_id: req.user.id,
 			softDelete: { $ne: true },
 		}).populate([
 			'images',
@@ -41,7 +41,7 @@ handler.post(async (req, res) => {
 
 	const sellerProduct = new SellerProduct({
 		...req.body,
-		user: req.user._id,
+		user: req.user.id,
 	});
 
 	const product = await sellerProduct.save();
@@ -51,7 +51,7 @@ handler.post(async (req, res) => {
 	const product = await prisma.sellerProduct.create({
 		data: {
 			...req.body,
-			userId: req.user._id,
+			userId: req.user.id,
 		},
 	});
 

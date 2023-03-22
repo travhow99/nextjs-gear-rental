@@ -2,6 +2,7 @@ import nc from 'next-connect';
 import OrderTransaction from '../../../../models/OrderTransaction';
 import db from '../../../../utils/db';
 import { onError } from '../../../../utils/error';
+import { sellerOwnsOrder } from '../../../../utils/helpers/api/SellerOrderHelper';
 import { isSeller } from '../../../../utils/isSeller';
 
 const handler = nc({
@@ -15,14 +16,11 @@ handler.get(async (req, res) => {
 		await db.connect();
 
 		// @ts-ignore
-		const sellerOwnsOrder = await OrderTransaction.sellerOwnsOrder(
-			req.user._id,
-			req.query.id
-		);
+		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
 
-		console.log('s owns o rdre?', sellerOwnsOrder);
+		console.log('s owns o rdre?', ownsOrder);
 
-		if (!sellerOwnsOrder) throw new Error('order not found');
+		if (!ownsOrder) throw new Error('order not found');
 
 		// @ts-ignore
 		const orderTransactions = await OrderTransaction.find({
@@ -45,15 +43,11 @@ handler.post(async (req, res) => {
 	try {
 		await db.connect();
 
-		// @ts-ignore
-		const sellerOwnsOrder = await OrderTransaction.sellerOwnsOrder(
-			req.user._id,
-			req.query.id
-		);
+		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
 
-		console.log('s owns o rdre?', sellerOwnsOrder);
+		console.log('s owns o rdre?', ownsOrder);
 
-		if (!sellerOwnsOrder) throw new Error('order not found');
+		if (!ownsOrder) throw new Error('order not found');
 
 		const orderTransaction = new OrderTransaction({
 			orderId: req.query.id,

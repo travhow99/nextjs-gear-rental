@@ -17,7 +17,7 @@ handler.get(async (req, res) => {
 		await db.connect();
 
 		const sellerOwnsProduct = req.user
-			? await SellerProduct.sellerOwnsProduct(req.user._id, req.query.id)
+			? await SellerProduct.sellerOwnsProduct(req.user.id, req.query.id)
 			: false;
 
 		console.log('s owns p?', sellerOwnsProduct);

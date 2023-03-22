@@ -18,7 +18,7 @@ handler.use(isSeller);
 
 handler.get(async (req, res) => {
 	try {
-		const ownsProduct = await sellerOwnsProduct(req.user._id, req.query.id);
+		const ownsProduct = await sellerOwnsProduct(req.user.id, req.query.id);
 
 		console.log('got OP', ownsProduct);
 
@@ -55,7 +55,7 @@ handler.get(async (req, res) => {
 
 handler.put(async (req, res) => {
 	try {
-		const ownsProduct = await sellerOwnsProduct(req.user._id, req.query.id);
+		const ownsProduct = await sellerOwnsProduct(req.user.id, req.query.id);
 
 		console.log('got OP', ownsProduct);
 
@@ -82,7 +82,7 @@ handler.put(async (req, res) => {
 
 handler.delete(async (req, res) => {
 	try {
-		const ownsProduct = await sellerOwnsProduct(req.user._id, req.query.id);
+		const ownsProduct = await sellerOwnsProduct(req.user.id, req.query.id);
 
 		if (ownsProduct) {
 			const r = await prisma.sellerProduct.update({
