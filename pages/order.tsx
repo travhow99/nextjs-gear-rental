@@ -52,10 +52,10 @@ function Order() {
 		cart: { shippingAddress, paymentMethod },
 	} = state; */
 
-	const { cart, isLoading } = useCart();
-	const { cartItems } = cart || { cartItems: [] };
-
-	const paymentMethod = 'stripe';
+	const { cart, paymentMethod, isLoading } = useCart();
+	const { cartItems } = cart || {
+		cartItems: [],
+	};
 
 	console.log('cart?', cartItems);
 	console.log('pmt?', paymentMethod);
@@ -90,7 +90,7 @@ function Order() {
 			Cookies.remove('cartItems');
 			setLoading(false);
 
-			router.push(`/order/${data._id}`);
+			router.push(`/order/${data.id}`);
 		} catch (err) {
 			setLoading(false);
 			const errorString = getError(err);
@@ -167,9 +167,6 @@ function Order() {
 											<TableRow>
 												<TableCell>Image</TableCell>
 												<TableCell>Name</TableCell>
-												<TableCell align="right">
-													Quantity
-												</TableCell>
 												<TableCell align="right">
 													Price
 												</TableCell>

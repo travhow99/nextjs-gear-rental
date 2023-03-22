@@ -48,7 +48,6 @@ export default function Payment() {
 			});
 		} else {
 			console.log('selected', selectedPaymentMethod, paymentMethod);
-			debugger;
 			dispatch(setPaymentMethod(selectedPaymentMethod));
 			router.push('/order');
 		}

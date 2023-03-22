@@ -5,6 +5,7 @@ import Order from '../../../models/Order';
 // import Rental from '../../../models/Rental';
 import SellerProduct from '../../../models/SellerProduct';
 import NextApiRequestWithUser from '../../../types/api/NextApiRequestWithUser';
+import CartItem from '../../../types/CartItem';
 import Rental from '../../../types/Rental';
 import { isAuth } from '../../../utils/auth';
 import db from '../../../utils/db';
@@ -36,53 +37,64 @@ handler.get(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 /**
  * @todo
  */
-handler.post(async (req, res) => {
+handler.post(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 	try {
-		// const order = await prisma.order.create({});
+		const rentals = req.body.orderItems.map(
+			(orderItem: CartItem): Rental => {
+				return {
+					userId: req.user.id,
+					sellerProductId: orderItem.productId,
+					dateOut: orderItem.startDate,
+					dateDue: orderItem.endDate,
+					price: orderItem.product.price,
+					quantity: 1,
+				};
+			}
+		);
 
-		await db.connect();
+		/* console.log(
+			{
+				data: {
+					userId: req.user.id,
+					storeId: req.body.orderItems[0].product.userId,
+					rentals: {
+						createMany: {
+							data: [rentals],
+						},
+					},
+					paymentMethod: req.body.paymentMethod,
+					itemsPrice: parseFloat(req.body.itemsPrice),
+					taxPrice: parseFloat(req.body.taxPrice),
+					totalPrice: parseFloat(req.body.totalPrice),
+				},
+				include: {
+					rentals: true,
+				},
+			},
+			'user:',
+			req.user
+		); */
 
-		console.log('got request', req.body);
+		console.log('R:', rentals);
 
-		return;
-		const rentals = req.body.orderItems.map((rental: Rental) => {
-			rental.product = rental.id;
-			delete rental.id;
-			delete rental.createdAt;
-			delete rental.updatedAt;
-			return rental;
+		const order = await prisma.order.create({
+			data: {
+				userId: req.user.id,
+				storeId: req.body.orderItems[0].product.userId,
+				rentals: {
+					createMany: {
+						data: [...rentals],
+					},
+				},
+				paymentMethod: req.body.paymentMethod,
+				itemsPrice: parseFloat(req.body.itemsPrice),
+				taxPrice: parseFloat(req.body.taxPrice),
+				totalPrice: parseFloat(req.body.totalPrice),
+			},
+			include: {
+				rentals: true,
+			},
 		});
-
-		console.log('r:', rentals);
-
-		// Add the Rentals to the db
-		const result = await Rental.insertMany(rentals);
-
-		console.log('got insertedids', result);
-
-		const newOrder = new Order({
-			...req.body,
-			user: req.user._id,
-			storeId: rentals[0].user,
-			rentals: result.map((rental) => rental._id),
-		});
-		console.log('store new order', newOrder);
-		const order = await newOrder.save();
-
-		// Store rentals to SellerProduct
-		result.map(async (rental) => {
-			// const ObjectId = require('mongoose').Types.ObjectId;
-
-			// const productId = new ObjectId(rental.product);
-			const productId = rental.product;
-			const sellerProduct = await SellerProduct.findById(productId);
-
-			sellerProduct.rentals.push(rental);
-
-			await sellerProduct.save();
-		});
-
-		await db.disconnect();
 
 		res.status(201).send(order);
 	} catch (error) {

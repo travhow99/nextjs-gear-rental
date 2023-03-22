@@ -6,51 +6,53 @@ import FacebookProvider from 'next-auth/providers/facebook';
 import clientPromise from '../../../lib/mongodb';
 
 export default NextAuth({
-  secret:
-    process.env.NODE_ENV === 'development' ? null : process.env.NEXTAUTH_SECRET,
-  adapter: MongoDBAdapter(clientPromise),
-  providers: [
-    /* GithubProvider({
+	secret:
+		process.env.NODE_ENV === 'development'
+			? null
+			: process.env.NEXTAUTH_SECRET,
+	adapter: MongoDBAdapter(clientPromise),
+	providers: [
+		/* GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
       scope: "read:user",
     }), */
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-    }),
-    /* FacebookProvider({
+		GoogleProvider({
+			clientId: process.env.GOOGLE_ID,
+			clientSecret: process.env.GOOGLE_SECRET,
+		}),
+		/* FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     }), */
-  ],
-  // debug: true,
-  /* debug: process.env.NODE_ENV === "development",
+	],
+	// debug: true,
+	/* debug: process.env.NODE_ENV === "development",
   secret: process.env.AUTH_SECRET,
   jwt: {
       secret: process.env.JWT_SECRET,
   },*/
-  callbacks: {
-    /* async redirect(url, baseUrl) {
+	callbacks: {
+		/* async redirect(url, baseUrl) {
           return "/";
       }, */
-    async session({ session, token, user }) {
-      console.log('USER:', user);
-      // session.accessToken = token.accessToken;
-      session.user._id = user.id;
-      session.user.role = user.role;
-      session.user.seller = user.seller;
+		async session({ session, token, user }) {
+			console.log('USER:', user);
+			// session.accessToken = token.accessToken;
+			session.user.id = user.id;
+			session.user.role = user.role;
+			session.user.seller = user.seller;
 
-      return session;
-    },
-  },
-  events: {
-    createUser: async (message) => {
-      console.log(message);
+			return session;
+		},
+	},
+	events: {
+		createUser: async (message) => {
+			console.log(message);
 
-      /**
-       * @todo Add default User attributes for database ie. role & seller
-       */
-    },
-  },
+			/**
+			 * @todo Add default User attributes for database ie. role & seller
+			 */
+		},
+	},
 });

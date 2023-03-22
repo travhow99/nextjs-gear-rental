@@ -8,7 +8,8 @@ datasource db {
 }
 
 // Mongodb replica set package: https://dev.to/salim_angelo/how-to-convert-your-localhost-standalone-mongodb-cluster-into-a-replica-set-using-run-rs-npm-package-on-mac-os-54hd
-// sudo run-rs --mongod
+// sudo run-rs --mongod --keep
+// db.createUser({ user: "root" , pwd: "root", roles: ["userAdminAnyDatabase", "dbAdminAnyDatabase", "readWriteAnyDatabase"]})
 type OrdersPaymentResult {
   id     String
   status String
@@ -116,7 +117,7 @@ model OrderNote {
 model Order {
   id                String               @id @default(auto()) @map("_id") @db.ObjectId
   v                 Int                  @default(0) @map("__v") @ignore
-  isPaid            Boolean
+  isPaid            Boolean              @default(false)
   itemsPrice        Int
   orderNotes        OrderNote[]
   paidAt            DateTime?            @db.Date
@@ -195,7 +196,7 @@ model Rental {
   dateOut         DateTime       @db.Date
   price           Int
   quantity        Int
-  softDelete      Boolean
+  softDelete      Boolean?
   userId          String         @db.ObjectId
   user            User           @relation(fields: [userId], references: [id])
   orders          Order?         @relation(fields: [orderId], references: [id])

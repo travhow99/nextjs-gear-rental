@@ -5,6 +5,7 @@ import { fetcher } from './fetcher';
 
 interface SWRDataResponse {
 	cart: Cart;
+	paymentMethod: string | null;
 	isLoading: boolean;
 	isValidating: boolean;
 	isError: boolean;
@@ -12,13 +13,17 @@ interface SWRDataResponse {
 }
 
 interface RootState {
-	cart: String | null;
+	cart: {
+		cartId: String | null;
+		paymentMethod: String | null;
+	};
 }
 
 export default function useCart(): SWRDataResponse {
 	const { cart } = useSelector((state: RootState) => state);
 
-	const id = cart;
+	const id = cart.cartId;
+	const paymentMethod = cart.paymentMethod;
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR(
 		id ? `/api/cart/${id}` : null, // Pass null to prevent request
@@ -27,6 +32,7 @@ export default function useCart(): SWRDataResponse {
 
 	return {
 		cart: data,
+		paymentMethod,
 		isLoading,
 		isValidating,
 		isError: error,
