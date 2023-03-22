@@ -27,6 +27,8 @@ const mockProduct: SellerProduct = {
 	stock: 1,
 	title: 'Guidefoot Waders',
 	userId: '12345',
+	blockOuts: [],
+	rentals: [],
 	createdAt: new Date(),
 	updatedAt: new Date(),
 };

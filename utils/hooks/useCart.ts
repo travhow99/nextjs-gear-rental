@@ -14,8 +14,8 @@ interface SWRDataResponse {
 
 interface RootState {
 	cart: {
-		cartId: String | null;
-		paymentMethod: String | null;
+		cartId: string | null;
+		paymentMethod: string | null;
 	};
 }
 
