@@ -13,7 +13,7 @@ type CartActionResult = {
 };
 
 export default class CartHelper {
-	static productIsInCart(cartItems: Array<SellerProduct>, newItemId: string) {
+	/* static productIsInCart(cartItems: Array<SellerProduct>, newItemId: string) {
 		const result = Boolean(
 			cartItems.find((item: { id: string }) => item.id === newItemId)
 		);
@@ -42,9 +42,9 @@ export default class CartHelper {
 				endDate: product.dateDue,
 			}
 		);
-	}
+	} */
 
-	static addProductToCart(
+	/* static addProductToCart(
 		cartItems: Array<SellerProduct>,
 		product: SellerProduct
 	): CartActionResult {
@@ -70,12 +70,12 @@ export default class CartHelper {
 		}
 
 		return result;
-	}
+	} */
 
 	/**
 	 * @todo allow for purchases from multiple sellers in the future
 	 */
-	static productCanBeAddedToCart(
+	/* static productCanBeAddedToCart(
 		cartItems: Array<SellerProduct>,
 		product: SellerProduct
 	): boolean {
@@ -90,7 +90,7 @@ export default class CartHelper {
 		}
 
 		return true;
-	}
+	} */
 
 	static getCartTotalPrice(cartItems: Array<CartItem>) {
 		console.log('T PRICE:', cartItems);
@@ -106,19 +106,5 @@ export default class CartHelper {
 			);
 		}, 0);
 		return price;
-		const totalPrice = cartItems.reduce((a, c) => {
-			console.log('a:', a);
-			return (
-				a +
-				ProductHelper.getProductTotalPrice(c.price, {
-					startDate: c.dateOut,
-					endDate: c.dateDue,
-				})
-			);
-		}, 0);
-
-		console.log('total cart:', totalPrice);
-
-		return totalPrice;
 	}
 }
