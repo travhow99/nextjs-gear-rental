@@ -19,7 +19,7 @@ const config: Config = {
 	// The paths have to be matching with the paths option within the compilerOptions in the tsconfig.json
 	// For example:
 
-	modulePathIgnorePatterns: ['<rootDir>/mongo-backup/'],
+	modulePathIgnorePatterns: ['<rootDir>/mongo-backup/', '<rootDir>/data/'],
 
 	moduleNameMapper: {
 		'@/(.*)$': '<rootDir>/src/$1',

@@ -4,8 +4,10 @@ import { prismaMock } from '../../../../singleton';
 import CartItem from '../../../../types/CartItem';
 import SellerProduct from '../../../../types/SellerProduct';
 import {
+	validateCartItems,
 	productExistsInCart,
 	productHasConflictingDate,
+	datesAreTodayOrFuture,
 } from '../../../../utils/helpers/api/CartHelper';
 
 const mockProduct: SellerProduct = {
@@ -43,6 +45,7 @@ const mockCartItem: CartItem = {
 
 const today = new Date();
 const tomorrow = addDays(today, 1);
+const yesterday = addDays(today, -1);
 
 const mockCartItem2: CartItem = {
 	product: mockProduct,
@@ -50,6 +53,14 @@ const mockCartItem2: CartItem = {
 	productId: '12345',
 	startDate: tomorrow,
 	endDate: tomorrow,
+};
+
+const mockCartItem3: CartItem = {
+	product: mockProduct,
+	cartId: '1111',
+	productId: '12345',
+	startDate: yesterday,
+	endDate: yesterday,
 };
 
 test('should assert productExistsInCart ', () => {
@@ -60,18 +71,28 @@ test('should assert productHasConflictingDate', () => {
 	expect(productHasConflictingDate([mockCartItem], mockCartItem)).toEqual(
 		true
 	);
-});
 
-test('should assert productHasConflictingDate', () => {
 	expect(productHasConflictingDate([mockCartItem2], mockCartItem)).toEqual(
 		false
 	);
-});
 
-test('should assert productHasConflictingDate', () => {
 	expect(productHasConflictingDate([mockCartItem], mockCartItem2)).toEqual(
 		false
 	);
+});
+
+test('should assert datesAreTodayOrFuture', () => {
+	expect(
+		datesAreTodayOrFuture(mockCartItem3.startDate, mockCartItem3.endDate)
+	).toEqual(false);
+
+	expect(
+		datesAreTodayOrFuture(mockCartItem.startDate, mockCartItem.endDate)
+	).toEqual(true);
+
+	expect(
+		datesAreTodayOrFuture(mockCartItem2.startDate, mockCartItem2.endDate)
+	).toEqual(true);
 });
 
 /* test('should update a users name ', async () => {

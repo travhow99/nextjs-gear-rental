@@ -61,6 +61,9 @@ const sellerProductSchema = new mongoose.Schema(
 /**
  * Statics
  */
+/**
+ * @deprecated
+ */
 sellerProductSchema.statics.sellerOwnsProduct =
 	async function sellerOwnsProduct(userId, productId) {
 		console.log('STATIC SOWNSP', productId, userId);

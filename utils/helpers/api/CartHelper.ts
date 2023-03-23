@@ -1,17 +1,20 @@
+import { Cart, CartItem, SellerProduct, ProductImage } from '@prisma/client';
 import axios from 'axios';
 import isBefore from 'date-fns/isBefore';
 import isSameDay from 'date-fns/isSameDay';
-import Cart from '../../../types/Cart';
-import CartItem from '../../../types/CartItem';
-import SellerProduct from '../../../types/SellerProduct';
+import CartWithCartItems from '../../../types/Cart';
+import CartItemWithProduct, { UnsavedCartItem } from '../../../types/CartItem';
+// import Cart from '../../../types/Cart';
+// import CartItem as CartItemType from '../../../types/CartItem';
+// import SellerProduct as SellerProductType from '../../../types/SellerProduct';
 import dateHelper from '../../dateHelper';
 
 /**
  * Add a product to the user's cart, by either creating a cart or modifying the current cart.
  */
 export async function addProductToCart(
-	product: CartItem,
-	cart?: Cart
+	product: UnsavedCartItem,
+	cart?: CartWithCartItems
 ): Promise<Cart> {
 	// try {
 	if (cart) {
@@ -73,7 +76,7 @@ export function getExistingProductsFromCart(
 
 export function productHasConflictingDate(
 	cartItems: Array<CartItem>,
-	product: CartItem
+	product: UnsavedCartItem
 ) {
 	if (!productExistsInCart(cartItems, product.productId)) return false;
 
@@ -105,7 +108,7 @@ export function productHasConflictingDate(
 
 export function productCanBeAddedToCart(
 	cartItems: Array<CartItem>,
-	product: CartItem
+	product: UnsavedCartItem
 ): boolean {
 	const today = new Date();
 	console.log(new Date(product.startDate), new Date(product.endDate), today);
@@ -126,4 +129,22 @@ export function productCanBeAddedToCart(
 	const productHasConflict = productHasConflictingDate(cartItems, product);
 	console.log('productHasConflict', productHasConflict);
 	return !productHasConflict;
+}
+
+export function datesAreTodayOrFuture(startDate: Date, endDate: Date) {
+	const today = new Date();
+	const date1 = new Date(startDate);
+	const date2 = new Date(endDate);
+
+	return !(
+		(isBefore(date1, today) && !isSameDay(date1, today)) ||
+		(isBefore(date2, today) && !isSameDay(date2, today))
+	);
+}
+
+/**
+ * Validate the current cart items before
+ */
+export function cartItemIsValid(cartItem: CartItemWithProduct) {
+	return !datesAreTodayOrFuture(cartItem.startDate, cartItem.endDate);
 }

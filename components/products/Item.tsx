@@ -24,9 +24,10 @@ import { getDay } from 'date-fns';
 import dateHelper from '../../utils/dateHelper';
 import ProductHelper from '../../utils/helpers/ProductHelper';
 import useCart from '../../utils/hooks/useCart';
-import CartItem from '../../types/CartItem';
 import { addProductToCart } from '../../utils/helpers/api/CartHelper';
 import SellerProduct from '../../types/SellerProduct';
+import { CartItem } from '@prisma/client';
+import { UnsavedCartItem } from '../../types/CartItem';
 
 /* interface RootState {
 	cart: {
@@ -66,7 +67,7 @@ export default function Item(props: { product: SellerProduct }) {
 
 	const addToCartHandler = async () => {
 		try {
-			const storeRental: CartItem = {
+			const storeRental: UnsavedCartItem = {
 				productId: product.id,
 				startDate: rental.startDate,
 				endDate: rental.endDate,
@@ -101,7 +102,7 @@ export default function Item(props: { product: SellerProduct }) {
 
 	// console.log(product.rental_min, product.stock);
 	console.log('new product!!', product);
-	// console.log('rental date', rental, rental.startDate, rental.endDate);
+	console.log('rental date', rental, rental.startDate, rental.endDate);
 
 	return (
 		<>
