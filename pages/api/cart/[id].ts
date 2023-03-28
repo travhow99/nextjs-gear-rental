@@ -23,7 +23,7 @@ handler.get(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 	try {
 		const cartId = String(req.query.id);
 
-		const cart = await prisma.cart.findFirst({
+		let cart = await prisma.cart.findFirst({
 			where: {
 				id: cartId,
 			},
@@ -40,9 +40,35 @@ handler.get(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 			},
 		});
 
-		for await (const cartItem of cart.cartItems) {
-			if (!cartItemIsValid(cartItem)) {
-				// @todo remove from cart
+		// console.log('loop thru cartitems?');
+		if (cart?.cartItems?.length) {
+			for await (const cartItem of cart.cartItems) {
+				if (!cartItemIsValid(cartItem)) {
+					// @todo remove from cart
+					// console.log('INVALID ITEM!!!');
+
+					cart = await prisma.cart.update({
+						where: {
+							id: cartId,
+						},
+						data: {
+							cartItems: {
+								deleteMany: [{ id: cartItem.id }],
+							},
+						},
+						include: {
+							cartItems: {
+								include: {
+									product: {
+										include: {
+											images: true,
+										},
+									},
+								},
+							},
+						},
+					});
+				}
 			}
 		}
 

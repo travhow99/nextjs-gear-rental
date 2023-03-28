@@ -146,5 +146,10 @@ export function datesAreTodayOrFuture(startDate: Date, endDate: Date) {
  * Validate the current cart items before
  */
 export function cartItemIsValid(cartItem: CartItemWithProduct) {
-	return !datesAreTodayOrFuture(cartItem.startDate, cartItem.endDate);
+	const todayOrFuture = datesAreTodayOrFuture(
+		cartItem.startDate,
+		cartItem.endDate
+	);
+
+	return todayOrFuture;
 }
