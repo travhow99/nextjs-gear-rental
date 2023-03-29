@@ -1,10 +1,8 @@
 import { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import prisma from '../../../../lib/prisma';
-import Order from '../../../../models/Order';
 import NextApiRequestWithUser from '../../../../types/api/NextApiRequestWithUser';
 import { isAuth } from '../../../../utils/auth';
-import db from '../../../../utils/db';
 import { onError } from '../../../../utils/error';
 
 const handler = nc({

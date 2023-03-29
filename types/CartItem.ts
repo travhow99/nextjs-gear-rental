@@ -1,5 +1,4 @@
 import { Prisma } from '@prisma/client';
-import SellerProduct from './SellerProduct';
 // 1: Define a type that includes the relation to `Post`
 const cartItemWithProduct = Prisma.validator<Prisma.CartItemArgs>()({
 	include: {

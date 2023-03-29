@@ -40,11 +40,6 @@ export async function addProductToCart(
 
 		return cart;
 	}
-	/* } catch (error) {
-		console.log('addProductToCart error:', error);
-		// return error;
-		throw new Error(error);
-	} */
 }
 
 export async function removeItemFromCart(
@@ -143,7 +138,8 @@ export function datesAreTodayOrFuture(startDate: Date, endDate: Date) {
 }
 
 /**
- * Validate the current cart items before
+ * Validate the current cart items before allowing purchase - or currently on every cart GET request.
+ * @todo Add all cart validation items here, including product availability check.
  */
 export function cartItemIsValid(cartItem: CartItemWithProduct) {
 	const todayOrFuture = datesAreTodayOrFuture(
@@ -153,3 +149,15 @@ export function cartItemIsValid(cartItem: CartItemWithProduct) {
 
 	return todayOrFuture;
 }
+
+/**
+ * @todo for validation
+ */
+export async function cartItemIsAvailableOnSelectedDates(
+	cartItem: UnsavedCartItem | CartItem
+) {}
+
+/**
+ * @todo for validation
+ */
+export async function removeCartItemFromCart(cartId, cartItemId) {}

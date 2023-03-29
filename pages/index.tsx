@@ -4,38 +4,38 @@ import HomeCallToAction from '../components/layout/Home';
 import db from '../utils/db';
 import SellerProduct from '../models/SellerProduct';
 import ProductImage from '../models/ProductImage';
+import prisma from '../lib/prisma';
 
 export default function Home({ products }) {
 	return (
 		<Layout title="Adventure Buddy">
 			<HomeCallToAction topItems={products} />
-			{/* <Box m={4} className={utilStyles.headingMd}>
-        <SimpleGrid columns={3} spacing={10}>
-          {topItems.map((item, index) => (
-            <Item item={item} key={index} />
-          ))}
-        </SimpleGrid>
-      </Box> */}
 		</Layout>
 	);
 }
 
 export async function getServerSideProps() {
-	await db.connect();
-
-	// @ts-ignore
-	const products = await SellerProduct.find({ softDelete: { $ne: true } })
-		.select('-rentals -blockOuts')
-		.populate({ path: 'images', model: ProductImage })
-		.lean();
-	console.log('got prods', products);
-	await db.disconnect();
+	const products = await prisma.sellerProduct.findMany({
+		where: {
+			OR: [
+				{
+					softDelete: false,
+				},
+				{
+					softDelete: {
+						isSet: false,
+					},
+				},
+			],
+		},
+		include: {
+			images: true,
+		},
+	});
 
 	return {
 		props: {
-			products: JSON.parse(
-				JSON.stringify(products)
-			) /* products.map(db.convertDocToObj) */,
+			products: JSON.parse(JSON.stringify(products)),
 		},
 	};
 }

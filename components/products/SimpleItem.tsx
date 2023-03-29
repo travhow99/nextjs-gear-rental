@@ -16,13 +16,13 @@ import ProductHelper from '../../utils/helpers/ProductHelper';
 import { useSnackbar } from 'notistack';
 import SellerProduct from '../../types/SellerProduct';
 
-export default function SimpleItem(props: { product: SellerProduct }) {
+export default function SimpleItem({ product }: { product: SellerProduct }) {
 	const router = useRouter();
 	// const cart = useSelector();
 	const dispatch = useDispatch();
 	const { closeSnackbar, enqueueSnackbar } = useSnackbar();
 
-	const product: SellerProduct = props.product;
+	// const product: SellerProduct = props.product;
 
 	/**
 	 *
@@ -38,9 +38,9 @@ export default function SimpleItem(props: { product: SellerProduct }) {
 					<CardMedia
 						component="img"
 						image={
-							product.imageUrl ||
-							(product.images?.length &&
-								product.images[product.images.length - 1].path)
+							// product.imageUrl ||
+							product.images?.length &&
+							product.images[product.images.length - 1].path
 								? product.images[product.images.length - 1].path
 								: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 						}

@@ -4,7 +4,6 @@ import { prismaMock } from '../../../../singleton';
 import CartItem from '../../../../types/CartItem';
 import SellerProduct from '../../../../types/SellerProduct';
 import {
-	validateCartItems,
 	productExistsInCart,
 	productHasConflictingDate,
 	datesAreTodayOrFuture,
