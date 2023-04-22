@@ -28,7 +28,9 @@ export default function ItemsTable({
 	console.log('I', items);
 	const dispatch = useDispatch();
 
-	const removeCartHandler = async (product: SellerProduct) => {
+	const removeCartHandler = async (
+		product: SellerProductWithRentalDateOrCartItemDate
+	) => {
 		dispatch(removeItemFromCart(product.id));
 	};
 

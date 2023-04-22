@@ -194,6 +194,7 @@ model Rental {
   v               Int            @default(0) @map("__v") @ignore
   dateDue         DateTime       @db.Date
   dateOut         DateTime       @db.Date
+  dateReturned    DateTime?      @db.Date
   price           Int
   quantity        Int
   softDelete      Boolean?

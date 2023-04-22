@@ -1,23 +1,16 @@
-import SellerProduct from './SellerProduct';
-import User from './User';
+import { Prisma } from '@prisma/client';
 
-type Rental = {
-	id?: string;
-	orderId?: string;
-	user?: User;
-	userId: string;
-	// product: SellerProduct | string;
-	sellerProduct?: SellerProduct;
-	sellerProductId: string;
-	quantity?: Number;
-	dateOut: Date;
-	dateDue: Date;
-	dateReturned?: Date;
-	price: Number;
-	details?: string;
-	softeDelete?: Boolean;
-	createdAt?: Date;
-	updatedAt?: Date;
-};
+const rental = Prisma.validator<Prisma.RentalArgs>()({
+	include: {
+		user: true,
+		sellerProduct: {
+			include: {
+				images: true,
+			},
+		},
+	},
+});
 
-export default Rental;
+type RentalWithUser = Prisma.RentalGetPayload<typeof rental>;
+
+export default RentalWithUser;

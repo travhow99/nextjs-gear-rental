@@ -1,29 +1,17 @@
 import {
-	Button,
 	Card,
 	CircularProgress,
 	Grid,
-	Link,
 	List,
 	ListItem,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
 	Typography,
 } from '@material-ui/core';
-import Image from 'next/image';
-import NextLink from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useEffect } from 'react';
 
 import axios from 'axios';
-import { useRouter } from 'next/router';
 
 import { useSnackbar } from 'notistack';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 import Layout from '../../components/layout/Layout';
 import useStyles from '../../utils/styles';
@@ -300,9 +288,11 @@ function Order({ params }) {
 										</Grid>
 									</Grid>
 								</ListItem>
-								{!isPaid && (
-									<ListItem>
-										{isPending ? (
+								<ListItem>
+									{order.softDelete ? (
+										'Order Cancelled'
+									) : !isPaid ? (
+										isPending ? (
 											<CircularProgress />
 										) : (
 											<div className={classes.fullWidth}>
@@ -312,9 +302,9 @@ function Order({ params }) {
 													onError={onError}
 												></PayPalButtons>
 											</div>
-										)}
-									</ListItem>
-								)}
+										)
+									) : null}
+								</ListItem>
 							</List>
 						</Card>
 					</Grid>

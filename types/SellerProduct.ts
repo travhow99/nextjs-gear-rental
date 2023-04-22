@@ -8,8 +8,27 @@ const sellerProductWithImages = Prisma.validator<Prisma.SellerProductArgs>()({
 	},
 });
 
-type SellerProductWithImages = Prisma.SellerProductGetPayload<
+const sellerProductWithAllRelations =
+	Prisma.validator<Prisma.SellerProductArgs>()({
+		include: {
+			images: true,
+			user: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+			blockOuts: true,
+			rentals: true,
+		},
+	});
+
+export type SellerProductWithImages = Prisma.SellerProductGetPayload<
 	typeof sellerProductWithImages
 >;
 
-export default SellerProductWithImages;
+type SellerProductWithAllRelations = Prisma.SellerProductGetPayload<
+	typeof sellerProductWithAllRelations
+>;
+
+export default SellerProductWithAllRelations;

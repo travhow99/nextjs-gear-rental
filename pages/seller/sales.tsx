@@ -58,30 +58,6 @@ function SellerSales() {
 		required: true,
 	});
 
-	const isUser = !!session?.user;
-
-	const isSeller =
-		isUser && (session.user.seller || session.user.role === 'admin');
-
-	/* useEffect(() => {
-		fetchOrders();
-	}, []);
-
-	const fetchOrders = async () => {
-		try {
-			dispatch(sellerSalesRequest());
-
-			const { data } = await axios.get('/api/seller/orders');
-			console.log('got orders', data);
-			// dispatch({ type: 'FETCH_SUCCESS', action: 'orders', payload: data });
-			dispatch(sellerSalesSuccess(data));
-		} catch (error) {
-			console.log('fetch erro', error);
-			// dispatch({ type: 'FETCH_FAIL' });
-			dispatch(sellerSalesFail(error));
-		}
-	}; */
-
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const router = useRouter();
 	const classes = useStyles();

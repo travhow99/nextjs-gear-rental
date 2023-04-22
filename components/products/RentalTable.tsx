@@ -1,7 +1,6 @@
 import * as React from 'react';
 import NavigationCard from '../@core/cards/navigationCard';
 import { NavigationCardTab } from '../../types/NavigationCard';
-import Rental from '../../types/Rental';
 import { isAfter, isBefore } from 'date-fns';
 import {
 	Link,
@@ -18,8 +17,9 @@ import dateHelper from '../../utils/dateHelper';
 import NextLink from 'next/link';
 import FormModal from '../@core/modals/formModal';
 import UserContactForm from '../utilities/dialogs/UserContactForm';
+import RentalWithUser from '../../types/Rental';
 
-const organizeRentals = (rentals: Array<Rental>) => {
+const organizeRentals = (rentals: Array<RentalWithUser>) => {
 	const past = rentals.filter((r) =>
 		isBefore(new Date(r.dateDue), new Date())
 	);
@@ -34,7 +34,8 @@ const organizeRentals = (rentals: Array<Rental>) => {
 	};
 };
 
-const generateRentalComponent = (rentals: Array<Rental>) => {
+const generateRentalComponent = (rentals: Array<RentalWithUser>) => {
+	console.log('R:', rentals);
 	return rentals.length ? (
 		<TableContainer>
 			<Table /* sx={{ minWidth: 650 }} */ /* aria-label="simple table" */>
@@ -47,7 +48,7 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{rentals.map((rental: Rental) => (
+					{rentals.map((rental: RentalWithUser) => (
 						<TableRow
 							key={rental.id}
 							/* sx={{
@@ -59,7 +60,7 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 							<TableCell align="right">
 								<UserContactForm
 									user={rental.user}
-									productId={rental.sellerProduct.id}
+									productId={rental.sellerProductId}
 									rentalId={rental.id}
 								/>
 							</TableCell>
@@ -95,7 +96,11 @@ const generateRentalComponent = (rentals: Array<Rental>) => {
 	);
 };
 
-export default function RentalTable({ rentals }: { rentals: Array<Rental> }) {
+export default function RentalTable({
+	rentals,
+}: {
+	rentals: Array<RentalWithUser>;
+}) {
 	const organizedRentals = organizeRentals(rentals);
 	const tabs: Array<NavigationCardTab> = [
 		{

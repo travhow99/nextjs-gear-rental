@@ -1,7 +1,7 @@
 import ProductImage from './ProductImage';
-import SellerProduct from './SellerProduct';
+import SellerProduct, { SellerProductWithImages } from './SellerProduct';
 
-type SellerProductWithRentalDateOrCartItemDate = SellerProduct & {
+type SellerProductWithRentalDateOrCartItemDate = SellerProductWithImages & {
 	startDate?: Date;
 	endDate?: Date;
 	dateOut?: Date;
