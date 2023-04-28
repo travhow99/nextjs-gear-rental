@@ -117,7 +117,7 @@ export default function Item(props: { product: SellerProduct }) {
 				<Grid item md={4} xs={6}>
 					<Image
 						src={
-							product.imageUrl || product.images.length
+							product.featuredImage || product.images.length
 								? product.images[product.images.length - 1].path
 								: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 						}
@@ -143,7 +143,10 @@ export default function Item(props: { product: SellerProduct }) {
 						<ListItem>
 							<Typography>Brand: {product.brand}</Typography>
 						</ListItem>
-						<ListItem>
+						{/**
+						 * @todo
+						 *  */}
+						{/* <ListItem>
 							{product.reviewCount ? (
 								<Typography>
 									Rating: {product.rating} stars (
@@ -155,7 +158,7 @@ export default function Item(props: { product: SellerProduct }) {
 									leave one!
 								</Typography>
 							)}
-						</ListItem>
+						</ListItem> */}
 						<ListItem>
 							<Typography>
 								{' '}

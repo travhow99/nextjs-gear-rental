@@ -17,7 +17,7 @@ const mockProduct: SellerProduct = {
 	description: 'quality fly fishing waders',
 	gender: 'M',
 	images: [],
-	imageUrl: 'string',
+	featuredImage: 'string',
 	keyword: 'fishing waders',
 	price: 15,
 	product: '',

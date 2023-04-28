@@ -26,7 +26,7 @@ const dateHelper = {
 		return result;
 	},
 
-	toReadableTime(time: string) {
+	toReadableTime(time: timestamp) {
 		const adjusted = new Date(time);
 
 		if (isToday(adjusted)) {

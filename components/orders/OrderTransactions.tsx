@@ -1,8 +1,7 @@
 import { CircularProgress, List, ListItem, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import OrderTransaction from '../../types/OrderTransaction';
 import dateHelper from '../../utils/dateHelper';
-import useOrderTransactions from '../../utils/hooks/useOrderTransactions';
+import { OrderTransaction } from '@prisma/client';
 
 export default function OrderTransactions({
 	saleId,

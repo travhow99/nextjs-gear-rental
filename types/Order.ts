@@ -1,26 +1,28 @@
-import OrderTransaction from './OrderTransaction';
-import Rental from './Rental';
-import User from './User';
+import { Prisma } from '@prisma/client';
 
-type Order = {
-	id?: string;
-	user: User;
-	storeId: string;
-	rentals: Array<Rental>;
-	paymentMethod: string;
-	paymentResult: {
-		id: string;
-		status: string;
-		email_address: string;
-	};
-	itemsPrice: number;
-	taxPrice: number;
-	totalPrice: number;
-	isPaid: boolean;
-	paidAt?: Date;
-	orderTransactions?: Array<OrderTransaction>;
-	createdAt: Date;
-	softDelete?: Boolean;
-};
+const orderWithAllRelations = Prisma.validator<Prisma.OrderArgs>()({
+	include: {
+		rentals: {
+			include: {
+				sellerProduct: {
+					include: {
+						images: true,
+					},
+				},
+			},
+		},
+		user: {
+			select: {
+				name: true,
+				email: true,
+			},
+		},
+		orderTransactions: true,
+	},
+});
 
-export default Order;
+type OrderWithAllRelations = Prisma.OrderGetPayload<
+	typeof orderWithAllRelations
+>;
+
+export default OrderWithAllRelations;

@@ -168,23 +168,23 @@ model ProductImage {
 // @todo @deprecated ?
 // Original idea was to have "base" products that users could make their own instance of
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  v           Int      @default(0) @map("__v") @ignore
-  brand       String
-  category    String
-  description String
-  gender      String?
-  imageAlt    String
-  imageUrl    String
-  price       Int
-  rating      Float
-  rental_min  Int
-  size        String?
-  slug        String   @unique
-  stock       Int
-  title       String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @default(0) @map("__v") @ignore
+  brand         String
+  category      String
+  description   String
+  gender        String?
+  imageAlt      String
+  featuredImage String
+  price         Int
+  rating        Float
+  rental_min    Int
+  size          String?
+  slug          String   @unique
+  stock         Int
+  title         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("products")
 }
@@ -213,31 +213,32 @@ model Rental {
 
 // @todo Generate unique slug
 model SellerProduct {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int            @default(0) @map("__v") @ignore
-  blockOuts    BlockOut[]
-  brand        String
-  category     String
-  condition    String?
-  description  String
-  gender       String?
-  images       ProductImage[]
-  keyword      String?
-  price        Int
-  product      String
-  rentalMin    Int
-  rentals      Rental[]
-  size         String?
-  slug         String         @unique
-  softDelete   Boolean?
-  stock        Int
-  title        String
-  userId       String         @db.ObjectId
-  user         User           @relation(fields: [userId], references: [id])
-  usermessages UserMessage[]
-  CartItem     CartItem[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int            @default(0) @map("__v") @ignore
+  blockOuts     BlockOut[]
+  brand         String
+  category      String
+  condition     String?
+  description   String
+  gender        String?
+  featuredImage String?
+  images        ProductImage[]
+  keyword       String?
+  price         Int
+  product       String
+  rentalMin     Int
+  rentals       Rental[]
+  size          String?
+  slug          String         @unique
+  softDelete    Boolean?
+  stock         Int
+  title         String
+  userId        String         @db.ObjectId
+  user          User           @relation(fields: [userId], references: [id])
+  usermessages  UserMessage[]
+  CartItem      CartItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@map("sellerproducts")
 }

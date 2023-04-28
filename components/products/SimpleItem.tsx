@@ -38,9 +38,9 @@ export default function SimpleItem({ product }: { product: SellerProduct }) {
 					<CardMedia
 						component="img"
 						image={
-							// product.imageUrl ||
-							product.images?.length &&
-							product.images[product.images.length - 1].path
+							product.featuredImage ||
+							(product.images?.length &&
+								product.images[product.images.length - 1].path)
 								? product.images[product.images.length - 1].path
 								: 'https://res.cloudinary.com/dwkrq4yib/image/upload/v1646708202/upload-g7c1cfd275_1280_nfmiiy.png'
 						}

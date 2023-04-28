@@ -107,7 +107,7 @@ function Cart() {
 														<Image
 															src={
 																cartItem.product
-																	.imageUrl ||
+																	.featuredImage ||
 																cartItem.product
 																	.images
 																	?.length

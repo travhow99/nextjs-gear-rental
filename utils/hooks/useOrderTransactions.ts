@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import OrderTransaction from '../../types/OrderTransaction';
 import { fetcher } from './fetcher';
+import { OrderTransaction } from '@prisma/client';
 
 interface SWRDataResponse {
 	transactions: Array<OrderTransaction>;

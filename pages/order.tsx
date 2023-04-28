@@ -190,7 +190,7 @@ function Order() {
 																		src={
 																			item
 																				.product
-																				.imageUrl ||
+																				.featuredImage ||
 																			item
 																				.product
 																				.images

@@ -1,7 +1,5 @@
 import { Brand } from '@prisma/client';
-import axios from 'axios';
 import useSWR from 'swr';
-import Order from '../../types/Order';
 import { fetcher } from './fetcher';
 
 interface SWRDataResponse {
