@@ -2,14 +2,11 @@ import { NextApiResponse } from 'next';
 import nc from 'next-connect';
 import prisma from '../../../lib/prisma';
 import Order from '../../../models/Order';
-// import Rental from '../../../models/Rental';
-import SellerProduct from '../../../models/SellerProduct';
 import NextApiRequestWithUser from '../../../types/api/NextApiRequestWithUser';
 import CartItem from '../../../types/CartItem';
-import Rental from '../../../types/Rental';
 import { isAuth } from '../../../utils/auth';
-import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
+import { Prisma } from '@prisma/client';
 
 const handler = nc({
 	onError,
@@ -37,7 +34,7 @@ handler.get(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 handler.post(async (req: NextApiRequestWithUser, res: NextApiResponse) => {
 	try {
 		const rentals = req.body.orderItems.map(
-			(orderItem: CartItem): Rental => {
+			(orderItem: CartItem): Prisma.RentalCreateManyInput => {
 				return {
 					userId: req.user.id,
 					sellerProductId: orderItem.productId,
