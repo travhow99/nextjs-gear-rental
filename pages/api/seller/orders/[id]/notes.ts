@@ -14,9 +14,6 @@ handler.use(isSeller);
 
 handler.get(async (req, res) => {
 	try {
-		/**
-		 * @todo verify seller owns order
-		 */
 		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
 
 		console.log('s owns o rdre?', ownsOrder);
@@ -41,27 +38,21 @@ handler.get(async (req, res) => {
 
 handler.post(async (req, res) => {
 	try {
-		await db.connect();
-
 		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
 
 		console.log('s owns o rdre?', ownsOrder);
 
 		if (!ownsOrder) throw new Error('order not found');
 
-		const orderNote = new OrderNote({
-			orderId: req.body.orderId,
-			note: req.body.note,
+		const orderNote = await prisma.orderNote.create({
+			data: {
+				orderId: req.body.id,
+				note: req.body.note,
+			},
 		});
-
-		await orderNote.save();
-
-		await db.disconnect();
 
 		res.status(201).send(orderNote);
 	} catch (error) {
-		await db.disconnect();
-
 		res.status(400).json({ success: false, message: error.message });
 	}
 });

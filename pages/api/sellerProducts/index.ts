@@ -15,21 +15,20 @@ handler.use(isSeller);
 
 handler.get(async (req, res) => {
 	try {
-		await db.connect();
-
-		const products = await SellerProduct.find({
-			user_id: req.user.id,
-			softDelete: { $ne: true },
-		}).populate([
-			'images',
-			// 'rentals',
-			{
-				path: 'blockOuts',
-				match: { softDelete: { $ne: true } }, // Filter the softDeletes from view
+		const products = await prisma.sellerProduct.findMany({
+			where: {
+				userId: req.user.id,
+				OR: [{ softDelete: false }, { softDelete: null }],
 			},
-		]);
+			include: {
+				blockOuts: {
+					where: {
+						OR: [{ softDelete: false }, { softDelete: null }],
+					},
+				},
+			},
+		});
 
-		await db.disconnect();
 		res.status(200).send(products);
 	} catch (error) {
 		res.status(400).json({ success: false, message: error.message });
@@ -37,17 +36,6 @@ handler.get(async (req, res) => {
 });
 
 handler.post(async (req, res) => {
-	/* await db.connect();
-
-	const sellerProduct = new SellerProduct({
-		...req.body,
-		user: req.user.id,
-	});
-
-	const product = await sellerProduct.save();
-
-	await db.disconnect(); */
-
 	const product = await prisma.sellerProduct.create({
 		data: {
 			...req.body,

@@ -1,13 +1,8 @@
 import nc from 'next-connect';
 import prisma from '../../../../../lib/prisma';
-import Order from '../../../../../models/Order';
-import ProductImage from '../../../../../models/ProductImage';
-import Rental from '../../../../../models/Rental';
-import SellerProduct from '../../../../../models/SellerProduct';
-import User from '../../../../../models/User';
-import db from '../../../../../utils/db';
 import { onError } from '../../../../../utils/error';
 import { isSeller } from '../../../../../utils/isSeller';
+import { sellerOwnsOrder } from '../../../../../utils/helpers/api/SellerOrderHelper';
 
 const handler = nc({
 	onError,
@@ -17,6 +12,10 @@ handler.use(isSeller);
 
 handler.get(async (req, res) => {
 	try {
+		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
+
+		if (!ownsOrder) throw new Error('order not found');
+
 		const order = await prisma.order.findFirst({
 			where: {
 				id: req.query.id,
@@ -43,25 +42,30 @@ handler.get(async (req, res) => {
 
 		res.send(order);
 	} catch (error) {
-		await db.disconnect();
-
 		res.status(404).send({ message: 'order not found' });
 	}
 });
 
+/**
+ * @todo soft delete should use delete method, this needs to be updated to modify the existing order
+ */
 handler.put(async (req, res) => {
 	try {
-		await db.connect();
+		const ownsOrder = await sellerOwnsOrder(req.user.id, req.query.id);
 
-		// @ts-ignore
-		const result = await Order.findByIdAndUpdate(req.query.id, {
-			softDelete: true,
+		if (!ownsOrder) throw new Error('order not found');
+
+		const order = await prisma.order.update({
+			where: {
+				id: req.query.id,
+			},
+			data: {
+				softDelete: true,
+			},
 		});
 
-		await db.disconnect();
+		res.status(200).send(order);
 	} catch (error) {
-		await db.disconnect();
-
 		res.status(404).send({ message: 'order not found' });
 	}
 });
