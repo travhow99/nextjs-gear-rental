@@ -1,10 +1,4 @@
 import nc from 'next-connect';
-import SellerProduct from '../../../models/SellerProduct';
-import Order from '../../../models/Order';
-import ProductImage from '../../../models/ProductImage';
-import User from '../../../models/User';
-import BlockOut from '../../../models/BlockOut';
-import Rental from '../../../models/Rental';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
 import prisma from '../../../lib/prisma';

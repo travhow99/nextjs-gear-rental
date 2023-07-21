@@ -183,7 +183,7 @@ export default class ProductHelper {
 		return bookingType;
 	};
 
-	static generateCalendarDayClassName = (type) => {
+	static generateCalendarDayClassName = (type: string) => {
 		let result = '';
 
 		switch (type) {

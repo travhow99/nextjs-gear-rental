@@ -28,6 +28,7 @@ import useSellerProducts from '../../../utils/hooks/useSellerProducts';
 
 /**
  * @todo useSWR
+ * @tood auth seller
  */
 function Products() {
 	const { products, isLoading, isError, mutate } = useSellerProducts();
@@ -41,9 +42,6 @@ function Products() {
 
 	console.log('session?', session);
 	const isUser = !!session?.user;
-
-	const isSeller =
-		isUser && (session.user.seller || session.user.role === 'admin');
 
 	const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 	const router = useRouter();
@@ -69,9 +67,9 @@ function Products() {
 						{products?.length ? (
 							<Grid container spacing={1}>
 								{products.map((product) => (
-									<Grid key={product._id} item xs={12}>
+									<Grid key={product.id} item xs={12}>
 										<SellerProductListItem
-											id={product._id}
+											id={product.id}
 											image={product.images[0]?.path}
 											title={product.title}
 											price={product.price}

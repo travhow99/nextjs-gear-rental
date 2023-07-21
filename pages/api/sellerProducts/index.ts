@@ -1,8 +1,4 @@
 import nc from 'next-connect';
-import SellerProduct from '../../../models/SellerProduct';
-import ProductImage from '../../../models/ProductImage';
-import BlockOut from '../../../models/BlockOut';
-import db from '../../../utils/db';
 import { onError } from '../../../utils/error';
 import { isSeller } from '../../../utils/isSeller';
 import prisma from '../../../lib/prisma';
@@ -21,6 +17,7 @@ handler.get(async (req, res) => {
 				OR: [{ softDelete: false }, { softDelete: null }],
 			},
 			include: {
+				images: true,
 				blockOuts: {
 					where: {
 						OR: [{ softDelete: false }, { softDelete: null }],
